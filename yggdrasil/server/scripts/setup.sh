@@ -23,4 +23,5 @@ mkdir -p /Mjollnir/yggdrasil/server/logs
 sudo update-rc.d yggdrasil defaults
 
 echo "=== Pymongo ==="
+sudo apt-get -y install python-pip
 sudo pip install pymongo==3.0.3

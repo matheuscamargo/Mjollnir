@@ -1,9 +1,9 @@
 CC = g++ -Wall -Werror -std=c++0x -DGTEST_USE_OWN_TR1_TUPLE=0
 INCLUDES = -I ../../third-parties/cpp/include
 LFLAGS = -L../../third-parties/cpp/lib
-LIBRARIES = -lpthread -lgtest
+LIBRARIES = -pthread -lgtest
 TARGETS = GameTest
-OBJECTS_GameTest = ../../obj/server/GameLogic.o ../../obj/thrifts/gen-cpp/Command_constants.o ../../obj/thrifts/gen-cpp/GameDescription_types.o
+OBJECTS_GameTest = ../../obj/server/GameLogic.o ../../obj/thrifts/gen-cpp/Command_constants.o ../../obj/thrifts/gen-cpp/Command_types.o ../../obj/thrifts/gen-cpp/GameDescription_types.o ../../obj/thrifts/gen-cpp/WorldModel_types.o ../../obj/thrifts/gen-cpp/GameResult_types.o
 BIN := ./bin
 
 all: $(BIN) $(BIN)/$(TARGETS)
