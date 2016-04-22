@@ -16,9 +16,9 @@ struct TotalWorldModel {};
 
 Move make_move(int32_t src, int32_t dst);
 
-std::ostream& operator<<(std::ostream& os, Move m);
+std::ostream& operator<<(std::ostream& os, Move& m);
 
-std::ostream& operator<<(std::ostream& os, Command c);
+std::ostream& operator<<(std::ostream& os, Command& c);
 
 template<typename T>
 std::ostream& operator<<(std::ostream& os, std::vector<T> v);

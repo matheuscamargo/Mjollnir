@@ -23,11 +23,11 @@ Move make_move(int32_t src, int32_t dst) {
   return mv;
 }
 
-std::ostream& operator<<(std::ostream& os, Move m) {
+std::ostream& operator<<(std::ostream& os, Move& m) {
     return os << m.src << "->" << m.dst;
 }
 
-std::ostream& operator<<(std::ostream& os, Command c) {
+std::ostream& operator<<(std::ostream& os, Command& c) {
     os << "(";
     for (auto move : c.moves) {
       os << move << ", ";
