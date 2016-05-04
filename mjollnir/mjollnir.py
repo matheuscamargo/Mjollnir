@@ -1106,6 +1106,45 @@ def update(params):
         logger.err(repr(e))
         return 1
 
+def update_local(params):
+    """
+    Stage all changes/new files and run necessary environment modifications.
+    Run this command to build/rebuild a game and the bots of the game
+    No parameters.
+    """
+
+    # Requirements
+
+    if len(params) != 0:
+        logger.err("This command receives no parameters\n")
+        help(["update"])
+        return 1
+
+    # Command execution
+
+    try:
+        # Make sure we are on a branch 
+        os.chdir("/Mjollnir")
+        m = re.search(r"\* (.*)", check_output(["git", "branch"]))
+        if not m:
+            logger.err("Could not figure out current git branch")
+            return 1
+
+        logger.info("All new files must be tracked")
+        logger.info("Running git add . ...")
+        call(["git", "add", "."])
+
+        import updates
+        return updates.update(sys.modules[__name__], True)
+
+    except CalledProcessError as e:
+        logger.err(str(e))
+        return 1
+
+    except KeyboardInterrupt as e:
+        logger.err(repr(e))
+        return 1
+
 # Available commands. Must come after functions definition.
 commands = {
     "build": build,
@@ -1116,6 +1155,7 @@ commands = {
     "replay": replay,
     "run": run,
     "update": update,
+    "update_local": update_local,
 }
 
 def mjollnir(command, params=[], logger_to_use=_DefaultLogger()):
