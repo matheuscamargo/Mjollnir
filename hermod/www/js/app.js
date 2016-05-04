@@ -47,20 +47,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   })
 
   .state('games', {
-      url: '/games',
-      templateUrl: 'templates/tab-chats.html',
-      controller: 'GamesCtrl'
+    url: '/games',
+    templateUrl: 'templates/games.html',
+    controller: 'GamesCtrl'
     })
 
-    .state('tab.chat-detail', {
-      url: '/games/:gameId',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'GameDetailCtrl'
-        }
-      }
-    })
+  .state('game-detail', {
+    url: '/games/:gameId',
+    templateUrl: 'templates/game-detail.html',
+    controller: 'GameDetailCtrl'
+  })
 
   .state('tab.account', {
     url: '/account',
@@ -73,9 +69,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   })
   
   .state('login', {
-      url: '/login',
-      templateUrl: 'templates/login.html',
-      controller: 'LoginCtrl'
+    url: '/login',
+    templateUrl: 'templates/login.html',
+    controller: 'LoginCtrl'
   });
 
   // if none of the above states are matched, use this as the fallback

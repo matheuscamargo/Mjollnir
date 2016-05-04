@@ -33,19 +33,23 @@ angular.module('starter.services', [])
   var games = [{
     id: 0,
     name: 'Gamão',
-    face: 'img/gamao.png'
+    face: 'img/gamao.png',
+    description: 'jogo do gamao'
   }, {
     id: 1,
     name: 'Tic Tac Toe',
-    face: 'img/tictactoe.png'
+    face: 'img/tictactoe.png',
+    description: 'jogo da velha'
   }, {
     id: 2,
     name: 'Tron',
-    face: 'img/tron.png'
+    face: 'img/tron.png',
+    description: 'aka snake fight'
   }, {
     id: 3,
     name: 'Wumpus',
-    face: 'img/wumpus.png'
+    face: 'img/wumpus.png',
+    description: 'jogo que nao conheço'
   }];
 
   return {

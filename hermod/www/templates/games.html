@@ -1,7 +1,7 @@
 <ion-view view-title="Games">
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="game in games" type="item-text-wrap" href="#/tab/games/{{game.id}}">
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="game in games" type="item-text-wrap" href="#/games/{{game.id}}">
         <img ng-src="{{game.face}}">
         <h2>{{game.name}}</h2>
         <p>{{game.lastText}}</p>
