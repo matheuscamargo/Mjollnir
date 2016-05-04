@@ -27,7 +27,7 @@ class Solution:
         """
         return None
 
-    def end_of_game(self, result)
+    def end_of_game(self, result):
         """
         This method is called at the end of the game.
 
