@@ -5,7 +5,9 @@ angular.module('starter.services', [])
         loginUser: function(name, pw) {
             var deferred = $q.defer();
             var promise = deferred.promise;
- 
+            
+            // login request
+
             if (name == 'usuario' && pw == 'senha') {
                 deferred.resolve('Welcome ' + name + '!');
             } else {
