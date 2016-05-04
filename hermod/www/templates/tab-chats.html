@@ -1,0 +1,16 @@
+<ion-view view-title="Games">
+  <ion-content>
+    <ion-list>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="game in games" type="item-text-wrap" href="#/tab/games/{{game.id}}">
+        <img ng-src="{{game.face}}">
+        <h2>{{game.name}}</h2>
+        <p>{{game.lastText}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+
+        <ion-option-button class="button-assertive" ng-click="remove(game)">
+          Delete
+        </ion-option-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
