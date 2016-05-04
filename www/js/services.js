@@ -8,7 +8,7 @@ angular.module('starter.services', [])
             
             // login request
 
-            if (name == 'usuario' && pw == 'senha') {
+            if (true) {
                 deferred.resolve('Welcome ' + name + '!');
             } else {
                 deferred.reject('Wrong credentials.');
@@ -26,39 +26,39 @@ angular.module('starter.services', [])
     };
 })
 
-.factory('Chats', function() {
+.factory('Games', function() {
   // Might use a resource here that returns a JSON array
 
   // Some fake testing data
-  var chats = [{
+  var games = [{
     id: 0,
     name: 'Gamão',
-    face: 'img/ben.png'
+    face: 'img/gamao.png'
   }, {
     id: 1,
     name: 'Tic Tac Toe',
-    face: 'img/max.png'
+    face: 'img/tictactoe.png'
   }, {
     id: 2,
     name: 'Tron',
-    face: 'img/adam.jpg'
+    face: 'img/tron.png'
   }, {
     id: 3,
     name: 'Wumpus',
-    face: 'img/perry.png'
+    face: 'img/wumpus.png'
   }];
 
   return {
     all: function() {
-      return chats;
+      return games;
     },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
+    remove: function(game) {
+      games.splice(games.indexOf(game), 1);
     },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
+    get: function(gameId) {
+      for (var i = 0; i < games.length; i++) {
+        if (games[i].id === parseInt(gameId)) {
+          return games[i];
         }
       }
       return null;

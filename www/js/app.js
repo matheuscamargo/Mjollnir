@@ -46,18 +46,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     controller: 'DashCtrl'
   })
 
-  .state('chats', {
-      url: '/chats',
+  .state('games', {
+      url: '/games',
       templateUrl: 'templates/tab-chats.html',
-      controller: 'ChatsCtrl'
+      controller: 'GamesCtrl'
     })
 
     .state('tab.chat-detail', {
-      url: '/chats/:chatId',
+      url: '/games/:gameId',
       views: {
         'tab-chats': {
           templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
+          controller: 'GameDetailCtrl'
         }
       }
     })
