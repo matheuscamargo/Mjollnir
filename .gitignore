@@ -168,3 +168,6 @@ vigridr/localdev/*
 hermod/node_modules/
 hermod/platforms/
 hermod/plugins/
+hermod/www/lib
+hermod/www/css/ionic.app.css
+hermod/www/css/ionic.app.min.css

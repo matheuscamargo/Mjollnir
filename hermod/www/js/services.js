@@ -33,23 +33,33 @@ angular.module('starter.services', [])
   var games = [{
     id: 0,
     name: 'Gamão',
-    face: 'img/gamao.png',
+    image: 'img/gamao.jpg',
     description: 'jogo do gamao'
   }, {
     id: 1,
     name: 'Tic Tac Toe',
-    face: 'img/tictactoe.png',
+    image: 'img/tictactoe.png',
     description: 'jogo da velha'
   }, {
     id: 2,
     name: 'Tron',
-    face: 'img/tron.png',
+    image: 'img/tron.png',
     description: 'aka snake fight'
   }, {
     id: 3,
     name: 'Wumpus',
-    face: 'img/wumpus.png',
+    image: 'img/wumpus.png',
     description: 'jogo que nao conheço'
+  }, {
+    id: 4,
+    name: 'Go',
+    image: 'img/go.png',
+    description: 'xadrez da china'
+  }, {
+    id: 5,
+    name: 'Xadrez',
+    image: 'img/chess.jpg',
+    description: 'xadrez nao da china'
   }];
 
   return {
