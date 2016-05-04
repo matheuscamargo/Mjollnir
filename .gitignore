@@ -157,6 +157,10 @@ vigridr/localdev/*
 !vigridr/localdev/compile_game_test.py
 !vigridr/localdev/run_game_test.py
 
+##
+## Yggdrasil
+##
+
 # Ionic Mobile App
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
