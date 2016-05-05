@@ -28,15 +28,11 @@ angular.module('hermod.services', [])
     };
 })
 
-// Service to handle information for the challenges
+// Mock for the challenges info
 
-.service('ChallengeService', function($q) {
+.service('ChallengesMock', function($q) {
     return {
         getRank: function(challengeName) {
-          return "not implemented";
-        },
-
-        getRankMock: function(challengeName) {
           return [
           {
             sequence: 1,
