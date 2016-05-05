@@ -8,10 +8,16 @@ angular.module('hermod.controllers', [])
       });
 })
 
-.controller('ChallengeDetailCtrl', function($scope, SERVER, $stateParams, ChallengesService) {
-  // TODO: use ChallengeService.getRank instead of Mock
-  $scope.rank = ChallengesService.getRank($stateParams.challengeName);
+.controller('ChallengeDetailCtrl', function($scope, SERVER, $stateParams, $http) {
+
   $scope.challengeName = $stateParams.challengeName;
+
+  $http({
+      url: SERVER.url + "api/challenge/" + $stateParams.challengeName,
+  }).
+  success(function(data) {
+      $scope.rank = data.rank;
+  });
 })
 
 .controller('LoginCtrl', function($scope, LoginService, $ionicPopup, $state) {
