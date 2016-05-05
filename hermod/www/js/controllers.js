@@ -8,9 +8,9 @@ angular.module('hermod.controllers', [])
       });
 })
 
-.controller('ChallengeDetailCtrl', function($scope, $stateParams, ChallengesMock) {
+.controller('ChallengeDetailCtrl', function($scope, SERVER, $stateParams, ChallengesService) {
   // TODO: use ChallengeService.getRank instead of Mock
-  $scope.rank = ChallengesMock.getRank($stateParams.challengeName);
+  $scope.rank = ChallengesService.getRank($stateParams.challengeName);
   $scope.challengeName = $stateParams.challengeName;
 })
 

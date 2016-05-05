@@ -28,6 +28,20 @@ angular.module('hermod.services', [])
     };
 })
 
+.service('ChallengesService', function($http, $q, SERVER) {
+    return {
+        getRank: function(challengeName) {
+            $http({
+                url: SERVER['url'] + "api/challenge/" + challengeName,
+            }).
+            success(function(data) {
+                console.log(data['rank']);
+                return data['rank'];
+            });
+        }
+    };
+})
+
 // Mock for the challenges info
 
 .service('ChallengesMock', function($q) {
@@ -47,3 +61,5 @@ angular.module('hermod.services', [])
         }
     };
 });
+
+
