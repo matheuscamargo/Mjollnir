@@ -49,10 +49,17 @@ class GameLogic {
   bool checkDraw_(const WorldModel& wm);
   void setTableCoordinate_(const Coordinate& coordinate, Marker marker);
   bool checkTableCoordinate_(const Coordinate& coordinate, Marker marker);
+  bool isPassMove_(const Coordinate& coordinate);
+  bool isValidMove_(const Coordinate& coordinate);
+  bool isPlayer_(const Coordinate& coordinate, Marker marker);
+  bool isKo_(const Coordinate& coordinate);
+  bool isOnBoard_(const Coordinate& coordinate);
   bool randomPlay_(int32_t playerId);
   WorldModel worldModel_;
   TotalWorldModel twm_;
   int32_t player1_, player2_;
+  int32_t koPosX, koPosY;
+  int32_t bMove, wMove;
   std::string winner_;
   bool hasFinished_;
   const size_t boardSize_ = 9;

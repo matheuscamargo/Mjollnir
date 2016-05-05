@@ -42,17 +42,25 @@ GameLogic::GameLogic(int32_t playerId1, int32_t playerId2) {
 }
 
 bool GameLogic::update(Command command, int32_t playerId) {
-  if(!hasFinished_ &&
-     checkTableCoordinate_(command.coordinate, Marker::UNMARKED)) {
+  if(!hasFinished_ && isValidMove(command.coordinate)) {
     if (playerId == player1_) {
-      setTableCoordinate_(command.coordinate, Marker::X);
-      hasFinished_ = checkVictory_(worldModel_, Marker::X , playerId);
+      if (!isPassMove_(coordinate)) {
+        //perform black's move
+        bMove = step(BLACK, command.coordinate);
+        setTableCoordinate_(command.coordinate, Marker::X);
+      }
+      else {
+        bMove = -1;
+      }
     }
     else if (playerId == player2_) {
       setTableCoordinate_(command.coordinate, Marker::O);
       hasFinished_ = checkVictory_(worldModel_, Marker::O , playerId);
     }
-    if(checkDraw_(worldModel_)) { hasFinished_ = true; }
+    //check for 2 passes in a row
+    if( bMove == -1 && wMove == -1 ) {
+      hasFinished_ = true;
+    }
     return true;
   }
   return false;
@@ -76,11 +84,6 @@ void GameLogic::setTableCoordinate(
 void GameLogic::setTableCoordinate_(
     const Coordinate& coordinate, Marker marker) {
   worldModel_.table[coordinate.x][coordinate.y] = marker;
-}
-
-bool GameLogic::checkTableCoordinate_(
-    const Coordinate& coordinate, Marker marker) {
-  return worldModel_.table[coordinate.x][coordinate.y] == marker;
 }
 
 bool GameLogic::isFinished() const {
@@ -191,5 +194,52 @@ GameResult GameLogic::createGameResult(std::string result, int32_t id) {
   }
   return GameResult::LOST;
 }
+
+bool GameLogic::isOnBoard_(const Coordinate& coordinate)
+{
+  // check that move is inside the board space
+  if (coordinate.x >= 0 && coordinate.x < boardSize_ &&
+      y >= 0 && y < boardSize_) {
+    return true;
+  }    
+    return false;
+}
+
+bool GameLogic::isKo_(const Coordinate& coordinate)
+{
+  // check if move is equivalent to the previous game state
+  if (coordinate.x == koPosX && coordinate.y == koPosY)
+  {
+    return true;
+  }
+  return false;
+}
+
+bool GameLogic::isPlayer_(
+    const Coordinate& coordinate, Marker marker) {
+  return worldModel_.table[coordinate.x][coordinate.y] == marker;
+}
+
+bool GameLogic::isValidMove_(const Coordinate& coordinate)
+{
+  // passing turn
+  if (isPassMove_(coordinate))
+    return true;
+  if (isOnBoard_(coordinate) &&
+      isPlayer_(coordinate, Marker::UNMARKED) &&
+      !isKo_(coordinate)) {
+    return true;
+  }
+  return false;
+}
+
+bool GameLogic::isPassMove_(const Coordinate& coordinate) {
+  return coordinate.x == -1 && coordinate.y == -1;
+}
+
+
+
+
+
 
 }}  // namespaces
