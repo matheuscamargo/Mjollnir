@@ -1244,6 +1244,21 @@ def apiChallangesRanking(challenge_name):
 
     rank["rank"] = challenge_solutions
     return jsonify(**rank)
+
+
+@app.route('/api/login', methods=['POST'])
+def apiLogin():
+    """
+    returns weather or not a user with the passed credentials exists in the database
+    """
+    username = request.args.get('username')
+    password = request.args.get('password')
+
+    is_valid = (username is 'asdf' and password is 'asdf')
+
+    response_dict = {'success' : is_valid}
+    return jsonify(**response_dict)
+
     
 def allPlay(cid, rounds, group, challenge_name):
     """
