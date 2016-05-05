@@ -153,10 +153,15 @@ TEST_F(GameLogicTest, TestingTwoTrappedPieceRemoval) {
     {0,1,9090},
     {1,1,9091},
     {1,0,9090},
+    {1,2,9091},
+    {2,1,9090},
     {8,8,9091},
-    {1,2,9090},
+    {0,2,9090},
     {7,7,9091},
-    {2,1,9090}
+    {1,3,9090},
+    {6,6,9091},
+    {2,2,9090},
+
   };
   Command command;
   for(const auto& line : indexes) {
@@ -176,12 +181,135 @@ TEST_F(GameLogicTest, TestingTwoTrappedPieceRemoval) {
   expTable[0][1] = Marker::X;
   expTable[1][1] = Marker::UNMARKED;
   expTable[1][0] = Marker::X;
-  expTable[8][8] = Marker::O;
-  expTable[1][2] = Marker::X;
-  expTable[7][7] = Marker::O;
+  expTable[1][2] = Marker::UNMARKED;
   expTable[2][1] = Marker::X;
+  expTable[8][8] = Marker::O;
+  expTable[0][2] = Marker::X;
+  expTable[7][7] = Marker::O;
+  expTable[1][3] = Marker::X;
+  expTable[6][6] = Marker::O;
+  expTable[2][2] = Marker::X;
 
   ASSERT_EQ(expTable, game1.getWorldModel().table);
+}
+
+TEST_F(GameLogicTest, TestingDrawAndFinish) {
+
+  std::vector<std::vector<int> > indexes {
+    {0,1,9090},
+    {1,1,9091},
+    {-1,-1,9090},
+    {-1,-1,9091}
+  };
+  Command command;
+  for(const auto& line : indexes) {
+    command.coordinate.x = line[0];
+    command.coordinate.y = line[1];
+    game1.update(command, line[2]);
+  }
+
+  EXPECT_TRUE(game1.isFinished());
+  EXPECT_EQ("-1", game1.getWinner());
+}
+
+TEST_F(GameLogicTest, TestingWinAndFinish) {
+
+  std::vector<std::vector<int> > indexes {
+    {0,1,9090},
+    {8,8,9091},
+    {1,0,9090},
+    {7,7,9091},
+    {-1,-1,9090},
+    {-1,-1,9091}
+  };
+  Command command;
+  for(const auto& line : indexes) {
+    command.coordinate.x = line[0];
+    command.coordinate.y = line[1];
+    game1.update(command, line[2]);
+  }
+
+  EXPECT_TRUE(game1.isFinished());
+  EXPECT_EQ("9090", game1.getWinner());
+}
+
+TEST_F(GameLogicTest, TestingCaptureWinAndFinish) {
+
+  std::vector<std::vector<int> > indexes {
+    {0,1,9090},
+    {0,0,9091},
+    {1,0,9090},
+    {0,6,9091},
+    {8,8,9090},
+    {1,7,9091},
+    {-1,-1,9090},
+    {-1,-1,9091}
+  };
+  Command command;
+  for(const auto& line : indexes) {
+    command.coordinate.x = line[0];
+    command.coordinate.y = line[1];
+    game1.update(command, line[2]);
+  }
+
+  EXPECT_TRUE(game1.isFinished());
+  EXPECT_EQ("9090", game1.getWinner());
+}
+
+TEST_F(GameLogicTest, TestingBoardFullAndFinish) {
+
+  std::vector<std::vector<int> > indexes;
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 9; j++) {
+      std::vector<int> play;
+      play.push_back(i);
+      play.push_back(j);
+      play.push_back(9090);
+      indexes.push_back(play);
+      play.clear();
+      play.push_back(8-i);
+      play.push_back(j);
+      play.push_back(9091);
+      indexes.push_back(play);
+    }
+  }
+  for (int i = 0; i < 4; i++) {
+    std::vector<int> play;
+      play.push_back(4);
+      play.push_back(i);
+      play.push_back(9090);
+      indexes.push_back(play);
+      play.clear();
+      play.push_back(4);
+      play.push_back(8-i);
+      play.push_back(9091);
+      indexes.push_back(play);
+  }
+  indexes.push_back({4, 4, 9090});
+
+  Command command;
+  for(const auto& line : indexes) {
+    command.coordinate.x = line[0];
+    command.coordinate.y = line[1];
+    game1.update(command, line[2]);
+  }
+
+  std::vector<std::vector<Marker> > expTable;
+  Marker marker = Marker::X;
+  for (int i = 0; i < 9; i++) {
+    std::vector<Marker> line;    
+    for (int j = 0; j < 9; j++) {
+      if (i >= 4 && j >= 5) {
+        marker = Marker::O;
+      }
+      line.push_back(marker);
+    }
+    expTable.push_back(line);
+  }
+
+  EXPECT_EQ(expTable, game1.getWorldModel.table());
+  EXPECT_TRUE(game1.isFinished());
+  EXPECT_EQ("9090", game1.getWinner());
 }
 
 }}  // namespaces
