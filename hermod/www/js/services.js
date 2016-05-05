@@ -1,6 +1,6 @@
-angular.module('starter.services', [])
+angular.module('hermod.services', [])
 
-.service('LoginService', function($q) {
+.service('LoginService', function($q, SERVER) {
     return {
         loginUser: function(name, pw) {
             var deferred = $q.defer();
@@ -26,48 +26,38 @@ angular.module('starter.services', [])
     };
 })
 
-.factory('Games', function() {
-  // Might use a resource here that returns a JSON array
+.service('GameService', function($q, Games) {
+    return {
+        getRank: function(gameName) {
+          return "not implemented";
+        },
 
-  // Some fake testing data
-  var games = [{
-    id: 0,
-    name: 'Gamão',
-    image: 'img/gamao.jpg',
-    description: 'jogo do gamao'
-  }, {
-    id: 1,
-    name: 'Tic Tac Toe',
-    image: 'img/tictactoe.png',
-    description: 'jogo da velha'
-  }, {
-    id: 2,
-    name: 'Tron',
-    image: 'img/tron.png',
-    description: 'aka snake fight'
-  }, {
-    id: 3,
-    name: 'Wumpus',
-    image: 'img/wumpus.png',
-    description: 'jogo que nao conheço'
-  }, {
-    id: 4,
-    name: 'Go',
-    image: 'img/go.png',
-    description: 'xadrez da china'
-  }, {
-    id: 5,
-    name: 'Xadrez',
-    image: 'img/chess.jpg',
-    description: 'xadrez nao da china'
-  }];
+        getRankMock: function(gameName) {
+          return [
+          {
+            position: 1,
+            username: 'lucasmullerm',
+            rating: '8001 ± 500'
+          },
+          {
+            position: 2,
+            username: 'gabrielilharco',
+            rating: '7000 ± 500'
+          }];
+        }
+    };
+})
+
+.factory('Games', function($http) {
+  var games ;
+  $http.get('js/challenges.json')
+    .then(function(res){
+      games  = res.data;              
+  });
 
   return {
     all: function() {
-      return games;
-    },
-    remove: function(game) {
-      games.splice(games.indexOf(game), 1);
+      return challenges;
     },
     get: function(gameId) {
       for (var i = 0; i < games.length; i++) {

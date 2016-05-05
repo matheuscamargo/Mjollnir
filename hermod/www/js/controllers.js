@@ -1,8 +1,6 @@
-angular.module('starter.controllers', [])
+angular.module('hermod.controllers', [])
 
-.controller('DashCtrl', function($scope) {})
-
-.controller('GamesCtrl', function($scope, Games) {
+.controller('GamesCtrl', function($scope, Games, $http) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -10,21 +8,20 @@ angular.module('starter.controllers', [])
   //
   //$scope.$on('$ionicView.enter', function(e) {
   //});
+  $http.get('js/challenges.json')
+        .then(function(res){
+          $scope.games = res.data;              
+      });
 
-  $scope.games = Games.all();
+  //$scope.games = Games.all();
   $scope.remove = function(game) {
     Games.remove(game);
   };
 })
 
-.controller('GameDetailCtrl', function($scope, $stateParams, Games) {
-  $scope.game = Games.get($stateParams.gameId);
-})
-
-.controller('AccountCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
+.controller('GameDetailCtrl', function($scope, $stateParams, GameService) {
+  $scope.rank = GameService.getRankMock($stateParams.gameName);
+  $scope.gameName = $stateParams.gameName;
 })
 
 .controller('LoginCtrl', function($scope, LoginService, $ionicPopup, $state) {

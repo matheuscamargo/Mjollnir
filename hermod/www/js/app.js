@@ -5,7 +5,12 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
+
+.constant('SERVER', {
+  // Url used to reach the server (Bifrost)
+  url: 'http://192.168.0.27:5000/'
+})
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -31,21 +36,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   // Each state's controller can be found in controllers.js
   $stateProvider
 
-  // setup an abstract state for the tabs directive
-    .state('tab', {
-    url: '/tab',
-    abstract: true,
-    templateUrl: 'templates/tabs.html'
-  })
-
-  // Each tab has its own nav history stack:
-
-  .state('dash', {
-    url: '/dash',
-    templateUrl: 'templates/tab-dash.html',
-    controller: 'DashCtrl'
-  })
-
   .state('games', {
     url: '/games',
     templateUrl: 'templates/games.html',
@@ -53,19 +43,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     })
 
   .state('game-detail', {
-    url: '/games/:gameId',
+    url: '/games/:gameName',
     templateUrl: 'templates/game-detail.html',
     controller: 'GameDetailCtrl'
-  })
-
-  .state('tab.account', {
-    url: '/account',
-    views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
-      }
-    }
   })
   
   .state('login', {
