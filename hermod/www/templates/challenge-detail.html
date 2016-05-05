@@ -1,0 +1,14 @@
+<ion-view view-title="{{challengeName}}">
+  <ion-content class="padding">
+    <div class="row">
+      <div class="col col-10 text-center">Pos</div>
+      <div class="col text-center">User</div>
+      <div class="col text-center">Rating</div>
+    </div>
+    <div class="row" ng-repeat="user in rank">
+      <div class="col col-10 text-center">{{user.sequence}}</div>
+      <div class="col text-center">{{user.username}}</div>
+      <div class="col text-center">{{user.rating}}</div>
+    </div>
+  </ion-content>
+</ion-view>

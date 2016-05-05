@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Backgammon",
+    "image": "img/backgammon.jpg"
+  },
+  {
+    "name": "Chess",
+    "image": "img/chess.jpg"
+  },
+  {
+    "name": "Go'",
+    "image": "img/go.png"
+  },
+  {
+    "name": "Snake Fight",
+    "image": "img/snakefight.png"
+  },
+  {
+    "name": "Tic-Tac-Toe",
+    "image": "img/tictactoe.png"
+  },
+  {
+    "name": "Wumpus",
+    "image": "img/wumpus.png"
+  }
+]
