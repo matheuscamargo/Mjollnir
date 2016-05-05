@@ -36,8 +36,8 @@ class Solution:
         """
         command = Command(Coordinate())
         while True:
-            x = randint(0,2)
-            y = randint(0,2)
+            x = randint(0,8)
+            y = randint(0,8)
             if wm.table[x][y] == Marker.UNMARKED:
                 command.coordinate.x = x
                 command.coordinate.y = y
