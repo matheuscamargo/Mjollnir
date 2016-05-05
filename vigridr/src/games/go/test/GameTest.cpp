@@ -1,6 +1,7 @@
 #include "../server/GameLogic.h"
 #include "gtest/gtest.h"
 
+
 namespace mjollnir { namespace vigridr {
 
 class GameLogicTest : public ::testing::Test {
@@ -29,11 +30,17 @@ TEST_F(GameLogicTest, TestingPlayersMarkersTypes) {
   ASSERT_TRUE(game1.update(command1, 9090));
   ASSERT_TRUE(game1.update(command2, 9091));
 
-  std::vector<std::vector<Marker> > expTable {
-      {Marker::UNMARKED, Marker::UNMARKED, Marker::O},
-      {Marker::UNMARKED, Marker::X,        Marker::UNMARKED},
-      {Marker::UNMARKED, Marker::UNMARKED, Marker::UNMARKED}
-  };
+  std::vector<std::vector<Marker> > expTable;
+  for (int i = 0; i < 9; i++) {
+    std::vector<Marker> line;    
+    for (int i = 0; i < 9; i++) {
+      line.push_back(Marker::UNMARKED);
+    }
+    expTable.push_back(line);
+  }
+  expTable[1][1] = Marker::X;
+  expTable[0][2] = Marker::O;
+
   ASSERT_EQ(expTable, game1.getWorldModel().table);
 }
 
@@ -44,11 +51,18 @@ TEST_F(GameLogicTest, TestingTwoCommandsInTheSameTableEntry) {
   game1.update(command2, 9091);
   ASSERT_FALSE(game1.update(command1, 9090));
   ASSERT_FALSE(game1.update(command2, 9091));
-  std::vector<std::vector<Marker> > expTable {
-      {Marker::UNMARKED, Marker::UNMARKED, Marker::O},
-      {Marker::UNMARKED, Marker::X,        Marker::UNMARKED},
-      {Marker::UNMARKED, Marker::UNMARKED, Marker::UNMARKED}
-  };
+
+  std::vector<std::vector<Marker> > expTable;
+  for (int i = 0; i < 9; i++) {
+    std::vector<Marker> line;    
+    for (int i = 0; i < 9; i++) {
+      line.push_back(Marker::UNMARKED);
+    }
+    expTable.push_back(line);
+  }
+  expTable[1][1] = Marker::X;
+  expTable[0][2] = Marker::O;
+
   ASSERT_EQ(expTable, game1.getWorldModel().table);
 
   ASSERT_FALSE(game1.update(command1, 9091));
@@ -56,17 +70,16 @@ TEST_F(GameLogicTest, TestingTwoCommandsInTheSameTableEntry) {
   ASSERT_EQ(expTable, game1.getWorldModel().table);
 }
 
-TEST_F(GameLogicTest, TestDraw) {
+TEST_F(GameLogicTest, TestingInsertingPieceIntoATrappedSpot) {
+
   std::vector<std::vector<int> > indexes {
-    {2,2,9090},
-    {0,0,9091},
     {0,1,9090},
-    {1,1,9091},
-    {0,2,9090},
-    {1,2,9091},
+    {8,8,9091},
     {1,0,9090},
-    {2,1,9091},
-    {2,0,9090}
+    {7,7,9091},
+    {1,2,9090},
+    {6,6,9091},
+    {2,1,9090}
   };
   Command command;
   for(const auto& line : indexes) {
@@ -74,52 +87,39 @@ TEST_F(GameLogicTest, TestDraw) {
     command.coordinate.y = line[1];
     game1.update(command, line[2]);
   }
-  EXPECT_TRUE(game1.isFinished());
-  ASSERT_TRUE(game1.getWinner() == "-1");
+  command.coordinate.x = 1;
+  command.coordinate.y = 1;
+  EXPECT_FALSE(game1.update(command, 9091));
+
+  std::vector<std::vector<Marker> > expTable;
+  for (int i = 0; i < 9; i++) {
+    std::vector<Marker> line;    
+    for (int i = 0; i < 9; i++) {
+      line.push_back(Marker::UNMARKED);
+    }
+    expTable.push_back(line);
+  }
+  expTable[0][1] = Marker::X;
+  expTable[8][8] = Marker::O;
+  expTable[1][0] = Marker::X;
+  expTable[7][7] = Marker::O;
+  expTable[1][2] = Marker::X;
+  expTable[6][6] = Marker::O;
+  expTable[2][1] = Marker::X;
+
+  ASSERT_EQ(expTable, game1.getWorldModel().table);
 }
 
-TEST_F(GameLogicTest, TestWinningTables) {
+TEST_F(GameLogicTest, TestingOneTrappedPieceRemoval) {
+
   std::vector<std::vector<int> > indexes {
-    {0,1,9091},
-    {0,2,9091},
-    {0,0,9090},
-    {1,1,9090},
-    {2,2,9090}
-  };
-  Command command;
-  for(const auto& line : indexes) {
-    command.coordinate.x = line[0];
-    command.coordinate.y = line[1];
-    game1.update(command, line[2]);
-  }
-  EXPECT_TRUE(game1.isFinished());
-  ASSERT_TRUE(game1.getWinner() == "9090");
-
-  CleanTable();
-  indexes = std::vector<std::vector<int> > {
-    {0,0,9090},
-    {0,1,9090},
-    {0,2,9091},
-    {1,2,9091},
-    {2,2,9091}
-  };
-  for(const auto& line : indexes) {
-    command.coordinate.x = line[0];
-    command.coordinate.y = line[1];
-    game1.update(command, line[2]);
-  }
-  EXPECT_TRUE(game1.isFinished());
-  ASSERT_TRUE(game1.getWinner() == "9091");
-}
-
-TEST_F(GameLogicTest, TwoWinners) {
-   std::vector<std::vector<int> > indexes {
-    {0,0,9090},
-    {1,0,9091},
     {0,1,9090},
     {1,1,9091},
-    {0,2,9090},
-    {1,2,9091}
+    {1,0,9090},
+    {8,8,9091},
+    {1,2,9090},
+    {7,7,9091},
+    {2,1,9090}
   };
   Command command;
   for(const auto& line : indexes) {
@@ -127,8 +127,61 @@ TEST_F(GameLogicTest, TwoWinners) {
     command.coordinate.y = line[1];
     game1.update(command, line[2]);
   }
-  EXPECT_TRUE(game1.isFinished());
-  ASSERT_TRUE(game1.getWinner() == "9090");
+
+  std::vector<std::vector<Marker> > expTable;
+  for (int i = 0; i < 9; i++) {
+    std::vector<Marker> line;    
+    for (int i = 0; i < 9; i++) {
+      line.push_back(Marker::UNMARKED);
+    }
+    expTable.push_back(line);
+  }
+  expTable[0][1] = Marker::X;
+  expTable[1][1] = Marker::UNMARKED;
+  expTable[1][0] = Marker::X;
+  expTable[8][8] = Marker::O;
+  expTable[1][2] = Marker::X;
+  expTable[7][7] = Marker::O;
+  expTable[2][1] = Marker::X;
+
+  ASSERT_EQ(expTable, game1.getWorldModel().table);
+}
+
+TEST_F(GameLogicTest, TestingTwoTrappedPieceRemoval) {
+
+  std::vector<std::vector<int> > indexes {
+    {0,1,9090},
+    {1,1,9091},
+    {1,0,9090},
+    {8,8,9091},
+    {1,2,9090},
+    {7,7,9091},
+    {2,1,9090}
+  };
+  Command command;
+  for(const auto& line : indexes) {
+    command.coordinate.x = line[0];
+    command.coordinate.y = line[1];
+    game1.update(command, line[2]);
+  }
+
+  std::vector<std::vector<Marker> > expTable;
+  for (int i = 0; i < 9; i++) {
+    std::vector<Marker> line;    
+    for (int i = 0; i < 9; i++) {
+      line.push_back(Marker::UNMARKED);
+    }
+    expTable.push_back(line);
+  }
+  expTable[0][1] = Marker::X;
+  expTable[1][1] = Marker::UNMARKED;
+  expTable[1][0] = Marker::X;
+  expTable[8][8] = Marker::O;
+  expTable[1][2] = Marker::X;
+  expTable[7][7] = Marker::O;
+  expTable[2][1] = Marker::X;
+
+  ASSERT_EQ(expTable, game1.getWorldModel().table);
 }
 
 }}  // namespaces

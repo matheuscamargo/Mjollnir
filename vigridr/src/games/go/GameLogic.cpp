@@ -23,35 +23,16 @@ GameLogic::GameLogic(int32_t playerId1, int32_t playerId2) {
   player2_ = playerId2;
   winner_ = "-1";
   hasFinished_ = false;
-  std::vector<std::vector<Marker> > table {
-      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
-      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
-      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
-      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
-      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
-      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
-      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
-      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
-      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
-       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED}
-  };
+
+  std::vector<std::vector<Marker> > table;
+  for (int i = 0; i < boardSize_; i++) {
+    std::vector<Marker> line;    
+    for (int i = 0; i < boardSize_; i++) {
+      line.push_back(Marker::UNMARKED);
+    }
+    table.push_back(line);
+  }
+
   worldModel_.table = table;
 
   bMove_ = 0;

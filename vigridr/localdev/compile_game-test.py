@@ -21,7 +21,7 @@ class Logger():
         print msg
 
 os.chdir(VIGRIDR_SRC)
-change_game_code(CURRENT_GAME, False, False, False, Logger())
+change_game_code(CURRENT_GAME, False, True, False, Logger())
 
 idx = 1
 
@@ -59,5 +59,10 @@ os.chdir(TEST_SRC)
 os.mkdir('server')
 shutil.copy(os.path.join(VIGRIDR_SRC, '..', 'bin', EXTENSION, 'server'), os.path.join(TEST_SRC, 'server', 'server'))
 shutil.copy(os.path.join(VIGRIDR_SRC, '..', 'bin', EXTENSION, 'server'), os.path.join(VIGRIDR_SRC, 'games', CURRENT_GAME, 'bin'))
+
+print('======================== Making tests ========================')
+os.chdir(VIGRIDR_SRC)
+os.chdir('..')
+check_call(['make', 'test'])
 
 print('######################## Finished ########################')

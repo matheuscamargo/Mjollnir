@@ -2,8 +2,8 @@ namespace cpp mjollnir.vigridr
 
 enum Marker {
   UNMARKED = 1,
-  O = 2,
-  X = 3
+  X = 2,
+  O = 3
 }
 
 struct WorldModel {
