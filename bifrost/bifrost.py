@@ -45,6 +45,7 @@ from flask.ext.stormpath import (
 from flask.ext.pagedown import PageDown
 from flask.ext.pagedown.fields import PageDownField
 from flask.ext.wtf import Form
+from flask.ext.cors import CORS
 
 from extensions.flask_stormpath import groups_allowed
 from extensions.flask_stormpath import is_active_user_in
@@ -187,6 +188,7 @@ DEBUG = str(environ.get('MJOLLNIR_DEBUG')).lower()
 DEBUG = (DEBUG == '1' or DEBUG == 'true')
 
 app = Flask(__name__)
+CORS(app)
 
 logger = logging.getLogger('werkzeug')
 logger.setLevel(logging.INFO)
