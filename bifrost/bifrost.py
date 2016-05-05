@@ -1220,23 +1220,13 @@ def apiChallangesRanking(challenge_name):
     """
     returns a JSON object that represents the list of ratings for that challange
     """
-    
-    rank = {}
-    ranks = [
-                {'sequence':'1', 'username':'joao', 'rating':'300'}, 
-                {'sequence':'2', 'username':'jose', 'rating':'200'},
-                {'sequence':'3', 'username':'pedro', 'rating':'100'},
-            ]
-    rank['ranks'] = ranks
-    return jsonify(**rank)
-
     challenge = mongodb.challenges.find_one({'name': challenge_name})
     rank = {}
     if not challenge or ( not is_active_user_in('Dev') and challenge['dev_only'] ):
         return jsonify(**rank)
     submissions = mongodb.submissions.find({ 'cid': challenge['cid'] }).sort([ ('rating', -1) ]).limit(40)
     challenge_solutions = []
-    print "passed"
+
     i = 0
     for submission in submissions:
         i += 1
@@ -1246,11 +1236,12 @@ def apiChallangesRanking(challenge_name):
         if not user_from_submission:
             raise Exception("Could not find user " + submission['uid'] + " in the database")
 
-        submission['sequence'] = i
-        submission['username'] = user_from_submission['username']
-        submission['RD'] = int(round(submission['RD']))
-        challenge_solutions.append(submission)
-    print "yep"
+        sub = {}
+        sub['sequence'] = str(i)
+        sub['username'] = str(user_from_submission['username'])
+        sub['rating'] = str(int(round(submission['RD'])))
+        challenge_solutions.append(sub)
+
     rank["rank"] = challenge_solutions
     return jsonify(**rank)
     
