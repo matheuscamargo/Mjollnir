@@ -1,10 +1,9 @@
-// Ionic Starter App
+// Hermod App
 
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
+// 'hermod' is the name of this angular module (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-// 'starter.services' is found in services.js
-// 'starter.controllers' is found in controllers.js
+// 'hermod.services' is found in services.js
+// 'hermod.controllers' is found in controllers.js
 angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
 
 .constant('SERVER', {
@@ -30,22 +29,20 @@ angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
 
 .config(function($stateProvider, $urlRouterProvider) {
 
-  // Ionic uses AngularUI Router which uses the concept of states
-  // Learn more here: https://github.com/angular-ui/ui-router
-  // Set up the various states which the app can be in.
+  // Settting up the various states for Angular UI router.
   // Each state's controller can be found in controllers.js
   $stateProvider
 
-  .state('games', {
-    url: '/games',
-    templateUrl: 'templates/games.html',
-    controller: 'GamesCtrl'
+  .state('challenges', {
+    url: '/challenges',
+    templateUrl: 'templates/challenges.html',
+    controller: 'ChallengesCtrl'
     })
 
-  .state('game-detail', {
-    url: '/games/:gameName',
-    templateUrl: 'templates/game-detail.html',
-    controller: 'GameDetailCtrl'
+  .state('challenge-detail', {
+    url: '/challenges/:challengeName',
+    templateUrl: 'templates/challenge-detail.html',
+    controller: 'ChallengeDetailCtrl'
   })
   
   .state('login', {
@@ -55,6 +52,7 @@ angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
   });
 
   // if none of the above states are matched, use this as the fallback
+  // TODO: new state to check if already logged in
   $urlRouterProvider.otherwise('/login');
 
 });

@@ -1,12 +1,14 @@
 angular.module('hermod.services', [])
 
+// Service to handle the check of credentials 
+
 .service('LoginService', function($q, SERVER) {
     return {
         loginUser: function(name, pw) {
             var deferred = $q.defer();
             var promise = deferred.promise;
             
-            // login request
+            // TODO: login request
 
             if (true) {
                 deferred.resolve('Welcome ' + name + '!');
@@ -26,13 +28,15 @@ angular.module('hermod.services', [])
     };
 })
 
-.service('GameService', function($q, Games) {
+// Service to handle information for the challenges
+
+.service('ChallengeService', function($q) {
     return {
-        getRank: function(gameName) {
+        getRank: function(challengeName) {
           return "not implemented";
         },
 
-        getRankMock: function(gameName) {
+        getRankMock: function(challengeName) {
           return [
           {
             position: 1,
@@ -46,26 +50,4 @@ angular.module('hermod.services', [])
           }];
         }
     };
-})
-
-.factory('Games', function($http) {
-  var games ;
-  $http.get('js/challenges.json')
-    .then(function(res){
-      games  = res.data;              
-  });
-
-  return {
-    all: function() {
-      return challenges;
-    },
-    get: function(gameId) {
-      for (var i = 0; i < games.length; i++) {
-        if (games[i].id === parseInt(gameId)) {
-          return games[i];
-        }
-      }
-      return null;
-    }
-  };
 });
