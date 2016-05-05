@@ -39,12 +39,12 @@ angular.module('hermod.services', [])
         getRankMock: function(challengeName) {
           return [
           {
-            position: 1,
+            sequence: 1,
             username: 'lucasmullerm',
             rating: '8001 ± 500'
           },
           {
-            position: 2,
+            sequence: 2,
             username: 'gabrielilharco',
             rating: '7000 ± 500'
           }];
