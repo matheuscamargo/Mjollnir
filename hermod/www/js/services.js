@@ -25,11 +25,6 @@ angular.module('hermod.services', [])
                 }
             });
 
-            // if (true) {
-            //     deferred.resolve('Welcome ' + name + '!');
-            // } else {
-            //     deferred.reject('Wrong credentials.');
-            // }
             promise.success = function(fn) {
                 promise.then(fn);
                 return promise;
@@ -39,6 +34,28 @@ angular.module('hermod.services', [])
                 return promise;
             };
             return promise;
+        },
+
+        mockLoginUser: function() {
+
+          var deferred = $q.defer();
+          var promise = deferred.promise;
+
+          if (true) {
+              deferred.resolve('Welcome ' + name + '!');
+          } else {
+              deferred.reject('Wrong credentials.');
+          }
+
+          promise.success = function(fn) {
+              promise.then(fn);
+              return promise;
+          };
+          promise.error = function(fn) {
+              promise.then(null, fn);
+              return promise;
+          };
+          return promise;
         }
     };
 })
