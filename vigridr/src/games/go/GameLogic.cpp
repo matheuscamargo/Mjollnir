@@ -73,7 +73,6 @@ bool GameLogic::update(Command command, int32_t playerId) {
         //perform black's move
         bMove_ = step_(BLACK, command.coordinate);
         blackStonesNumber_--;
-        setTableCoordinate_(command.coordinate, Marker::X);
       }
       else {
         bMove_ = -1;
@@ -84,12 +83,13 @@ bool GameLogic::update(Command command, int32_t playerId) {
         //perform white's move
         wMove_ = step_(WHITE, command.coordinate);
         whiteStonesNumber_--;
-        setTableCoordinate_(command.coordinate, Marker::O);
       }
       else {
         wMove_ = -1;
       }
     }
+
+    updateWorldModel_();
 
     if( matchFinished_() ) {
       hasFinished_ = true;
@@ -178,6 +178,27 @@ GameResult GameLogic::createGameResult(std::string result, int32_t id) {
     return GameResult::TIED;
   }
   return GameResult::LOST;
+}
+
+void GameLogic::updateWorldModel_(){
+  Command command;
+  for(int i =0;i < boardSize_; i++){
+    for(int j = 0; j < boardSize_; j++){
+      command.coordinate.x = i;
+      command.coordinate.y = j;
+      switch(grid_[i][j]->getPlayer()){
+        case BLACK:
+           setTableCoordinate_(command.coordinate, Marker::X);
+           break;
+        case WHITE:
+           setTableCoordinate_(command.coordinate, Marker::O);
+           break;
+        default:
+           setTableCoordinate_(command.coordinate, Marker::UNMARKED);
+           break;
+      }
+    }
+  }
 }
 
 bool GameLogic::isOnBoard_(int x, int y)

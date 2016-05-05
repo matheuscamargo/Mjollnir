@@ -121,6 +121,7 @@ class GameLogic {
   bool isValidMove_(int32_t x, int32_t y);
   bool isPlayer_(int32_t x, int32_t y, Marker marker);
   bool isKo_(int32_t x, int32_t y);
+  void updateWorldModel_();
   bool isOnBoard_(int32_t x, int32_t y);
   bool randomPlay_(int32_t playerId);
   bool matchFinished_();
