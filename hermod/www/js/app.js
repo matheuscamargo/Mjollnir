@@ -8,7 +8,7 @@ angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
 
 .constant('SERVER', {
   // Url used to reach the server (Bifrost)
-  url: 'http://192.168.0.27:5000/'
+  url: 'http://192.168.0.28:5000/'
 })
 
 .run(function($ionicPlatform) {
@@ -27,7 +27,10 @@ angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+
+  $httpProvider.defaults.useXDomain = true;
+  delete $httpProvider.defaults.headers.common['X-Requested-With'];
 
   // Settting up the various states for Angular UI router.
   // Each state's controller can be found in controllers.js
