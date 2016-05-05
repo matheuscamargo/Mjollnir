@@ -8,7 +8,7 @@ angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
 
 .constant('SERVER', {
   // Url used to reach the server (Bifrost)
-  url: 'http://192.168.0.28:5000/'
+  url: 'http://192.168.1.90:5000/'
 })
 
 .run(function($ionicPlatform) {
