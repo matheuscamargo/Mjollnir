@@ -1253,10 +1253,12 @@ def apiLogin():
     """
     returns weather or not a user with the passed credentials exists in the database
     """
-    username = request.args.get('username')
-    password = request.args.get('password')
+    
+    data = json.loads(request.data)
+    username = data['username']
+    password = data['password']
 
-    is_valid = (username is 'asdf' and password is 'asdf')
+    is_valid = (username == 'asdf' and password == 'asdf')
 
     response_dict = {'success' : is_valid}
     return jsonify(**response_dict)
