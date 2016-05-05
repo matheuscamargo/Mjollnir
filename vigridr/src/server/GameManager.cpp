@@ -72,7 +72,9 @@ void GameManager::initializeGame(int32_t playerId0, int32_t playerId1) {
   std::unique_lock<std::mutex> lock0(playerMutex_[0], std::defer_lock);
   std::unique_lock<std::mutex> lock1(playerMutex_[1], std::defer_lock);
   std::unique_lock<std::mutex> lock2(gameInfoMutex_, std::defer_lock);
-  std::lock(lock0, lock1, lock2);
+  std::unique_lock<std::mutex> lockUpdateFlag(updateFlagMutex_, std::defer_lock);
+  std::lock(lock0, lock1, lock2, lockUpdateFlag);
+
   gameInfo_.worldModel = gameLogic_.getWorldModel();
   GameLogger::logGameDescription(gameLogic_.getGameDescription(playerId0),
                                  FLAGS_player1,
@@ -82,6 +84,8 @@ void GameManager::initializeGame(int32_t playerId0, int32_t playerId1) {
   playerTurnData_[1].init(playerId1);
   playerTurnData_[0].setIsTurn(true);
   playerTurnData_[1].setIsTurn(true);
+
+  updateFlag_ = false;
   if (config::gameType == GameType::TURN) {
     playerTurnData_[rand() % 2].setIsTurn(false);
   }
@@ -137,12 +141,20 @@ clearCommands(std::array<PlayerTurnData, kMaxPlayers>& playerTurnData) {
   if(playerTurnData[1].isTurn()) { playerTurnData[1].clearCommand(); }
 }
 
+
 // updater task is a task that is executed to update the game every cycle
 void GameManager::updaterTask() {
   while (true) {
     nextTurn();  // initialize next turn
     turn_++;
-    timer_.sleepUntilPlayerUpdateTime();
+    {
+      std::unique_lock<std::mutex> lockUpdaterTask(updaterTaskMutex_, std::defer_lock);
+      cv.wait_for(lockUpdaterTask, std::chrono::milliseconds(timer_.getPlayerUpdateTime()), [this](){return updateFlag_;});
+      
+      std::unique_lock<std::mutex> lockUpdateFlag(updateFlagMutex_, std::defer_lock);
+      lockUpdateFlag.lock();
+      updateFlag_ = false;
+    }
     LOG("Updating...");
     std::array<PlayerTurnData, kMaxPlayers> movements;
     {
@@ -238,12 +250,38 @@ void GameManager::updaterTask() {
   finalizeGame();
 }
 
+bool
+checkStepFinished(const std::array<PlayerTurnData, kMaxPlayers>& playerTurnData) {
+  int32_t howManySentCommand = 0;
+  for (size_t i = 0; i < kMaxPlayers; ++i) {
+    if (playerTurnData[i].isCommandSet()) howManySentCommand++;
+  }
+  if (config::gameType == GameType::TURN) {
+    return (howManySentCommand >= 1);
+  }
+  else if (config::gameType == GameType::CONTINUOUS) {
+    return (howManySentCommand == kMaxPlayers);
+  }
+  return false;
+}
+
 CommandStatus GameManager::update(const Command& command, int32_t playerId) {
   int32_t idx = utils::getDefault(idToIdx_, playerId, -1);
   CHECK((idx == 0 || idx == 1), "Unknown player with id %d", idx);
   {
-    std::unique_lock<std::mutex> lock(playerMutex_[idx]);
+    std::unique_lock<std::mutex> lock0(playerMutex_[0], std::defer_lock);
+    std::unique_lock<std::mutex> lock1(playerMutex_[1], std::defer_lock);
+    std::lock(lock0, lock1);
+
     playerTurnData_[idx].setCommand(command, clock::now());
+    bool stepFinished = checkStepFinished(playerTurnData_);
+    if (stepFinished) {
+      std::unique_lock<std::mutex> lockUpdateFlag(updateFlagMutex_, std::defer_lock);
+      lockUpdateFlag.lock();
+      updateFlag_ = true;
+
+      cv.notify_one();
+    }
   }
   return CommandStatus::SUCCESS;
 }
