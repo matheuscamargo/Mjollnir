@@ -1253,14 +1253,25 @@ def apiLogin():
     """
     returns weather or not a user with the passed credentials exists in the database
     """
-    
-    data = json.loads(request.data)
-    username = data['username']
-    password = data['password']
+    logger.warn("init")
+    try:
+        data = json.loads(request.data)
+        logger.warn(data)
 
-    is_valid = (username == 'asdf' and password == 'asdf')
+        username = data['username']
+        password = data['password']
 
-    response_dict = {'success' : is_valid}
+        _user = User.from_login(
+            username,
+            password
+        )
+
+        success = bool(mongodb.users.find_one({ 'username': _user.username }))
+        
+    except Exception as e:
+        success = False
+
+    response_dict = {'success' : success}
     return jsonify(**response_dict)
 
     
