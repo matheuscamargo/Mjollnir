@@ -45,16 +45,16 @@ void GameLogger::logWorldModel(const WorldModel& wm, const TotalWorldModel& twm)
 
 char toChar(Marker m) {
   switch(m) {
-    case Marker::X: return 'X';
+    case Marker::X: return '@';
     case Marker::O: return 'O';
-    default: return '.';
+    default: return '+';
   }
 }
 
 void GameLogger::printWorldModel(const WorldModel& wm, const TotalWorldModel& twm) {
   std::ostringstream oss;
-  for (int i=0; i<3; i++) {
-    for (int j=0; j<3; j++) {
+  for (int i=0; i<9; i++) {
+    for (int j=0; j<9; j++) {
       oss << toChar(wm.table[i][j]) << ' ';
     }
     oss << std::endl;

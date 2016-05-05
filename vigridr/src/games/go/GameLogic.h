@@ -55,7 +55,7 @@ class GameLogic {
   int32_t player1_, player2_;
   std::string winner_;
   bool hasFinished_;
-  const size_t boardSize_ = 3;
+  const size_t boardSize_ = 9;
   const size_t numberOfPlayers_ = 2;
 };
 

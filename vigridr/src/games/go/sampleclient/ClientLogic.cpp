@@ -51,8 +51,8 @@ Command playTurn(const WorldModel& wm, int32_t turn) {
   Command command;
 
   while(true) {
-    size_t x = rand()%3;
-    size_t y = rand()%3;
+    size_t x = rand()%9;
+    size_t y = rand()%9;
     if (wm.table[x][y] == Marker::UNMARKED) {
       command.coordinate.x = x;
       command.coordinate.y = y;

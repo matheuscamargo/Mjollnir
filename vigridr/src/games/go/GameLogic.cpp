@@ -10,9 +10,33 @@ GameLogic::GameLogic(int32_t playerId1, int32_t playerId2) {
   winner_ = "-1";
   hasFinished_ = false;
   std::vector<std::vector<Marker> > table {
-      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
-      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
-      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED}
+      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
+      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
+      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
+      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
+      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
+      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
+      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
+      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED},
+      {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED,
+       Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED}
   };
   worldModel_.table = table;
 }
