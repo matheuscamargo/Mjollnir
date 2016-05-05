@@ -7,6 +7,7 @@
 #include <functional>
 #include <mutex>
 #include <thread>
+#include <condition_variable>
 
 #include "GameLogic.h"
 #include "GameTimer.h"
@@ -83,20 +84,24 @@ class GameManager {
   std::array<PlayerTurnData, kMaxPlayers> playerTurnData_;
   std::map<int32_t, size_t> idToIdx_;  // from id to index
   std::array<int32_t, kMaxPlayers> idxToId_;  // from index to id
-
+  
+  std::mutex updateFlagMutex_;
+  std::mutex updaterTaskMutex_;
   std::mutex gameInfoMutex_;
   std::array<std::mutex, kMaxPlayers> playerMutex_;
+  std::condition_variable cv;
 
   GameTimer timer_;
 
   GameLogic gameLogic_;
   std::thread updaterThread_;
 
+
   std::vector<std::function<void ()>> gameEndHandlers_;
   std::mutex gameEndHandlersMutex_;
 
   size_t turn_;
-
+  bool updateFlag_;
 };
 
 }}
