@@ -10,7 +10,9 @@ class TournamentStore{
       handleCreate: TournamentActions.CREATE,
       handleFetch: TournamentActions.FETCH,
       handleFetchFail: TournamentActions.FETCH_FAILED,
-      handlePlayMatch: TournamentActions.PLAY_MATCH
+      handlePlayMatch: TournamentActions.PLAY_MATCH,
+      handlePlayMatchSuccess: TournamentActions.PLAY_MATCH_SUCCESS,
+      handlePlayMatchFail: TournamentActions.PLAY_MATCH_FAILED
     });
   }
 
@@ -27,7 +29,16 @@ class TournamentStore{
   }
 
   handlePlayMatch(matchInfo){
+    console.log("Playing Match:");
     console.log(matchInfo);
+  }
+
+  handlePlayMatchSuccess(matchInfo) {
+    console.log("Match Success");
+  }
+
+  handlePlayMatchFail(errorMessage) {
+    this.errorMessage = errorMessage;
   }
 }
 

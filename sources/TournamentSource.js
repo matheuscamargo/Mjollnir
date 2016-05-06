@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 var mockData = {
   name: "Test Tournament",
   sections: [
@@ -10,12 +12,12 @@ var mockData = {
             {
               id: {s: 1, r: 1, m: 1},
               players: ['Mut', 'Peh'],
-              scores: [1, 0],
+              scores: null,
             },
             {
               id: {s: 1, r: 1, m: 2},
               players: ['Gafa', 'Baya'],
-              scores: [1, 0],
+              scores: null,
             },
           ],
         },
@@ -25,12 +27,12 @@ var mockData = {
             {
               id: {s: 1, r: 2, m: 1},
               players: ['Mut', 'Peh'],
-              scores: [1, 0],
+              scores: null,
             },
             {
               id: {s: 1, r: 2, m: 2},
               players: ['Gafa', 'Baya'],
-              scores: [1, 0],
+              scores: null,
             },
           ],
         },
@@ -45,6 +47,14 @@ class TournamentSource {
       setTimeout(function() {
         console.log(mockData);
         resolve(mockData);
+      }, 250);
+    });
+  }
+
+  playMatch(matchInfo) {
+    return new Promise(function(resolve, reject) {
+      setTimeout(function() {
+        resolve(_.extend(matchInfo, {result: [1, 0]}));
       }, 250);
     });
   }

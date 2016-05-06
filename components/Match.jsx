@@ -12,16 +12,15 @@ export default class MyComponent extends React.Component {
     return (
       <div>
         Match {this.props.id.m}
-        <input type="button" value="Play" onClick={this._handleClick}/>
+        <input type="button" value="Play" hidden={this.props.scores} onClick={this._handleClick}/>
         <table>
           <tbody>
             <tr>
               <td>
                 {this.props.players[0]}
               </td>
-
               <td>
-                {this.props.scores[0]}
+                {this.props.scores ? this.props.scores[0] : '-'}
               </td>
             </tr>
             <tr>
@@ -29,7 +28,7 @@ export default class MyComponent extends React.Component {
                 {this.props.players[1]}
               </td>
               <td>
-                {this.props.scores[1]}
+                {this.props.scores ? this.props.scores[1] : '-'}
               </td>
             </tr>
           </tbody>

@@ -7,7 +7,24 @@ class TournamentActions {
   }
 
   playMatch(matchInfo) {
+    return (dispatch) => {
+      dispatch(matchInfo);
+      TournamentSource.playMatch(matchInfo)
+        .then((tournament) => {
+          this.playMatchSuccess(tournament);
+        })
+        .catch((errorMessage) => {
+          this.playMatchFailed(errorMessage);
+        });
+    };
+  }
+
+  playMatchSuccess(matchInfo) {
     return matchInfo;
+  }
+
+  playMatchFailed(errorMessage) {
+    return errorMessage;
   }
 
   fetch() {
