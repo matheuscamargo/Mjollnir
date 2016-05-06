@@ -1,8 +1,8 @@
 import _ from 'underscore';
 
 var mockData = {
-  Players: ["Mut", "Peh", "Gafa", "Bay", "Philip", "Josu", "Caique", "Mil"],
-  nPlayers: 8,
+  name: 'TEST',
+  players: ["Mut", "Peh", "Gafa", "Bay", "Philip", "Josu", "Caique", "Mil"],
   };
 
 class TournamentSource {
