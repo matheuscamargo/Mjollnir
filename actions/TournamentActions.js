@@ -2,8 +2,12 @@ import alt from '../alt';
 import TournamentSource from '../sources/TournamentSource';
 
 class TournamentActions {
-  update(TournamentInfo) {
-    return TournamentInfo;
+  create(tournamentInfo) {
+    return tournamentInfo;
+  }
+
+  playMatch(matchInfo) {
+    return matchInfo;
   }
 
   fetch() {
@@ -11,7 +15,7 @@ class TournamentActions {
       dispatch();
       TournamentSource.fetch()
         .then((tournament) => {
-          this.update(tournament);
+          this.create(tournament);
         })
         .catch((errorMessage) => {
           this.fetchFailed(errorMessage);
