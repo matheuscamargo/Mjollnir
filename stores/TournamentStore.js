@@ -3,15 +3,17 @@ var _ = require('underscore');
 import alt from '../alt';
 import TournamentActions from '../actions/TournamentActions';
 
-function toDesiredSchema(TournamentInfo) {
-  var DuelTournament = new Duel(TournamentInfo.players.length);
+function toDesiredSchema(TournamentInfo, TournamentRaw) {
+  var DuelTournament = TournamentRaw;
 
   var OrganizeBySection = _.groupBy(DuelTournament.matches,  function(num){ return num.id.s;});
   var DesiredSchema = _.map(OrganizeBySection, function(value, key) {
                               return { id: key, rounds: _.map(_.groupBy(value, function(num) {
                                  return num.id.r;}), function(value, key) {
                                    return { id: key, matches: _.map(value, function(num) {
-                                     return {id: num.id, players: [TournamentInfo.players[num.p[0] - 1], TournamentInfo.players[num.p[1] - 1]]};
+                                     return {id: num.id,
+                                            players: [TournamentInfo.players[num.p[0] - 1], TournamentInfo.players[num.p[1] - 1]],
+                                            scores: num.m};
                                    })
                                  };})
                                };});
@@ -21,6 +23,8 @@ function toDesiredSchema(TournamentInfo) {
 
 class TournamentStore{
   constructor(){
+    this.tournamentRaw = [];
+    this.tournamentInfo = [];
     this.tournament = [];
     this.errorMessage = null;
 
@@ -35,7 +39,9 @@ class TournamentStore{
   }
 
   handleCreate(TournamentInfo){
-    this.tournament = toDesiredSchema(TournamentInfo);
+    this.tournamentRaw = new Duel(TournamentInfo.players.length);
+    this.tournamentInfo = TournamentInfo;
+    this.tournament = toDesiredSchema(this.tournamentInfo, this.tournamentRaw);
   }
 
   handleFetch() {
@@ -53,6 +59,9 @@ class TournamentStore{
 
   handlePlayMatchSuccess(matchInfo) {
     console.log("Match Success");
+    console.log(matchInfo);
+    this.tournamentRaw.score(matchInfo.id, matchInfo.results);
+    this.tournament = toDesiredSchema(this.tournamentInfo, this.tournamentRaw);
   }
 
   handlePlayMatchFail(errorMessage) {

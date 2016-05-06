@@ -1,7 +1,7 @@
 import _ from 'underscore';
 
 var mockData = {
-  name: 'TEST',
+  name: 'TOURNAMENT',
   players: ["Mut", "Peh", "Gafa", "Bay", "Philip", "Josu", "Caique", "Mil"],
   };
 
@@ -18,7 +18,7 @@ class TournamentSource {
   playMatch(matchInfo) {
     return new Promise(function(resolve, reject) {
       setTimeout(function() {
-        resolve(_.extend(matchInfo, {result: [1, 0]}));
+        resolve(_.extend({id: matchInfo}, {results: [_.random(0, 10), _.random(0, 10)]}));
       }, 250);
     });
   }
