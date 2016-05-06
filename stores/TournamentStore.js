@@ -7,14 +7,15 @@ class TournamentStore{
     this.errorMessage = null;
 
     this.bindListeners({
-      handleUpdate: TournamentActions.UPDATE,
+      handleCreate: TournamentActions.CREATE,
       handleFetch: TournamentActions.FETCH,
-      handleFetchFail: TournamentActions.FETCH_FAILED
+      handleFetchFail: TournamentActions.FETCH_FAILED,
+      handlePlayMatch: TournamentActions.PLAY_MATCH
     });
   }
 
-  handleUpdate(tournament){
-    this.tournament = tournament;
+  handleCreate(tournamentInfo){
+    this.tournament = tournamentInfo;
   }
 
   handleFetch() {
@@ -23,6 +24,10 @@ class TournamentStore{
 
   handleFetchFail(errorMessage) {
     this.errorMessage = errorMessage;
+  }
+
+  handlePlayMatch(matchInfo){
+    console.log(matchInfo);
   }
 }
 

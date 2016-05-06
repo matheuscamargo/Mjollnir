@@ -6,14 +6,14 @@ var mockData = {
       rounds: [
         {
           id: 1,
-          mathes: [
+          matches: [
             {
-              id: 1,
+              id: {s: 1, r: 1, m: 1},
               players: ['Mut', 'Peh'],
               scores: [1, 0],
             },
             {
-              id: 2,
+              id: {s: 1, r: 1, m: 2},
               players: ['Gafa', 'Baya'],
               scores: [1, 0],
             },
@@ -21,14 +21,14 @@ var mockData = {
         },
         {
           id: 2,
-          mathes: [
+          matches: [
             {
-              id: 1,
+              id: {s: 1, r: 2, m: 1},
               players: ['Mut', 'Peh'],
               scores: [1, 0],
             },
             {
-              id: 2,
+              id: {s: 1, r: 2, m: 2},
               players: ['Gafa', 'Baya'],
               scores: [1, 0],
             },
