@@ -53,13 +53,11 @@ class TournamentStore{
   }
 
   handlePlayMatch(matchInfo){
-    console.log("Playing Match:");
-    console.log(matchInfo);
+    //console.log(matchInfo);
   }
 
   handlePlayMatchSuccess(matchInfo) {
-    console.log("Match Success");
-    console.log(matchInfo);
+    //console.log(matchInfo);
     this.tournamentRaw.score(matchInfo.id, matchInfo.results);
     this.tournament = toDesiredSchema(this.tournamentInfo, this.tournamentRaw);
   }

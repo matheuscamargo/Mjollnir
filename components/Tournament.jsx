@@ -4,6 +4,14 @@ import _ from 'underscore';
 
 export default class MyComponent extends React.Component {
   render() {
+    if(!this.props.id) {
+      return (
+        <div>
+          Waiting...
+        </div>
+      );
+    }
+
     return (
       <div>
         <div>

@@ -21,7 +21,6 @@ class TournamentApp extends React.Component {
   }
 
   static componentDidConnect() {
-    TournamentActions.fetch();
     UserActions.fetch();
   }
 
@@ -33,18 +32,10 @@ class TournamentApp extends React.Component {
       );
     }
 
-    if(!this.props.tournament.name) {
-      return (
-        <div>
-          Loading...
-        </div>
-      );
-    }
-
-    //<UserList users={this.props.users} selected={this.props.selectedUsers}>
-    //</UserList>
     return (
       <div>
+        <UserList users={this.props.users} selected={this.props.selectedUsers} hidden={this.props.tournament.name}>
+        </UserList>
         <Tournament id={this.props.tournament.name}
                     sections={this.props.tournament.sections}>
         </Tournament>
