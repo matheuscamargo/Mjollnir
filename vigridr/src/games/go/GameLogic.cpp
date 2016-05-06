@@ -245,7 +245,7 @@ bool GameLogic::isPassMove_(int32_t x, int32_t y) {
 
 bool GameLogic::matchFinished_(){
   //check for 2 passes in a row
-  if( whiteStonesNumber_ == 0 && blackStonesNumber_ == 0 )
+  if( whiteStonesNumber_ <= 0 && blackStonesNumber_ <= 0 )
     return true;
   if( bMove_ == -1 && wMove_ == -1 )
     return true;

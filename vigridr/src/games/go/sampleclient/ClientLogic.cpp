@@ -15,9 +15,9 @@ using ::mjollnir::vigridr::Marker;
 /*
  * A helper function to print a Coordinate on screen.
  */
-std::ostream& operator<<(std::ostream& os, Coordinate c) {
-    return os << "Coordinate(" << c.x << ", " << c.y << ")";
-}
+// std::ostream& operator<<(std::ostream& os, Coordinate c) {
+//     return os << "Coordinate(" << c.x << ", " << c.y << ")";
+// }
 
 /*
  * This function is called at the beginning of the game.
@@ -60,7 +60,7 @@ Command playTurn(const WorldModel& wm, int32_t turn) {
     }
   }
 
-  std::cout << turn << ": " << command.coordinate << std::endl;
+  std::cout << turn << ": " << "Coordinate(" << command.coordinate.x << ", " << command.coordinate.y << ")" << std::endl;
   return command;
 }
 

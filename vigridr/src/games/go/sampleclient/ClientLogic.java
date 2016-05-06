@@ -38,8 +38,8 @@ public class ClientLogic {
         Marker[][] table = toMatrix(wm.table);
 
         while(true) {
-            int x = random.nextInt(3);
-            int y = random.nextInt(3);
+            int x = random.nextInt(9);
+            int y = random.nextInt(9);
             if (Marker.UNMARKED.equals(table[x][y])) {
                 command.coordinate.x = x;
                 command.coordinate.y = y;
@@ -66,11 +66,11 @@ public class ClientLogic {
      * (aka matrix of Markers).
      */
     private Marker[][] toMatrix(List<List<Marker>> table) {
-        Marker[][] matrix = new Marker[3][];
+        Marker[][] matrix = new Marker[9][];
 
         int i = 0;
         for (List<Marker> row : table) {
-            matrix[i] = new Marker[3];
+            matrix[i] = new Marker[9];
             row.toArray(matrix[i]);
             i++;
         }

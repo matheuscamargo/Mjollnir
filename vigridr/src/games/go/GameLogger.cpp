@@ -23,7 +23,7 @@ ptree createPt(const WorldModel& wm) {
     ptree linePt;
     for (auto elem : line) {
       std::string elemStr =
-        (elem == Marker::X) ? "@" : (elem == Marker::O) ? "O" : "-";
+        (elem == Marker::X) ? "X" : (elem == Marker::O) ? "O" : "-";
       linePt.push_back(std::make_pair("", ptree(elemStr)));
     }
     tablePt.push_back(std::make_pair("", linePt));
@@ -34,8 +34,8 @@ ptree createPt(const WorldModel& wm) {
 
 ptree createGameDescriptionPt() {
   ptree gdPt;
-  gdPt.put(player1Id, gd1.myType == Marker::X ? "@":"O");
-  gdPt.put(player2Id, gd2.myType == Marker::X ? "@":"O");
+  gdPt.put(player1Id, gd1.myType == Marker::X ? "X":"O");
+  gdPt.put(player2Id, gd2.myType == Marker::X ? "X":"O");
   return gdPt;
 }
 
@@ -45,7 +45,7 @@ void GameLogger::logWorldModel(const WorldModel& wm, const TotalWorldModel& twm)
 
 char toChar(Marker m) {
   switch(m) {
-    case Marker::X: return '@';
+    case Marker::X: return 'X';
     case Marker::O: return 'O';
     default: return '+';
   }

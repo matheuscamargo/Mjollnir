@@ -40,8 +40,8 @@ public class Solution
 
         while(true)
         {
-            int x = random.Next(3);
-            int y = random.Next(3);
+            int x = random.Next(9);
+            int y = random.Next(9);
             if (wm.Table[x][y] == Marker.UNMARKED) {
                 command.Coordinate.X = x;
                 command.Coordinate.Y = y;

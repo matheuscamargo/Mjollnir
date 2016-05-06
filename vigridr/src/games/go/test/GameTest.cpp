@@ -307,7 +307,7 @@ TEST_F(GameLogicTest, TestingBoardFullAndFinish) {
     expTable.push_back(line);
   }
 
-  EXPECT_EQ(expTable, game1.getWorldModel.table());
+  EXPECT_EQ(expTable, game1.getWorldModel().table);
   EXPECT_TRUE(game1.isFinished());
   EXPECT_EQ("9090", game1.getWinner());
 }
