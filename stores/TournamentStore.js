@@ -1,3 +1,4 @@
+var Duel = require('duel');
 import alt from '../alt';
 import TournamentActions from '../actions/TournamentActions';
 
@@ -15,7 +16,11 @@ class TournamentStore{
   }
 
   handleCreate(tournamentInfo){
-    this.tournament = tournamentInfo;
+    var DuelTournament = new Duel(TournamentInfo.nPlayers);
+    DuelTournament.matches.forEach(function (m) {
+      console.log(m.id);
+    });
+    console.log("Tournament: " + DuelTournament.matches);
   }
 
   handleFetch() {
