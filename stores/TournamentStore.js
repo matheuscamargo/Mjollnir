@@ -1,5 +1,9 @@
+var Duel = require('duel');
+var _ = require('underscore');
 import alt from '../alt';
 import TournamentActions from '../actions/TournamentActions';
+
+
 
 class TournamentStore{
   constructor(){
@@ -16,8 +20,24 @@ class TournamentStore{
     });
   }
 
-  handleCreate(tournamentInfo){
-    this.tournament = tournamentInfo;
+  handleCreate(TournamentInfo){
+    var DuelTournament = new Duel(TournamentInfo.Players.length);
+    DuelTournament.matches.forEach(function (m) {
+      console.log(m.id);
+    });
+
+    var OrganizeBySection = _.groupBy(DuelTournament.matches,  function(num){ return num.id.s;});
+    var DesiredSchema = _.map(OrganizeBySection, function(value, key) {
+                                return { id: key, rounds: _.map(_.groupBy(value, function(num) {
+                                   return num.id.r;}), function(value, key) {
+                                     return { id: key, matches: _.map(value, function(num) {
+                                       return {id: num.id, players: [TournamentInfo.Players[num.p[0] - 1], TournamentInfo.Players[num.p[1] - 1]]};
+                                     })
+                                   };})
+                                 };});
+
+    console.log(DesiredSchema);
+
   }
 
   handleFetch() {
