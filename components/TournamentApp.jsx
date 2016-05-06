@@ -4,6 +4,8 @@ import TournamentStore from '../stores/TournamentStore';
 import TournamentActions from '../actions/TournamentActions';
 import connectToStores from 'alt-utils/lib/connectToStores';
 
+import Tournament from './Tournament.jsx';
+
 
 class TournamentApp extends React.Component {
 
@@ -37,7 +39,9 @@ class TournamentApp extends React.Component {
 
     return (
       <div>
-        Tournament: {this.props.tournament.name}
+        <Tournament id={this.props.tournament.name}
+                    sections={this.props.tournament.sections}>
+        </Tournament>
       </div>
     );
   }
