@@ -6,6 +6,7 @@
   "dependencies": {
     "alt": "^0.18.4",
     "alt-utils": "^1.0.0",
+    "duel": "^3.2.0",
     "history": "^1.17.0",
     "jquery": "^2.2.1",
     "react": "^0.14.7",

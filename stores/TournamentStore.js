@@ -7,7 +7,7 @@ import TournamentActions from '../actions/TournamentActions';
 
 class TournamentStore{
   constructor(){
-    this.tournament = {};
+    this.tournament = [];
     this.errorMessage = null;
 
     this.bindListeners({
@@ -22,9 +22,6 @@ class TournamentStore{
 
   handleCreate(TournamentInfo){
     var DuelTournament = new Duel(TournamentInfo.Players.length);
-    DuelTournament.matches.forEach(function (m) {
-      console.log(m.id);
-    });
 
     var OrganizeBySection = _.groupBy(DuelTournament.matches,  function(num){ return num.id.s;});
     var DesiredSchema = _.map(OrganizeBySection, function(value, key) {
@@ -38,6 +35,7 @@ class TournamentStore{
 
     console.log(DesiredSchema);
 
+    this.tournament = {name: 'test', sections: DesiredSchema};
   }
 
   handleFetch() {

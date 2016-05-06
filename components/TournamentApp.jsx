@@ -1,24 +1,28 @@
 import React from 'react';
-//import _ from 'lodash';
+import _ from 'underscore';
+
 import TournamentStore from '../stores/TournamentStore';
+import UserStore from '../stores/UserStore';
 import TournamentActions from '../actions/TournamentActions';
+import UserActions from '../actions/UserActions';
 import connectToStores from 'alt-utils/lib/connectToStores';
 
 import Tournament from './Tournament.jsx';
-
+import UserList from './UserList.jsx';
 
 class TournamentApp extends React.Component {
 
   static getStores(props) {
-    return [TournamentStore];
+    return [TournamentStore, UserStore];
   }
 
   static getPropsFromStores() {
-    return TournamentStore.getState();
+    return _.extend(TournamentStore.getState(), UserStore.getState());
   }
 
   static componentDidConnect() {
     TournamentActions.fetch();
+    UserActions.fetch();
   }
 
   render() {
@@ -39,6 +43,8 @@ class TournamentApp extends React.Component {
 
     return (
       <div>
+        <UserList users={this.props.users} selected={this.props.selectedUsers}>
+        </UserList>
         <Tournament id={this.props.tournament.name}
                     sections={this.props.tournament.sections}>
         </Tournament>
