@@ -10,17 +10,16 @@ typedef std::chrono::time_point<clock> time_point;
 
 class GameTimer {
  public:
-  void startFirstCycle();
+  void startInitializationCycle();
   void startCycle();
-  void sleepUntilWorldModelUpdateTime();
-  void sleepUntilWorldModelTime();
-  void sleepUntilPlayerUpdateTime();
+  void sleepUntilInitializationUpdateTime();
+  void sleepUntilInitializationTime();
   int32_t getWorldModelTime();
-  int32_t getPlayerUpdateTime();
+  int32_t getPlayerUpdateTimeLimit();
 
 
  private:
-  time_point nextUpdateTime_;
+  time_point nextUpdateTimeLimit_;
   time_point nextWorldModelTime_;
 };
 

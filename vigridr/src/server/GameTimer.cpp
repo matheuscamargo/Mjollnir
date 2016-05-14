@@ -14,25 +14,24 @@ const std::chrono::milliseconds kWorldModelUpdateMsStep1(2);
 const std::chrono::milliseconds kWorldModelUpdateMsStep2(1);
 
 void GameTimer::startCycle() {
-  nextUpdateTime_ = clock::now() + config::cycleDurationMs;
-  nextWorldModelTime_ = nextUpdateTime_ + config::updateTimeUpperBoundMs;
+  nextUpdateTimeLimit_ = clock::now() + config::cycleDurationMs;
 }
 
-void GameTimer::startFirstCycle() {
-  nextUpdateTime_ = clock::now() + config::firstCycleDurationS;
-  nextWorldModelTime_ = nextUpdateTime_ + config::updateTimeUpperBoundMs;
+void GameTimer::startInitializationCycle() {
+  nextUpdateTimeLimit_ = clock::now() + config::firstCycleDurationS;
+  nextWorldModelTime_ = nextUpdateTimeLimit_ + config::updateTimeUpperBoundMs;
 }
 
-void GameTimer::sleepUntilWorldModelUpdateTime() {
-  std::this_thread::sleep_until(nextWorldModelTime_ - kWorldModelUpdateMsStep1);
+void GameTimer::sleepUntilInitializationUpdateTime() {
+  if(clock::now() < nextWorldModelTime_) {
+    std::this_thread::sleep_until(nextWorldModelTime_ - kWorldModelUpdateMsStep1);
+  }
 }
 
-void GameTimer::sleepUntilWorldModelTime() {
-  std::this_thread::sleep_until(nextWorldModelTime_);
-}
-
-void GameTimer::sleepUntilPlayerUpdateTime() {
-  std::this_thread::sleep_until(nextUpdateTime_);
+void GameTimer::sleepUntilInitializationTime() {
+  if(clock::now() < nextWorldModelTime_) {
+    std::this_thread::sleep_until(nextWorldModelTime_);
+  }
 }
 
 int32_t GameTimer:: getWorldModelTime() {
@@ -40,9 +39,8 @@ int32_t GameTimer:: getWorldModelTime() {
     nextWorldModelTime_-clock::now()).count();
 }
 
-int32_t GameTimer::getPlayerUpdateTime() {
+int32_t GameTimer::getPlayerUpdateTimeLimit() {
   return std::chrono::duration_cast<std::chrono::milliseconds>(
-    nextUpdateTime_-clock::now()).count();
+    nextUpdateTimeLimit_-clock::now()).count();
 }
-
 }}

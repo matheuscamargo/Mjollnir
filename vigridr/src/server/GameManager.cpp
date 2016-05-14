@@ -63,6 +63,22 @@ GameManager::~GameManager() {
 void GameManager::finalizeGame() {
   gameInfo_.gameStatus = GameStatus::FINISHED;
   gameInfo_.worldModel = gameLogic_.getWorldModel();
+  {
+    LOG("Fim de jogo, desbloqueia clientes");
+    std::unique_lock<std::mutex> lockUpdateFlag(updateFlagMutex_, std::defer_lock);
+    {
+      lockUpdateFlag.lock();
+      if(updateFlag_) {
+        updateFlag_ = false;
+        lockUpdateFlag.unlock();
+        cv.notify_all();
+      }
+    }
+  }
+  //Workaround solution so that clients have time to finish by themselves
+  //Before the server is killed
+  std::chrono::seconds sleepTime(1);
+  std::this_thread::sleep_for(sleepTime);
   GameLogger::printWorldModel(gameInfo_.worldModel, gameLogic_.getTotalWorldModel());
   GameLogger::logWorldModel(gameInfo_.worldModel, gameLogic_.getTotalWorldModel());
   GameLogger::flushLog();
@@ -91,11 +107,16 @@ void GameManager::initializeGame(int32_t playerId0, int32_t playerId1) {
   }
   gameInfo_.cycle = 0;
   gameInfo_.gameStatus = GameStatus::WAITING;
-  timer_.startFirstCycle();
+  timer_.startInitializationCycle();
 }
 
+// GetGameInfo
+// updateFLag = true, entao ta no updaterTask e tem que ficar bloqueado
+// updateFLag = false, entao ta na hora de receber os comandos mesmo
+
+//
 void GameManager::nextTurn() {
-  timer_.sleepUntilWorldModelUpdateTime();
+  timer_.sleepUntilInitializationUpdateTime();
   std::unique_lock<std::mutex> lock0(playerMutex_[0], std::defer_lock);
   std::unique_lock<std::mutex> lock1(playerMutex_[1], std::defer_lock);
   std::unique_lock<std::mutex> lock2(gameInfoMutex_, std::defer_lock);
@@ -115,7 +136,8 @@ void GameManager::nextTurn() {
     GameLogger::printWorldModel(gameInfo_.worldModel, gameLogic_.getTotalWorldModel());
   }
   GameLogger::logWorldModel(gameInfo_.worldModel, gameLogic_.getTotalWorldModel());
-  timer_.sleepUntilWorldModelTime();
+  
+  timer_.sleepUntilInitializationTime();
   timer_.startCycle();
 }
 
@@ -147,13 +169,29 @@ void GameManager::updaterTask() {
   while (true) {
     nextTurn();  // initialize next turn
     turn_++;
+
     {
-      std::unique_lock<std::mutex> lockUpdaterTask(updaterTaskMutex_, std::defer_lock);
-      cv.wait_for(lockUpdaterTask, std::chrono::milliseconds(timer_.getPlayerUpdateTime()), [this](){return updateFlag_;});
-      
+      LOG("updateFLag = false");
+      std::unique_lock<std::mutex> lockUpdateFlag(updateFlagMutex_, std::defer_lock);
+      {
+        lockUpdateFlag.lock();
+        if(updateFlag_) {
+          updateFlag_ = false;
+          lockUpdateFlag.unlock();
+          cv.notify_all();
+        }
+      }
+    }
+    {
       std::unique_lock<std::mutex> lockUpdateFlag(updateFlagMutex_, std::defer_lock);
       lockUpdateFlag.lock();
-      updateFlag_ = false;
+      if(updateFlag_ == false) {
+        LOG("Blocking updaterTask");
+        //blocks this updaterTask until one or more clients send commands (depends if turn based or not)
+        
+        cv.wait_for(lockUpdateFlag, std::chrono::milliseconds(timer_.getPlayerUpdateTimeLimit()), [this](){return updateFlag_;});
+        LOG("Unblocking updaterTask");
+      }
     }
     LOG("Updating...");
     std::array<PlayerTurnData, kMaxPlayers> movements;
@@ -246,6 +284,7 @@ void GameManager::updaterTask() {
       break;
     }
   }
+  
   // game ends
   finalizeGame();
 }
@@ -272,32 +311,43 @@ CommandStatus GameManager::update(const Command& command, int32_t playerId) {
     std::unique_lock<std::mutex> lock0(playerMutex_[0], std::defer_lock);
     std::unique_lock<std::mutex> lock1(playerMutex_[1], std::defer_lock);
     std::lock(lock0, lock1);
-
+    LOG("Player %d sent a command", (int)idx);
     playerTurnData_[idx].setCommand(command, clock::now());
     bool stepFinished = checkStepFinished(playerTurnData_);
     if (stepFinished) {
       std::unique_lock<std::mutex> lockUpdateFlag(updateFlagMutex_, std::defer_lock);
       lockUpdateFlag.lock();
       updateFlag_ = true;
-
-      cv.notify_one();
+      LOG("updateFLag = True");
+      lockUpdateFlag.unlock();
+      cv.notify_all();
     }
   }
   return CommandStatus::SUCCESS;
 }
 
 void GameManager::getGameInfo(GameInfo& gameInfo, int32_t playerId) {
+  const size_t kInvalid = 10000;
+  size_t idx = utils::getDefault(idToIdx_, playerId, kInvalid);
+  CHECK(idx != kInvalid, "Unknown player with id %d.", idx);
+  {
+    std::unique_lock<std::mutex> lockUpdateFlag(updateFlagMutex_, std::defer_lock);
+    LOG("Client getGameInfo %d", (int)idx);
+    lockUpdateFlag.lock();
+    if(updateFlag_) {
+      LOG("Blocking client %d", (int)idx);
+      cv.wait(lockUpdateFlag, [this](){return updateFlag_ == false;});
+      LOG("Unblocking client %d", (int)idx);
+    }
+  }
   {
     std::unique_lock<std::mutex> lock(gameInfoMutex_);
     gameInfo = gameInfo_;
   }
-  gameInfo.updateTimeLimitMs = timer_.getPlayerUpdateTime();
+  gameInfo.updateTimeLimitMs = timer_.getPlayerUpdateTimeLimit();
   // +1 just to make sure
   gameInfo.nextWorldModelTimeEstimateMs = timer_.getWorldModelTime() + 1;
   {
-    const size_t kInvalid = 10000;
-    size_t idx = utils::getDefault(idToIdx_, playerId, kInvalid);
-    CHECK(idx != kInvalid, "Unknown player with id %d.", idx);
     std::unique_lock<std::mutex> lock(playerMutex_[idx]);
     gameInfo.isMyTurn = playerTurnData_[idx].isTurn();
     gameInfo.gameResult = playerTurnData_[idx].getGameResult();

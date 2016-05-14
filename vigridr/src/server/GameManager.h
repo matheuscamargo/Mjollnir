@@ -86,7 +86,6 @@ class GameManager {
   std::array<int32_t, kMaxPlayers> idxToId_;  // from index to id
   
   std::mutex updateFlagMutex_;
-  std::mutex updaterTaskMutex_;
   std::mutex gameInfoMutex_;
   std::array<std::mutex, kMaxPlayers> playerMutex_;
   std::condition_variable cv;
