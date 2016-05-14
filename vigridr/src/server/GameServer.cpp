@@ -4,7 +4,7 @@
 
 #include <gflags/gflags.h>
 #include <thrift/protocol/TBinaryProtocol.h>
-#include <thrift/server/TSimpleServer.h>
+#include <thrift/server/TThreadedServer.h>
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
 
@@ -23,7 +23,7 @@ const char* const kUsageMessage =
 using ::apache::thrift::protocol::TBinaryProtocolFactory;
 using ::apache::thrift::protocol::TProtocolFactory;
 using ::apache::thrift::server::TProcessor;
-using ::apache::thrift::server::TSimpleServer;
+using ::apache::thrift::server::TThreadedServer;
 using ::apache::thrift::transport::TBufferedTransportFactory;
 using ::apache::thrift::transport::TServerSocket;
 using ::apache::thrift::transport::TServerTransport;
@@ -50,7 +50,9 @@ int main(int argc, char **argv) {
     boost::shared_ptr<TProtocolFactory> protocolFactory(
       new TBinaryProtocolFactory());
 
-    TSimpleServer server(processor, serverTransport,
+    // Creates one thread for each connection, so blocking one connection
+    // doesnt block server
+    TThreadedServer server(processor, serverTransport,
                          transportFactory, protocolFactory);
 
     // finishing server when game ends
