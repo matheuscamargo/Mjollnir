@@ -25,6 +25,7 @@ class GameLogic {
   GameDescription getGameDescription(int32_t playerId) const;
   TotalWorldModel getTotalWorldModel() const;
   size_t getNumberOfPlayers() const;
+  void setFirstPlayer(int32_t playerId){};
   /**
    *  Specific function to use at GameLogicTest test suite
    */

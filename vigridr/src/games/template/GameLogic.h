@@ -85,6 +85,11 @@ class GameLogic {
    */
   GameResult createGameResult(std::string result, int32_t id);
 
+  /**
+   * Receives the id of the first player
+   */
+  void setFirstPlayer(int32_t playerId){};
+
  private:
   WorldModel worldModel_;
   TotalWorldModel twm_;

@@ -58,7 +58,12 @@ class GameLogic {
 
   void setBoard_forTest(const std::vector<Point>& board);
   void setDice_forTest(const std::vector<int32_t>& dice);
+  /**
+   * Receives the id of the first player
+   */
+  void setFirstPlayer(int32_t playerId);
 
+ private:
   WorldModel worldModel_;
   std::vector<Command> moveList_;
   TotalWorldModel twm_;

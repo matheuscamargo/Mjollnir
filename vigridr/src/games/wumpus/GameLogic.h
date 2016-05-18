@@ -53,6 +53,7 @@ class GameLogic {
   size_t getNumberOfPlayers() const;
   void setWumpusPosition(int32_t, int32_t);
   GameResult createGameResult(std::string result, int32_t id);
+  void setFirstPlayer(int32_t playerId){};
 
   /**
    *  Specific function to use at GameLogicTest test suite

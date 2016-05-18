@@ -37,6 +37,7 @@ class GameLogic {
   TotalWorldModel getTotalWorldModel() const;
   size_t getNumberOfPlayers() const;
   GameResult createGameResult(std::string result, int32_t id);
+  void setFirstPlayer(int32_t playerId){};
 
   // Number of checkers for each player. Short name because it is used a lot.
   const static int32_t NC = 15;
