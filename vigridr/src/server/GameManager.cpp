@@ -118,8 +118,17 @@ void GameManager::initializeGame(const std::vector<int32_t> &playerIds) {
   // This flag is set true, so every client requisition will be locked until game starts
   updateFlag_ = true;
   if (config::gameType == GameType::TURN) {
-    playerTurnData_[rand() % 2].setIsTurn(false);
+    int32_t firstPlayer = rand() % 2;
+    playerTurnData_[firstPlayer].setIsTurn(false);
+    // If firstPlayer == 0, then playerTurnData_[0] = false and playerTurnData_[1] = true
+    // Since nextTurn() invert the player turn and nextTurn() is called on the begining 
+    // of updateTask(), in the case that firstPlayer == 0, the first move goes to playerId0
+    gameLogic_.setFirstPlayer(firstPlayer == 0 ? playerId0 : playerId1 );
   }
+  GameLogger::logGameDescription(gameLogic_.getGameDescription(playerId0),
+                                 FLAGS_player1,
+                                 gameLogic_.getGameDescription(playerId1),
+                                 FLAGS_player2);
   gameInfo_.cycle = 0;
   gameInfo_.gameStatus = GameStatus::WAITING;
   timer_.startInitializationCycle();

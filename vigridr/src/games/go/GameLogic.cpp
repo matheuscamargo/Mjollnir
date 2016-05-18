@@ -52,7 +52,7 @@ GameLogic::GameLogic(const std::vector<int32_t> &playerIds) {
 
   blackStonesNumber_ = initialBlackStonesNumber_;
   whiteStonesNumber_ = initialWhiteStonesNumber_;
- 
+
   //make space for the grid_
   grid_ = new Stone **[boardSize_];
   for( int x = 0; x<boardSize_; x++ ){
@@ -64,12 +64,17 @@ GameLogic::GameLogic(const std::vector<int32_t> &playerIds) {
   updateMoveList_();
 }
 
+void GameLogic::setFirstPlayer(int32_t playerId){
+  blackPlayerId_ = playerId;
+  whitePlayerId_ = (playerId == player1_? player2_ : player1_);
+}
+
 // TODO: Change logic of /Mjollnir/vigridr/src/server/GameManager.cpp to receive
 // from GemeLogic::update two booleans, one that indicates invalid command and another
 // that indicates end of match
 bool GameLogic::update(Command command, int32_t playerId) {
   if(!hasFinished_ && isValidMove_(command.coordinate.x, command.coordinate.y)) {
-    if (playerId == player1_) {
+    if (playerId == blackPlayerId_) {
       if (!isPassMove_(command.coordinate.x, command.coordinate.y)) {
         //perform black's move
         bMove_ = step_(BLACK, command.coordinate);
@@ -79,7 +84,7 @@ bool GameLogic::update(Command command, int32_t playerId) {
         bMove_ = -1;
       }
     }
-    else if (playerId == player2_) {
+    else if (playerId == whitePlayerId_) {
       if (!isPassMove_(command.coordinate.x, command.coordinate.y)) {
         //perform white's move
         wMove_ = step_(WHITE, command.coordinate);
@@ -104,7 +109,7 @@ bool GameLogic::update(Command command, int32_t playerId) {
 
 GameDescription GameLogic::getGameDescription(int32_t playerId) const {
   GameDescription gameDescription;
-  gameDescription.myType = (playerId == player1_) ? Marker::X : Marker::O;
+  gameDescription.myType = (playerId == blackPlayerId_) ? Marker::X : Marker::O;
   return gameDescription;
 }
 

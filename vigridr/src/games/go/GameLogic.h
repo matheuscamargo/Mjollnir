@@ -97,6 +97,7 @@ class GameLogic {
   std::string getWinner() const;
   GameDescription getGameDescription(int32_t playerId) const;
   TotalWorldModel getTotalWorldModel() const;
+  void setFirstPlayer(int32_t playerId);
   size_t getNumberOfPlayers() const;
   /**
    *  Specific function to use at GameLogicTest test suite
@@ -151,6 +152,8 @@ class GameLogic {
   int32_t whitePrisoners_;
   int32_t blackStonesNumber_;
   int32_t whiteStonesNumber_;
+  int32_t blackPlayerId_;
+  int32_t whitePlayerId_;
   const int32_t boardSize_ = 9;
   const int32_t initialBlackStonesNumber_ = 41;
   const int32_t initialWhiteStonesNumber_ = 40;

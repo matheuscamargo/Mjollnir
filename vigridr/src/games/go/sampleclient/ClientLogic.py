@@ -17,7 +17,11 @@ class Solution:
                        myType is of type int, and can have one of the Marker values: UNMARKED, X and O.
         """
         print "Python Client"
-        print "PlayerType: " + Marker._VALUES_TO_NAMES[gameInit.gameDescription.myType]
+        playerType = Marker._VALUES_TO_NAMES[gameInit.gameDescription.myType]
+        if playerType == 'X':
+            print "PlayerType: X (BLACK)" 
+        else:
+            print "PlayerType: O (WHITE)" 
 
     def play_turn(self, wm, turn):
         """
