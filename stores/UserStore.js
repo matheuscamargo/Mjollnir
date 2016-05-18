@@ -1,4 +1,6 @@
 import alt from '../alt';
+import _ from 'underscore';
+
 import UserActions from '../actions/UserActions';
 
 class UserStore{
@@ -16,6 +18,7 @@ class UserStore{
   }
 
   handleSelect(selectedUserInfo){
+    if(_.contains(this.selectedUsers, selectedUserInfo)) return;
     this.selectedUsers.push(selectedUserInfo);
   }
 
