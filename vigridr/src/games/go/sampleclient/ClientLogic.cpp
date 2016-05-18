@@ -31,7 +31,12 @@ void init(const GameInit& gameInit) {
   srand(time(NULL));
 
   std::cout << "C++ Client" << std::endl;
-  std::cout << "PlayerType: " << (gameInit.gameDescription.myType == Marker::X ? "X" : "O") << std::endl;
+  if(gameInit.gameDescription.myType == Marker::X) {
+    std::cout << "PlayerType: X (BLACK)" << std::endl;
+  }
+  else{
+    std::cout << "PlayerType: O (WHITE)" << std::endl;
+  }
 }
 
 /*
