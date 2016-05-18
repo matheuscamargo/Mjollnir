@@ -17,14 +17,9 @@ public class CSharpClient
         GameInit gameInit = client.ready();
         GameInfo gameInfo = gameInit.GameInfo;
         Solution solution = new Solution(gameInit);
-        Stopwatch stopwatch = new Stopwatch();
-        stopwatch.Start();
+        synchronize(gameInfo.timeUntilGameStartMs);
         while (true) {
-            stopwatch.Stop();
-            synchronize(gameInfo.NextWorldModelTimeEstimateMs - stopwatch.Elapsed.Milliseconds);
             gameInfo = client.getGameInfo();
-            stopwatch.Reset();
-            stopwatch.Start ();
             if (gameInfo.GameStatus == GameStatus.FINISHED)
             {
                 solution.EndOfGame(gameInfo.GameResult);
