@@ -49,11 +49,8 @@ void playGame(GameClient& client) {
   client.ready(gameInit);
   init(gameInit);
   GameInfo gameInfo = gameInit.gameInfo;
-  auto startTime = high_resolution_clock::now();
+  synchronize(gameInfo.timeUntilGameStartMs);
   while (true) {
-    auto processingTimeMs = duration_cast<milliseconds>(
-      high_resolution_clock::now() - startTime).count();
-    synchronize(gameInfo.nextWorldModelTimeEstimateMs - processingTimeMs);
     client.getGameInfo(gameInfo);
     startTime = high_resolution_clock::now();
     if (gameInfo.gameStatus == GameStatus::FINISHED) {

@@ -12,15 +12,14 @@ class GameTimer {
  public:
   void startInitializationCycle();
   void startCycle();
-  void sleepUntilInitializationUpdateTime();
   void sleepUntilInitializationTime();
-  int32_t getWorldModelTime();
+  int32_t getTimeUntilGameStart();
   int32_t getPlayerUpdateTimeLimit();
 
 
  private:
   time_point nextUpdateTimeLimit_;
-  time_point nextWorldModelTime_;
+  time_point gameStartTime_;
 };
 
 

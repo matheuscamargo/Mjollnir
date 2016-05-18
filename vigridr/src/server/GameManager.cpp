@@ -111,12 +111,11 @@ void GameManager::initializeGame(int32_t playerId0, int32_t playerId1) {
 }
 
 // GetGameInfo
-// updateFLag = true, entao ta no updaterTask e tem que ficar bloqueado
-// updateFLag = false, entao ta na hora de receber os comandos mesmo
+// updateFlag_ = true, entao ta no updaterTask e tem que ficar bloqueado
+// updateFlag_ = false, entao ta na hora de receber os comandos mesmo
 
 //
 void GameManager::nextTurn() {
-  timer_.sleepUntilInitializationUpdateTime();
   std::unique_lock<std::mutex> lock0(playerMutex_[0], std::defer_lock);
   std::unique_lock<std::mutex> lock1(playerMutex_[1], std::defer_lock);
   std::unique_lock<std::mutex> lock2(gameInfoMutex_, std::defer_lock);
@@ -171,7 +170,7 @@ void GameManager::updaterTask() {
     turn_++;
 
     {
-      LOG("updateFLag = false");
+      LOG("updateFlag_ = false");
       std::unique_lock<std::mutex> lockUpdateFlag(updateFlagMutex_, std::defer_lock);
       {
         lockUpdateFlag.lock();
@@ -318,7 +317,7 @@ CommandStatus GameManager::update(const Command& command, int32_t playerId) {
       std::unique_lock<std::mutex> lockUpdateFlag(updateFlagMutex_, std::defer_lock);
       lockUpdateFlag.lock();
       updateFlag_ = true;
-      LOG("updateFLag = True");
+      LOG("updateFlag_ = True");
       lockUpdateFlag.unlock();
       cv.notify_all();
     }
@@ -346,7 +345,7 @@ void GameManager::getGameInfo(GameInfo& gameInfo, int32_t playerId) {
   }
   gameInfo.updateTimeLimitMs = timer_.getPlayerUpdateTimeLimit();
   // +1 just to make sure
-  gameInfo.nextWorldModelTimeEstimateMs = timer_.getWorldModelTime() + 1;
+  gameInfo.timeUntilGameStartMs = timer_.getTimeUntilGameStart() + 1;
   {
     std::unique_lock<std::mutex> lock(playerMutex_[idx]);
     gameInfo.isMyTurn = playerTurnData_[idx].isTurn();

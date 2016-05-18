@@ -37,10 +37,8 @@ def play_game(client):
     gameInit = client.ready()
     solution = Solution(gameInit)
     gameInfo = gameInit.gameInfo
-    start_time = time.time();
+    synchronize(gameInfo.timeUntilGameStartMs)
     while True:
-        processing_time_ms = 1000*(time.time() - start_time);
-        synchronize(gameInfo.nextWorldModelTimeEstimateMs - processing_time_ms)
         gameInfo = client.getGameInfo()
         start_time = time.time();
         if gameInfo.gameStatus == GameStatus.FINISHED:

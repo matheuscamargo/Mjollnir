@@ -23,12 +23,9 @@ public class GameClient
         GameInit gameInit = client.ready();
         GameInfo gameInfo = gameInit.getGameInfo();
         ClientLogic solution = new ClientLogic(gameInit);
-        long start = System.nanoTime();
+        synchronize(gameInfo.getTimeUntilGameStartMs());
         while (true) {
-            long end = System.nanoTime();
-            synchronize(gameInfo.getNextWorldModelTimeEstimateMs() - (end - start)/1000000);
             gameInfo = client.getGameInfo();
-            start = System.nanoTime();
             if (GameStatus.FINISHED.equals(gameInfo.getGameStatus())) {
                 solution.endOfGame(gameInfo.gameResult);
                 break;
