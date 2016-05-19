@@ -1,23 +1,17 @@
-{% extends "base.html" %}
+{% extends "sidebarbase.html" %}
 
 
-{% block body %}
-<div class="well wrap-generic-content">
-    <h1 class="text-center">
-      <img src="{{ url_for('static', filename='icons/odal_rune.png') }}" id="about-logo">
-      <br />
-      Mjöllnir
-    </h1>
-  <hr />
-  <p class="lead" align="justify">
-      Tournament is working!!!!
-    <br />
-    <br />
-      Users can submit solutions to challenges such as Backgammon in many different languages and join groups to participate in tournaments.
-    <br />
-    <br />
-      Mjöllnir is an <a href="//github.com/vyrp/Mjollnir">open-source</a> project by undergraduate students at <a href="//www.ita.br">ITA</a>.
-  </p>
-  <br />
-</div>
+{% block head %}
+  {{ super() }}
+{% endblock %}
+
+
+{% block main %}
+    <div id="ReactApp"></div>
+{% endblock %}
+
+{% block script %}
+  {{ super() }}
+  <script src="bundle/bundle.js"></script>
+
 {% endblock %}
