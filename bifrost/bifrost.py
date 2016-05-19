@@ -1289,6 +1289,16 @@ def apiChallangesRanking(challenge_name):
     return jsonify(**rank)
 
 
+@app.route('/api/is_logged', methods=['GET'])
+@login_required
+def apiLogin():
+    """
+    returns wether or not the user is logged in
+    """
+    response_dict = {'success' : True}
+    return jsonify(**response_dict)
+
+
 @app.route('/api/login', methods=['POST'])
 def apiLogin():
     """
