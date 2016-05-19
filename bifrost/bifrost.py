@@ -608,6 +608,10 @@ def editgroup():
 
 
 
+@app.route('/tournamentTest/')
+def tournamentTest():
+    return render_template('tournamentTest.html', error = error)
+
 
 @app.route('/tournament/<tid>')
 def tournament(tid):
