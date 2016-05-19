@@ -1291,7 +1291,7 @@ def apiChallangesRanking(challenge_name):
 
 @app.route('/api/is_logged', methods=['GET'])
 @login_required
-def apiLogin():
+def apiIsLogged():
     """
     returns wether or not the user is logged in
     """
@@ -1316,12 +1316,12 @@ def apiLogin():
         )
 
         success = bool(mongodb.users.find_one({ 'username': _user.username }))
+        login_user(_user, remember=True)
         
     except Exception as e:
         success = False
 
     response_dict = {'success' : success}
-    login_user(_user, remember=True)
     return jsonify(**response_dict)
 
     
