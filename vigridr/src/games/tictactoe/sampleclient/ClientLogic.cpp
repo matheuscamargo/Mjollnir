@@ -15,7 +15,7 @@ using ::mjollnir::vigridr::Marker;
 /*
  * A helper function to print a Coordinate on screen.
  */
-std::ostream& operator<<(std::ostream& os, Coordinate c) {
+std::ostream& operator<<(std::ostream& os, Coordinate& c) {
     return os << "Coordinate(" << c.x << ", " << c.y << ")";
 }
 
