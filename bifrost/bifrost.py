@@ -608,16 +608,15 @@ def editgroup():
 
 
 
-@app.route('/tournamentTest/')
-def tournamentTest():
-    return render_template('tournamentTest.html', error = error)
-
 
 @app.route('/tournament/<tid>')
 def tournament(tid):
     """
     Page to visualize a tournament.
     """
+    if('tid' == '1'):
+        return render_template('tournamentTest.html', error = error) 
+
     tournament = mongodb.tournaments.find_one({ 'tid': tid })
     if not tournament:
         abort(404)
