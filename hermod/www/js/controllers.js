@@ -8,7 +8,7 @@ angular.module('hermod.controllers', [])
       });
 })
 
-.controller('ChallengeDetailCtrl', function($scope, SERVER, $stateParams, $http) {
+.controller('ChallengeDetailCtrl', function($scope, SERVER, $stateParams, $http, ChallengesMock) {
 
   $scope.challengeName = $stateParams.challengeName;
 
@@ -18,13 +18,15 @@ angular.module('hermod.controllers', [])
   success(function(data) {
       $scope.rank = data.rank;
   });
+  // Mock
+  // $scope.rank = ChallengesMock.getRank();
 })
 
 .controller('LoginCtrl', function($scope, LoginService, $ionicPopup, $state) {
     $scope.data = {};
  
     $scope.login = function() {
-        LoginService.mockLoginUser($scope.data.username, $scope.data.password).success(function(data) {
+        LoginService.loginUser($scope.data.username, $scope.data.password).success(function(data) {
             $state.go('challenges');
         }).error(function(data) {
             var alertPopup = $ionicPopup.alert({
