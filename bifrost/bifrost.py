@@ -1235,6 +1235,29 @@ def apiNews():
     return jsonify(**news_dict)
 
 
+@app.route('/api/register', methods=['POST'])
+def apiRegister():
+    """
+    register a new user
+    """
+    try:
+        # Create a new Stormpath User.
+        data = json.loads(request.data)
+        _user = stormpath_manager.application.accounts.create({
+            'email': data['email'],
+            'username': data['username'],
+            'password': data['password'],
+            'given_name': data['given_name'],
+            'surname': data['surname'],
+        })
+        _user.__class__ = User
+        success = True
+    except StormpathError, err:
+        success = False
+
+    response_dict = {'success' : success}
+    return jsonify(**response_dict)
+
 @app.route('/api/challenge/<challenge_name>')
 def apiChallangesRanking(challenge_name):
     """
@@ -1271,10 +1294,8 @@ def apiLogin():
     """
     returns weather or not a user with the passed credentials exists in the database
     """
-    logger.warn("init")
     try:
         data = json.loads(request.data)
-        logger.warn(data)
 
         username = data['username']
         password = data['password']
