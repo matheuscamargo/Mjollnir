@@ -36,26 +36,91 @@ angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
   // Each state's controller can be found in controllers.js
   $stateProvider
 
-  .state('challenges', {
+  .state('tab', {
+    url: "/tab",
+    abstract: true,
+    templateUrl: "templates/tabs.html"
+  })
+  
+ .state('tab.news', {
+    url: '/news',
+    views: {
+      'tab-news': {
+        templateUrl: 'templates/tab-news.html',
+        controller: 'NewsCtrl'
+      }
+    }
+  })
+
+  .state('tab.challenges', {
     url: '/challenges',
-    templateUrl: 'templates/challenges.html',
-    controller: 'ChallengesCtrl'
-    })
+    views: {
+      'tab-challenges': {
+        templateUrl: 'templates/tab-challenges.html',
+        controller: 'ChallengesCtrl'
+      }
+    }
+  })
+
+  // .state('challenges', {
+  //   url: '/challenges',
+  //   templateUrl: 'templates/challenges.html',
+  //   controller: 'ChallengesCtrl'
+  //   })
 
   .state('challenge-detail', {
     url: '/challenges/:challengeName',
     templateUrl: 'templates/challenge-detail.html',
     controller: 'ChallengeDetailCtrl'
   })
+
   
   .state('login', {
     url: '/login',
     templateUrl: 'templates/login.html',
     controller: 'LoginCtrl'
+  })
+
+  .state('register', {
+    url: '/register',
+    templateUrl: 'templates/register.html',
+    controller: 'RegisterCtrl'
   });
 
   // if none of the above states are matched, use this as the fallback
   // TODO: new state to check if already logged in
   $urlRouterProvider.otherwise('/login');
 
+});
+
+
+
+angular.module('ionicApp', ['ionic'])
+
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+  $ionicConfigProvider.tabs.position('bottom');
+  
+  $stateProvider
+    .state('tabs', {
+      url: "/tab",
+      abstract: true,
+      templateUrl: "templates/tabs.html"
+    })
+    .state('tabs.home', {
+      url: "/home",
+      views: {
+        'home-tab': {
+          templateUrl: "templates/home.html",
+          controller: 'HomeTabCtrl'
+        }
+      }
+    });
+
+
+   $urlRouterProvider.otherwise("/tab/home");
+
+})
+
+.controller('HomeTabCtrl', function($scope) {
+  console.log('HomeTabCtrl');
 });

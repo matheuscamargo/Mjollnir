@@ -69,6 +69,64 @@ angular.module('hermod.services', [])
               promise.then(fn);
               return promise;
           };
+          promise.error = function(fn) {
+              promise.then(null, fn);
+              return promise;
+          };
+          return promise;
+        }
+    };
+})
+
+.service('RegisterService', function($q, $http, SERVER) {
+    return {
+        registerUser: function(data) {
+            var deferred = $q.defer();
+            var promise = deferred.promise;
+
+            // TODO: persistent login
+
+            $http.post(SERVER.url + "api/login",
+              {
+                username: username,
+                password: password
+              }).
+            success(function(data) {
+              console.log(data);
+                if (data.success) {
+                  deferred.resolve('Welcome ' + name + '!');
+                }
+                else {
+                  deferred.reject('Wrong credentials.');
+                }
+            });
+
+            promise.success = function(fn) {
+                promise.then(fn);
+                return promise;
+            };
+            promise.error = function(fn) {
+                promise.then(null, fn);
+                return promise;
+            };
+            return promise; 
+        },
+
+        mockRegisterUser: function(data) {
+
+          var deferred = $q.defer();
+          var promise = deferred.promise;
+
+          deferred.resolve('Welcome ' + name + '!');
+
+          promise.success = function(fn) {
+              promise.then(fn);
+              return promise;
+          };
+          promise.error = function(fn) {
+              promise.then(null, fn);
+              return promise;
+          };
           return promise;
         }
     };
