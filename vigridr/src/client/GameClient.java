@@ -7,23 +7,10 @@ import org.apache.thrift.TException;
 
 public class GameClient
 {
-    public static void synchronize(long t) {
-        if(t > 0) {
-            try {
-                Thread.sleep(t);
-            }
-            catch(InterruptedException e) {
-                e.printStackTrace();
-                System.exit(1);
-            }
-        }
-    }
-
     public static void playGame(Game.Client client) throws TException {
         GameInit gameInit = client.ready();
         GameInfo gameInfo = gameInit.getGameInfo();
         ClientLogic solution = new ClientLogic(gameInit);
-        synchronize(gameInfo.getTimeUntilGameStartMs());
         while (true) {
             gameInfo = client.getGameInfo();
             if (GameStatus.FINISHED.equals(gameInfo.getGameStatus())) {

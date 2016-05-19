@@ -19,10 +19,8 @@ struct GameInfo {
   1: required GameStatus gameStatus,
   2: required WorldModel.WorldModel worldModel,
   3: required i32 cycle,
-  4: required i32 updateTimeLimitMs,
-  5: required i32 timeUntilGameStartMs,
-  6: required bool isMyTurn,
-  7: required GameResult.GameResult gameResult
+  4: required bool isMyTurn,
+  5: required GameResult.GameResult gameResult
 }
 
 struct GameInit {

@@ -101,7 +101,7 @@ void GameManager::initializeGame(int32_t playerId0, int32_t playerId1) {
   playerTurnData_[0].setIsTurn(true);
   playerTurnData_[1].setIsTurn(true);
 
-  updateFlag_ = false;
+  updateFlag_ = true;
   if (config::gameType == GameType::TURN) {
     playerTurnData_[rand() % 2].setIsTurn(false);
   }
@@ -136,7 +136,7 @@ void GameManager::nextTurn() {
   }
   GameLogger::logWorldModel(gameInfo_.worldModel, gameLogic_.getTotalWorldModel());
   
-  timer_.sleepUntilInitializationTime();
+  //timer_.sleepUntilInitializationTime();
   timer_.startCycle();
 }
 
@@ -165,6 +165,8 @@ clearCommands(std::array<PlayerTurnData, kMaxPlayers>& playerTurnData) {
 
 // updater task is a task that is executed to update the game every cycle
 void GameManager::updaterTask() {
+
+  timer_.sleepUntilInitializationTime();
   while (true) {
     nextTurn();  // initialize next turn
     turn_++;
@@ -343,20 +345,17 @@ void GameManager::getGameInfo(GameInfo& gameInfo, int32_t playerId) {
     std::unique_lock<std::mutex> lock(gameInfoMutex_);
     gameInfo = gameInfo_;
   }
-  gameInfo.updateTimeLimitMs = timer_.getPlayerUpdateTimeLimit();
-  // +1 just to make sure
-  gameInfo.timeUntilGameStartMs = timer_.getTimeUntilGameStart() + 1;
   {
     std::unique_lock<std::mutex> lock(playerMutex_[idx]);
     gameInfo.isMyTurn = playerTurnData_[idx].isTurn();
     gameInfo.gameResult = playerTurnData_[idx].getGameResult();
   }
-  // LOG("%d %d", gameInfo.updateTimeLimitMs, gameInfo.nextWorldModelTimeEstimateMs);
 }
 
 void GameManager::getGameInit(GameInit& gameInit, int32_t playerId) {
   getGameInfo(gameInit.gameInfo, playerId);
   gameInit.gameDescription = gameLogic_.getGameDescription(playerId);
+  LOG("GetGameInit %d", playerId);
 }
 
 void GameManager::onGameEnd(std::function<void ()> handler) {
