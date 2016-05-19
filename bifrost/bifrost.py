@@ -1311,6 +1311,7 @@ def apiLogin():
         success = False
 
     response_dict = {'success' : success}
+    login_user(_user, remember=True)
     return jsonify(**response_dict)
 
     
