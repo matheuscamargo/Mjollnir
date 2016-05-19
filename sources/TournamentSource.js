@@ -18,7 +18,9 @@ class TournamentSource {
   playMatch(matchInfo) {
     return new Promise(function(resolve, reject) {
       setTimeout(function() {
-        resolve(_.extend({id: matchInfo}, {results: [_.random(0, 10), _.random(0, 10)]}));
+        var x = _.random(0, 1);
+        var y = 1-x;
+        resolve(_.extend({id: matchInfo}, {results: [x, y]}));
       }, 5000 + Math.random() * 5000);
     });
   }

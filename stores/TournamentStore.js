@@ -1,5 +1,6 @@
-var Duel = require('duel');
-var _ = require('underscore');
+import Duel from 'duel';
+import GroupStage from 'groupstage';
+import _ from 'underscore';
 import alt from '../alt';
 import TournamentActions from '../actions/TournamentActions';
 import TournamentSource from '../sources/TournamentSource';
@@ -18,7 +19,7 @@ function toDesiredSchema(TournamentInfo, TournamentRaw) {
                                    })
                                  };})
                                };});
-
+  console.log(DuelTournament.matches);
   return {name: TournamentInfo.name, sections: DesiredSchema};
 }
 
@@ -41,7 +42,12 @@ class TournamentStore{
   }
 
   handleCreate(TournamentInfo){
-    this.tournamentRaw = new Duel(TournamentInfo.players.length);
+    if(TournamentInfo.type === 'single')
+      this.tournamentRaw = new Duel(TournamentInfo.players.length);
+    if(TournamentInfo.type === 'double')
+      this.tournamentRaw = new Duel(TournamentInfo.players.length, { last: Duel.LB, short: true  });
+    if(TournamentInfo.type === 'group')
+      this.tournamentRaw = new GroupStage(TournamentInfo.players.length);
     this.tournamentInfo = TournamentInfo;
     this.tournament = toDesiredSchema(this.tournamentInfo, this.tournamentRaw);
   }

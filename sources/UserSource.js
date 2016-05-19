@@ -1,10 +1,14 @@
 import _ from 'underscore';
 
 var mockData = [
-  {name: 'Gustavo', ranking: 123456},
-  {name: 'Peh', ranking: 5},
-  {name: 'Gafa', ranking: 4},
-  {name: 'Mil', ranking: 3},
+  {name: 'Mut', ranking: 123456},
+  {name: 'Peh', ranking: 10},
+  {name: 'Gafa', ranking: 8},
+  {name: 'Philip', ranking: 5},
+  {name: 'Bay', ranking: 3},
+  {name: 'Braile', ranking: 6},
+  {name: 'Josu', ranking: 7},
+  {name: 'Mil', ranking: 6},
 ];
 
 
