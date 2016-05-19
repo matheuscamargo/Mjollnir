@@ -1217,6 +1217,47 @@ def matches():
 
 # REST API
 
+@app.route('/api/news')
+def apiNews():
+    """
+    returns a JSON object that represents the list of news
+    """
+    news_objects = list(mongodb.news.find().sort([('datetime', -1)]).limit(5))
+    news = []
+    for new in news_objects:
+        current_news = {}
+        current_news['title'] = new['title']
+        current_news['author'] = new['author']
+        current_news['datetime'] = new['datetime']
+        current_news['content'] = new['content']
+        news.append(current_news)
+    news_dict = {'news': news}
+    return jsonify(**news_dict)
+
+
+@app.route('/api/register', methods=['POST'])
+def apiRegister():
+    """
+    register a new user
+    """
+    try:
+        # Create a new Stormpath User.
+        data = json.loads(request.data)
+        _user = stormpath_manager.application.accounts.create({
+            'email': data['email'],
+            'username': data['username'],
+            'password': data['password'],
+            'given_name': data['given_name'],
+            'surname': data['surname'],
+        })
+        _user.__class__ = User
+        success = True
+    except StormpathError, err:
+        success = False
+
+    response_dict = {'success' : success}
+    return jsonify(**response_dict)
+
 @app.route('/api/challenge/<challenge_name>')
 def apiChallangesRanking(challenge_name):
     """
@@ -1248,15 +1289,23 @@ def apiChallangesRanking(challenge_name):
     return jsonify(**rank)
 
 
+@app.route('/api/is_logged', methods=['GET'])
+@login_required
+def apiIsLogged():
+    """
+    returns wether or not the user is logged in
+    """
+    response_dict = {'success' : True}
+    return jsonify(**response_dict)
+
+
 @app.route('/api/login', methods=['POST'])
 def apiLogin():
     """
     returns weather or not a user with the passed credentials exists in the database
     """
-    logger.warn("init")
     try:
         data = json.loads(request.data)
-        logger.warn(data)
 
         username = data['username']
         password = data['password']
@@ -1267,6 +1316,7 @@ def apiLogin():
         )
 
         success = bool(mongodb.users.find_one({ 'username': _user.username }))
+        login_user(_user, remember=True)
         
     except Exception as e:
         success = False

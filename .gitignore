@@ -154,8 +154,8 @@ vigridr/logs
 # Tests 2016
 mjollnir_setup.sh
 vigridr/localdev/*
-!vigridr/localdev/compile_game_test.py
-!vigridr/localdev/run_game_test.py
+!vigridr/localdev/compile_game-test.py
+!vigridr/localdev/run_game-test.py
 
 ##
 ## Yggdrasil

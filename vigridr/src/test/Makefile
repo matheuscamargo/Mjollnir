@@ -4,7 +4,7 @@ LFLAGS = -L../../third-parties/cpp/lib
 LIBRARIES = -pthread -lgtest
 TARGETS = GameTest
 OBJECTS_GameTest = ../../obj/server/GameLogic.o ../../obj/thrifts/gen-cpp/Command_constants.o ../../obj/thrifts/gen-cpp/Command_types.o ../../obj/thrifts/gen-cpp/GameDescription_types.o ../../obj/thrifts/gen-cpp/WorldModel_types.o ../../obj/thrifts/gen-cpp/GameResult_types.o
-BIN := ./bin
+BIN := ../../bin/cpp
 
 all: $(BIN) $(BIN)/$(TARGETS)
 
