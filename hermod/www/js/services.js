@@ -33,15 +33,15 @@ angular.module('hermod.services', [])
                 promise.then(null, fn);
                 return promise;
             };
-            return promise;
+            return promise; 
         },
 
-        mockLoginUser: function() {
+        mockLoginUser: function(username, password) {
 
           var deferred = $q.defer();
           var promise = deferred.promise;
 
-          if (true) {
+          if (username.toLowerCase() == "usuario" && password.toLowerCase() == "senha") {
               deferred.resolve('Welcome ' + name + '!');
           } else {
               deferred.reject('Wrong credentials.');
@@ -53,6 +53,20 @@ angular.module('hermod.services', [])
           };
           promise.error = function(fn) {
               promise.then(null, fn);
+              return promise;
+          };
+          return promise;
+        },
+
+        autoLogin: function(username, password) {
+
+          var deferred = $q.defer();
+          var promise = deferred.promise;
+
+          deferred.resolve('Welcome ' + name + '!');
+
+          promise.success = function(fn) {
+              promise.then(fn);
               return promise;
           };
           return promise;
