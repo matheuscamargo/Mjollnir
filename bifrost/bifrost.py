@@ -1217,6 +1217,24 @@ def matches():
 
 # REST API
 
+@app.route('/api/news')
+def apiNews():
+    """
+    returns a JSON object that represents the list of news
+    """
+    news_objects = list(mongodb.news.find().sort([('datetime', -1)]).limit(5))
+    news = []
+    for new in news_objects:
+        current_news = {}
+        current_news['title'] = new['title']
+        current_news['author'] = new['author']
+        current_news['datetime'] = new['datetime']
+        current_news['content'] = new['content']
+        news.append(current_news)
+    news_dict = {'news': news}
+    return jsonify(**news_dict)
+
+
 @app.route('/api/challenge/<challenge_name>')
 def apiChallangesRanking(challenge_name):
     """
