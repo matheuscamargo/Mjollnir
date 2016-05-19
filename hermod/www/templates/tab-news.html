@@ -1,27 +1,16 @@
 <ion-view view-title="News">
   <ion-content class="padding">
-      <div class="list card">
+    <button class="button button-block button-assertive" ng-click="test()">TEST IS LOGGED</button>
+    <p>{{vartest}}</p>
     <ion-list>
       <ion-item ng-repeat="item in news">
-        <div class="card">
-          <div class="item item-divider">
-            I'm a Header in a Card!
-          </div>
-          <div class="item item-text-wrap">
-            This is a basic Card with some text.
-          </div>
-          <div class="item item-divider">
-            I'm a Footer in a Card!
-          </div>
+        <div>
+          <p>{{item.title}}</p>
+          <p>{{item.author}}</p>
+          <p>{{item.datetime}}</p>
+          <p>{{item.content}}</p>
         </div>
       </ion-item>
     </ion-list>
-      </div>
   </ion-content>
 </ion-view>
-
-
-title
-author
-content
-datetime

@@ -8,6 +8,17 @@ angular.module('hermod.controllers', [])
   .success(function(data) {
       $scope.news = data.news;
   });
+
+  $scope.test = function () {
+    $http({
+        url: SERVER.url + "api/is_logged",
+    })
+    .then(function(res) {
+      console.log(res);
+        $scope.vartest = res;
+    });
+  };
+
 })
 
 .controller('ChallengesCtrl', function($scope, $http) {
@@ -38,7 +49,7 @@ angular.module('hermod.controllers', [])
     $scope.data = {};
  
     $scope.login = function() {
-        LoginService.autoLogin($scope.data.username, $scope.data.password).success(function(data) {
+        LoginService.loginUser($scope.data.username, $scope.data.password).success(function(data) {
             $state.go('tab.news');
         }).error(function(data) {
             var alertPopup = $ionicPopup.alert({
@@ -52,13 +63,21 @@ angular.module('hermod.controllers', [])
 .controller('RegisterCtrl', function($scope, RegisterService, $ionicPopup, $state) {
     $scope.data = {};
  
-    $scope.regsiter = function() {
-        RegisterService.register($scope.data.username, $scope.data.password).success(function(data) {
-            $state.go('tab.login');
+    $scope.register = function() {
+        var requestData = $scope.data;
+        console.log(requestData);
+        RegisterService.registerUser(requestData).success(function(data) {
+            var alertPopup = $ionicPopup.alert({
+              title: 'Register failed!',
+              template: 'Please check your information!'
+            });
+            alertPopup.then(function(res) {
+              $state.go('login');
+            });
         }).error(function(data) {
             var alertPopup = $ionicPopup.alert({
-                title: 'Register failed!',
-                template: 'Please check your information!'
+              title: 'Register failed!',
+              template: 'Please check your information!'
             });
         });
     };

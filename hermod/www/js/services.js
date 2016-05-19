@@ -15,9 +15,9 @@ angular.module('hermod.services', [])
                 username: username,
                 password: password
               }).
-            success(function(data) {
+            then(function(data) {
               console.log(data);
-                if (data.success) {
+                if (data.data.success) {
                   deferred.resolve('Welcome ' + name + '!');
                 }
                 else {
@@ -83,15 +83,10 @@ angular.module('hermod.services', [])
         registerUser: function(data) {
             var deferred = $q.defer();
             var promise = deferred.promise;
+            console.log("register");
 
-            // TODO: persistent login
-
-            $http.post(SERVER.url + "api/login",
-              {
-                username: username,
-                password: password
-              }).
-            success(function(data) {
+            $http.post(SERVER.url + "api/register", data)
+            .success(function(data) {
               console.log(data);
                 if (data.success) {
                   deferred.resolve('Welcome ' + name + '!');
