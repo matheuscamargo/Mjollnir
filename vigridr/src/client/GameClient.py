@@ -1,7 +1,6 @@
 import sys
 import glob
 import argparse
-import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--port", \
@@ -28,19 +27,13 @@ from ClientLogic import Solution
 from GameServer import Game
 from Command.ttypes import Command
 from GameModel.ttypes import GameStatus
-    
-def synchronize(t):
-    if t>0:
-        time.sleep(t/1000.0)
 
 def play_game(client):
     gameInit = client.ready()
     solution = Solution(gameInit)
     gameInfo = gameInit.gameInfo
-    synchronize(gameInfo.timeUntilGameStartMs)
     while True:
         gameInfo = client.getGameInfo()
-        start_time = time.time();
         if gameInfo.gameStatus == GameStatus.FINISHED:
             solution.end_of_game(gameInfo.gameResult);
             break

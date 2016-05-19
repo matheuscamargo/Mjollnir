@@ -8,16 +8,10 @@ using System.Diagnostics;
 
 public class CSharpClient
 {
-    public static void synchronize(int t) {
-        if(t > 0)
-            Thread.Sleep(t);
-    }
-
     public static void playGame(Game.Client client) {
         GameInit gameInit = client.ready();
         GameInfo gameInfo = gameInit.GameInfo;
         Solution solution = new Solution(gameInit);
-        synchronize(gameInfo.timeUntilGameStartMs);
         while (true) {
             gameInfo = client.getGameInfo();
             if (gameInfo.GameStatus == GameStatus.FINISHED)

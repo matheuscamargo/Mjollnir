@@ -35,24 +35,13 @@ using ::mjollnir::vigridr::GameInit;
 using ::mjollnir::vigridr::GameStatus;
 using ::mjollnir::vigridr::WorldModel;
 
-using std::chrono::duration_cast;
-using std::chrono::milliseconds;
-using std::chrono::high_resolution_clock;
-
-void synchronize(int32_t t) {
-  auto sleeptime = high_resolution_clock::now() + milliseconds(t);
-  std::this_thread::sleep_until(sleeptime);
-}
-
 void playGame(GameClient& client) {
   GameInit gameInit;
   client.ready(gameInit);
   init(gameInit);
   GameInfo gameInfo = gameInit.gameInfo;
-  synchronize(gameInfo.timeUntilGameStartMs);
   while (true) {
     client.getGameInfo(gameInfo);
-    startTime = high_resolution_clock::now();
     if (gameInfo.gameStatus == GameStatus::FINISHED) {
       endOfGame(gameInfo.gameResult);
       break;
