@@ -68,16 +68,16 @@ angular.module('hermod.controllers', [])
         console.log(requestData);
         RegisterService.registerUser(requestData).success(function(data) {
             var alertPopup = $ionicPopup.alert({
-              title: 'Register failed!',
-              template: 'Please check your information!'
+              title: 'User registered!',
+              template: 'Please verify your email.'
             });
             alertPopup.then(function(res) {
               $state.go('login');
             });
-        }).error(function(data) {
+        }).error(function(error) {
             var alertPopup = $ionicPopup.alert({
               title: 'Register failed!',
-              template: 'Please check your information!'
+              template: error
             });
         });
     };

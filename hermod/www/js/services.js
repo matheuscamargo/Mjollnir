@@ -92,7 +92,7 @@ angular.module('hermod.services', [])
                   deferred.resolve('Welcome ' + name + '!');
                 }
                 else {
-                  deferred.reject('Wrong credentials.');
+                  deferred.reject(data.error);
                 }
             });
 
