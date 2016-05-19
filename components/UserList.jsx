@@ -2,6 +2,7 @@ import React from 'react';
 import _ from 'underscore';
 
 import TournamentActions from '../actions/TournamentActions';
+import UserActions from '../actions/UserActions';
 import UserSelect from './UserSelect.jsx';
 
 var tournamentOptions = ['single', 'double', 'group'];
@@ -9,14 +10,15 @@ var tournamentOptions = ['single', 'double', 'group'];
 export default class MyComponent extends React.Component {
   constructor(props) {
       super(props);
-      this._handleClick = this._handleClick.bind(this);
+      this._handleClickTournament = this._handleClickTournament.bind(this);
+      this._handleClickUsers = this._handleClickUsers.bind(this);
       this._handleChange = this._handleChange.bind(this);
 
-      this.state = {typeSelected: 'duel'};
+      this.state = {typeSelected: 'single'};
   }
 
   render() {
-
+    var selectedUsers = _.filter(this.props.users, function(u) {return u.selected;});
     var options = tournamentOptions.map(function(option) {
             return (
                 <option key={option} value={option}>
@@ -27,6 +29,7 @@ export default class MyComponent extends React.Component {
     return (
       <div>
         -------------USERS------------
+        <input type="button" value="Add all" hidden={_.isEqual(this.props.users, selectedUsers)} onClick={this._handleClickUsers}/>
         <ul>
           {_.map(this.props.users, function(user) {
             return (
@@ -37,10 +40,10 @@ export default class MyComponent extends React.Component {
             );
           })}
         </ul>
-        <div hidden={_.isEmpty(this.props.selected)}>
+        <div hidden={_.isEmpty(selectedUsers)}>
           -----------SELECTED-----------
           <ul>
-            {_.map(this.props.selected, function(user) {
+            {_.map(selectedUsers, function(user) {
               return (
                 <li key={_.uniqueId('us_')}>
                   {user.name}
@@ -55,16 +58,20 @@ export default class MyComponent extends React.Component {
                 onChange={this._handleChange}>
             {options}
         </select>
-        <input type="button" value="Start Tournament" hidden={this.props.scores} onClick={this._handleClick}/>
+        <input type="button" value="Start Tournament" hidden={this.props.scores} onClick={this._handleClickTournament}/>
       </div>);
   }
 
-  _handleClick(e) {
+  _handleClickTournament(e) {
     //TODO:  Add correct seeding stuff and fix this:
-    TournamentActions.create({name: 'TOURNAMENT', type: this.state.typeSelected, players: _.map(this.props.selected, function(p) {
+    TournamentActions.create({name: 'TOURNAMENT', type: this.state.typeSelected, players: _.map(_.filter(this.props.users, function(u) {return u.selected;}), function(p) {
         return p.name;
       })
     });
+  }
+
+  _handleClickUsers(e) {
+    UserActions.selectAll();
   }
 
   _handleChange(e) {

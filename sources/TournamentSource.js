@@ -21,7 +21,7 @@ class TournamentSource {
         var x = _.random(0, 1);
         var y = 1-x;
         resolve(_.extend({id: matchInfo}, {results: [x, y]}));
-      }, 5000 + Math.random() * 5000);
+      }, 500 + Math.random() * 500);
     });
   }
 }

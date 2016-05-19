@@ -6,6 +6,11 @@ class UserActions {
     return selectedUserInfo;
   }
 
+  selectAll() {
+    return (dispatch) => {
+      dispatch(); };
+  }
+
   fetch() {
     return (dispatch) => {
       dispatch();

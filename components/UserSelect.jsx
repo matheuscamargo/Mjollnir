@@ -11,7 +11,7 @@ export default class MyComponent extends React.Component {
     return (
       <div>
         {this.props.user.name} - {this.props.user.ranking}
-        <input type="button" value="Add" hidden={this.props.scores} onClick={this._handleClick}/>
+        <input type="button" value="Add" hidden={this.props.user.selected} onClick={this._handleClick}/>
       </div>);
   }
 

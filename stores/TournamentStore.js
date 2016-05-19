@@ -19,7 +19,6 @@ function toDesiredSchema(TournamentInfo, TournamentRaw) {
                                    })
                                  };})
                                };});
-  console.log(DuelTournament.matches);
   return {name: TournamentInfo.name, sections: DesiredSchema};
 }
 
