@@ -18,7 +18,6 @@ var production = process.env.NODE_ENV === 'production';
 
 var dependencies = [
   'react-router',
-  'lodash',
 ];
 
 /*
