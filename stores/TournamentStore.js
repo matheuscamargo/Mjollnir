@@ -2,6 +2,7 @@ var Duel = require('duel');
 var _ = require('underscore');
 import alt from '../alt';
 import TournamentActions from '../actions/TournamentActions';
+import TournamentSource from '../sources/TournamentSource';
 
 function toDesiredSchema(TournamentInfo, TournamentRaw) {
   var DuelTournament = TournamentRaw;
@@ -34,7 +35,8 @@ class TournamentStore{
       handleFetchFail: TournamentActions.FETCH_FAILED,
       handlePlayMatch: TournamentActions.PLAY_MATCH,
       handlePlayMatchSuccess: TournamentActions.PLAY_MATCH_SUCCESS,
-      handlePlayMatchFail: TournamentActions.PLAY_MATCH_FAILED
+      handlePlayMatchFail: TournamentActions.PLAY_MATCH_FAILED,
+      handlePlayAll: TournamentActions.PLAY_ALL,
     });
   }
 
@@ -50,6 +52,40 @@ class TournamentStore{
 
   handleFetchFail(errorMessage) {
     this.errorMessage = errorMessage;
+  }
+
+  handlePlayAll() {
+    var self = this;
+
+    function GetMatchesPromises(tournament) {
+      return _.map(_.filter(tournament.matches, function(match) {
+        return tournament.isPlayable(match);
+      }), function(playableMatch) {
+        return new Promise(function(resolve, reject) {
+          //this.tournament = toDesiredSchema(this.tournamentInfo, this.tournamentRaw);
+          //TournamentStore.emitChange();
+          console.log("Jogando jogo: " + playableMatch.p);
+          TournamentSource.playMatch(playableMatch.id).then(function(matchResult) {
+            console.log("Fim do jogo: " + matchResult.p + ": " + matchResult.m);
+            self.handlePlayMatchSuccess(matchResult);
+            self.emitChange();
+            resolve();
+          });
+        });
+      });
+    }
+
+    function RunAllMatches(tournament){
+      if(tournament.isDone()){
+        return;
+      }
+      var nextStep = Promise.all(GetMatchesPromises(tournament));
+      nextStep.then(function(values) {
+        RunAllMatches(tournament);
+      });
+    }
+
+    RunAllMatches(this.tournamentRaw);
   }
 
   handlePlayMatch(matchInfo){

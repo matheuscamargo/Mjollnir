@@ -1,8 +1,15 @@
 import React from 'react';
-import Section from './Section.jsx';
 import _ from 'underscore';
 
+import Section from './Section.jsx';
+import TournamentActions from '../actions/TournamentActions';
+
 export default class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this._handleClick = this._handleClick.bind(this);
+  }
+
   render() {
     if(!this.props.id) {
       return (
@@ -16,6 +23,7 @@ export default class MyComponent extends React.Component {
       <div>
         <div>
           {this.props.id}
+          <input type="button" value="Play" onClick={this._handleClick}/>
           <table>
             <tbody>
               {_.map(this.props.sections, function(section) {
@@ -33,5 +41,9 @@ export default class MyComponent extends React.Component {
           </table>
         </div>
       </div>);
+  }
+
+  _handleClick(e) {
+    TournamentActions.playAll();
   }
 }

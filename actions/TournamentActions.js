@@ -19,6 +19,12 @@ class TournamentActions {
     };
   }
 
+  playAll() {
+    return (dispatch) => {
+      dispatch();
+    };
+  }
+
   playMatchSuccess(matchInfo) {
     return matchInfo;
   }

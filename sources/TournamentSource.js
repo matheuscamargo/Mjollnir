@@ -19,7 +19,7 @@ class TournamentSource {
     return new Promise(function(resolve, reject) {
       setTimeout(function() {
         resolve(_.extend({id: matchInfo}, {results: [_.random(0, 10), _.random(0, 10)]}));
-      }, 250);
+      }, 5000 + Math.random() * 5000);
     });
   }
 }
