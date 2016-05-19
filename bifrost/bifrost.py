@@ -614,7 +614,7 @@ def tournament(tid):
     """
     Page to visualize a tournament.
     """
-    if not tid:
+    if(tid == 1 or tid == '1'):
         return render_template('tournamentest.html') 
 
     tournament = mongodb.tournaments.find_one({ 'tid': tid })
