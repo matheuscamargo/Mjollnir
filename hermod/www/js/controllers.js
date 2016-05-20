@@ -49,9 +49,9 @@ angular.module('hermod.controllers', [])
     $scope.data = {};
  
     $scope.login = function() {
-        LoginService.loginUser($scope.data.username, $scope.data.password).success(function(data) {
+        LoginService.autoLogin($scope.data.username, $scope.data.password).success(function(data) {
             $state.go('tab.news');
-        }).error(function(data) {
+        }).error(function() {
             var alertPopup = $ionicPopup.alert({
                 title: 'Login failed!',
                 template: 'Please check your credentials!'
@@ -65,8 +65,7 @@ angular.module('hermod.controllers', [])
  
     $scope.register = function() {
         var requestData = $scope.data;
-        console.log(requestData);
-        RegisterService.registerUser(requestData).success(function(data) {
+        RegisterService.registerUser(requestData).success(function() {
             var alertPopup = $ionicPopup.alert({
               title: 'User registered!',
               template: 'Please verify your email.'

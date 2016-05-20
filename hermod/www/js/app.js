@@ -8,7 +8,7 @@ angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
 
 .constant('SERVER', {
   // Url used to reach the server (Bifrost)
-  url: 'http://192.168.0.28:5000/'
+  url: 'http://192.168.0.26:5000/'
 })
 
 .run(function($ionicPlatform) {
@@ -61,12 +61,6 @@ angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
       }
     }
   })
-
-  // .state('challenges', {
-  //   url: '/challenges',
-  //   templateUrl: 'templates/challenges.html',
-  //   controller: 'ChallengesCtrl'
-  //   })
 
   .state('challenge-detail', {
     url: '/challenges/:challengeName',

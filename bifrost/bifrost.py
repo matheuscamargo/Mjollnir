@@ -1252,7 +1252,7 @@ def apiRegister():
         })
         _user.__class__ = User
         success = True
-        error: None
+        error = None
     except StormpathError, err:
         success = False
         error = err.message
