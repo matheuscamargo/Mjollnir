@@ -156,7 +156,7 @@ void GameManager::updaterTask() {
       if (errorHappened) {
         if(gameLogic_.getNumberOfPlayers() == 1) {
           std::cout << gameLogic_.getWinner();
-          playerTurnData_[0].setGameResult(gameLogic_.createGameResult(gameLogic_.getWinner(), idxToId_[0]));
+          playerTurnData_[0].setGameResult(gameLogic_.createGameResult(gameLogic_.getWinner(), idxToId_[0], "The player didn`t make a move"));
         } else {
           std::cout << correctPlayer;
           for (size_t idx = 0; idx < playerTurnData_.size(); ++idx) {
