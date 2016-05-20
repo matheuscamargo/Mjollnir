@@ -6,7 +6,16 @@ class UserActions {
     return selectedUserInfo;
   }
 
+  deselectUser(deselectedUserInfo) {
+    return deselectedUserInfo;
+  }
+
   selectAll() {
+    return (dispatch) => {
+      dispatch(); };
+  }
+
+  deselectAll() {
     return (dispatch) => {
       dispatch(); };
   }

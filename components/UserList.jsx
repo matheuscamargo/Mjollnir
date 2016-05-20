@@ -3,7 +3,7 @@ import _ from 'underscore';
 
 import TournamentActions from '../actions/TournamentActions';
 import UserActions from '../actions/UserActions';
-import UserSelect from './UserSelect.jsx';
+import UserAction from './UserAction.jsx';
 
 var tournamentOptions = ['single', 'double', 'group'];
 
@@ -11,7 +11,6 @@ export default class MyComponent extends React.Component {
   constructor(props) {
       super(props);
       this._handleClickTournament = this._handleClickTournament.bind(this);
-      this._handleClickUsers = this._handleClickUsers.bind(this);
       this._handleChange = this._handleChange.bind(this);
 
       this.state = {typeSelected: 'single'};
@@ -26,33 +25,57 @@ export default class MyComponent extends React.Component {
                 </option>
             );
         });
+
+        //TODO: Break into better looking components?
     return (
       <div>
-        -------------USERS------------
-        <input type="button" value="Add all" hidden={_.isEqual(this.props.users, selectedUsers)} onClick={this._handleClickUsers}/>
-        <ul>
-          {_.map(this.props.users, function(user) {
-            return (
-              <li key={_.uniqueId('u_')}>
-                <UserSelect user={user}>
-                </UserSelect>
-              </li>
-            );
-          })}
-        </ul>
-        <div hidden={_.isEmpty(selectedUsers)}>
-          -----------SELECTED-----------
-          <ul>
-            {_.map(selectedUsers, function(user) {
-              return (
-                <li key={_.uniqueId('us_')}>
-                  {user.name}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-        -------------------------------------
+        <table className="table">
+          <thead>
+            <tr>
+              <th>
+                USERS
+                <input type="button" value="Add all" hidden={_.isEqual(this.props.users, selectedUsers)} onClick={(u) => {UserActions.selectAll();}}/>
+              </th>
+              <th>
+                SELECTED
+                <input type="button" value="Remove all" hidden={_.isEmpty(selectedUsers)} onClick={(u) => {UserActions.deselectAll();}}/>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <table className="table">
+                  <tbody>
+                    {_.map(this.props.users, function(user) {
+                      return (
+                        <tr key={_.uniqueId('u_')}>
+                          <UserAction user={user} text="Add" action={UserActions.selectUser} btnCondition={user.selected}>
+                          </UserAction>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </td>
+              <td>
+                <table className="table">
+                  <tbody>
+                    {_.map(selectedUsers, function(user) {
+                      return (
+                        <tr key={_.uniqueId('us_')}>
+                          <UserAction user={user} text="Remove" action={UserActions.deselectUser}>
+                          </UserAction>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        Tournament Type:
         <select className='form-control'
                 value={this.state.typeSelected}
                 onChange={this._handleChange}>
@@ -68,10 +91,6 @@ export default class MyComponent extends React.Component {
         return p.name;
       })
     });
-  }
-
-  _handleClickUsers(e) {
-    UserActions.selectAll();
   }
 
   _handleChange(e) {

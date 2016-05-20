@@ -10,7 +10,9 @@ class UserStore{
 
     this.bindListeners({
       handleSelect: UserActions.SELECT_USER,
+      handleDeselect: UserActions.DESELECT_USER,
       handleSelectAll: UserActions.SELECT_ALL,
+      handleDeselectAll: UserActions.DESELECT_ALL,
       handleFetch: UserActions.FETCH,
       handleFetchFailed: UserActions.FETCH_FAILED,
       handleFetchSuccess: UserActions.FETCH_SUCCESS
@@ -22,9 +24,21 @@ class UserStore{
     u.selected = true;
   }
 
+  handleDeselect(deselectedUserInfo) {
+    var u = this.users.find(function(o) {return deselectedUserInfo.id == o.id;});
+    u.selected = false;
+  }
+
   handleSelectAll() {
     this.users = _.map(this.users, function(u) {
       u.selected = true;
+      return u;
+    });
+  }
+
+  handleDeselectAll() {
+    this.users = _.map(this.users, function(u) {
+      u.selected = false;
       return u;
     });
   }
