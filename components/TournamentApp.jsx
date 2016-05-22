@@ -32,15 +32,20 @@ class TournamentApp extends React.Component {
       );
     }
 
-    return (
-      <div>
-        <UserList users={this.props.users} selected={this.props.selectedUsers} hidden={this.props.tournament.name}>
-        </UserList>
+    if(!_.isEmpty(this.props.tournament)) {
+      console.log(this.props.tournament);
+      return (
         <Tournament id={this.props.tournament.name}
                     sections={this.props.tournament.sections}>
         </Tournament>
-      </div>
-    );
+      );
+    }
+    else {
+      return (
+        <UserList users={this.props.users} selected={this.props.selectedUsers} hidden={this.props.tournament.name}>
+        </UserList>
+      );
+    }
   }
 }
 

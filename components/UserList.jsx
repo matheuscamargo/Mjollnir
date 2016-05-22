@@ -34,11 +34,9 @@ export default class MyComponent extends React.Component {
             <tr>
               <th>
                 USERS
-                <input type="button" value="Add all" hidden={_.isEqual(this.props.users, selectedUsers)} onClick={(u) => {UserActions.selectAll();}}/>
               </th>
               <th>
                 SELECTED
-                <input type="button" value="Remove all" hidden={_.isEmpty(selectedUsers)} onClick={(u) => {UserActions.deselectAll();}}/>
               </th>
             </tr>
           </thead>
@@ -46,6 +44,19 @@ export default class MyComponent extends React.Component {
             <tr>
               <td>
                 <table className="table">
+                  <thead>
+                    <tr>
+                      <th>
+                          Name
+                      </th>
+                      <th>
+                          Ranking
+                      </th>
+                      <th>
+                        <input className="btn btn-default" type="button" value="Add all" disabled={_.isEqual(this.props.users, selectedUsers)} onClick={(u) => {UserActions.selectAll();}}/>
+                      </th>
+                    </tr>
+                  </thead>
                   <tbody>
                     {_.map(this.props.users, function(user) {
                       return (
@@ -60,6 +71,19 @@ export default class MyComponent extends React.Component {
               </td>
               <td>
                 <table className="table">
+                  <thead>
+                    <tr>
+                      <th>
+                          Name
+                      </th>
+                      <th>
+                          Ranking
+                      </th>
+                      <th>
+                        <input className="btn btn-default" type="button" value="Remove all" disabled={_.isEmpty(selectedUsers)} onClick={(u) => {UserActions.deselectAll();}}/>
+                      </th>
+                    </tr>
+                  </thead>
                   <tbody>
                     {_.map(selectedUsers, function(user) {
                       return (
@@ -75,13 +99,15 @@ export default class MyComponent extends React.Component {
             </tr>
           </tbody>
         </table>
-        Tournament Type:
-        <select className='form-control'
-                value={this.state.typeSelected}
-                onChange={this._handleChange}>
-            {options}
-        </select>
-        <input type="button" value="Start Tournament" hidden={this.props.scores} onClick={this._handleClickTournament}/>
+        <div className="col-md-6 col-md-offset-3">
+          Tournament Type:
+          <select className='form-control'
+                  value={this.state.typeSelected}
+                  onChange={this._handleChange}>
+              {options}
+          </select>
+          <input type="button" value="Start Tournament" hidden={this.props.scores} onClick={this._handleClickTournament}/>
+        </div>
       </div>);
   }
 

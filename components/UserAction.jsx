@@ -17,7 +17,7 @@ export default class MyComponent extends React.Component {
           {this.props.user.ranking}
         </td>
         <td>
-          <input type="button" value={this.props.text} hidden={this.props.btnCondition} onClick={this._handleClick}/>
+          <input className="btn btn-default" type="button" value={this.props.text} disabled={this.props.btnCondition} onClick={this._handleClick}/>
         </td>
       </div>);
   }
