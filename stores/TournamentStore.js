@@ -37,6 +37,7 @@ class TournamentStore{
       handlePlayMatchSuccess: TournamentActions.PLAY_MATCH_SUCCESS,
       handlePlayMatchFail: TournamentActions.PLAY_MATCH_FAILED,
       handlePlayAll: TournamentActions.PLAY_ALL,
+      handleEnd: TournamentActions.END,
     });
   }
 
@@ -105,6 +106,12 @@ class TournamentStore{
 
   handlePlayMatchFail(errorMessage) {
     this.errorMessage = errorMessage;
+  }
+
+  handleEnd() {
+    this.tournamentRaw = [];
+    this.tournamentInfo = [];
+    this.tournament = [];
   }
 }
 

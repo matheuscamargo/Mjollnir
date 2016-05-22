@@ -33,6 +33,12 @@ class TournamentActions {
     return errorMessage;
   }
 
+  end() {
+    return (dispatch) => {
+      dispatch();
+    };
+  }
+
   fetch() {
     return (dispatch) => {
       dispatch();

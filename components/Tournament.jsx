@@ -5,10 +5,6 @@ import Section from './Section.jsx';
 import TournamentActions from '../actions/TournamentActions';
 
 export default class MyComponent extends React.Component {
-  constructor(props) {
-    super(props);
-    this._handleClick = this._handleClick.bind(this);
-  }
 
   render() {
     if(!this.props.id) {
@@ -23,7 +19,8 @@ export default class MyComponent extends React.Component {
       <div>
         <div>
           {this.props.id}
-          <input type="button" value="Play" onClick={this._handleClick}/>
+          <input className="btn btn-default" type="button" value="Play" onClick={(e) => {TournamentActions.playAll();}}/>
+          <input className="btn btn-default" type="button" value="End" onClick={(e) => {TournamentActions.end();}}/>
           <table>
             <tbody>
               {_.map(this.props.sections, function(section) {
@@ -41,9 +38,5 @@ export default class MyComponent extends React.Component {
           </table>
         </div>
       </div>);
-  }
-
-  _handleClick(e) {
-    TournamentActions.playAll();
   }
 }
