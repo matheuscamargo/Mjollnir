@@ -88,7 +88,8 @@ class GameManager {
   std::mutex updateFlagMutex_;
   std::mutex gameInfoMutex_;
   std::array<std::mutex, kMaxPlayers> playerMutex_;
-  std::condition_variable cv;
+  std::condition_variable condUpdate_;
+  std::condition_variable condTurn_;
 
   GameTimer timer_;
 
