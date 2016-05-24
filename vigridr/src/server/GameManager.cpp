@@ -83,10 +83,7 @@ void GameManager::finalizeGame() {
       
     }
   }
-  //Workaround solution so that clients have time to finish by themselves
-  //Before the server is killed
-  std::chrono::seconds sleepTime(1);
-  std::this_thread::sleep_for(sleepTime);
+  
   GameLogger::printWorldModel(gameInfo_.worldModel, gameLogic_.getTotalWorldModel());
   GameLogger::logWorldModel(gameInfo_.worldModel, gameLogic_.getTotalWorldModel());
   GameLogger::flushLog();
