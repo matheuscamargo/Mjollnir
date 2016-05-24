@@ -10,8 +10,9 @@ public class CSharpClient
 {
     public static void playGame(Game.Client client) {
         GameInit gameInit = client.ready();
-        GameInfo gameInfo = gameInit.GameInfo;
         Solution solution = new Solution(gameInit);
+
+        GameInfo gameInfo;
         while (true) {
             gameInfo = client.getGameInfo();
             if (gameInfo.GameStatus == GameStatus.FINISHED)

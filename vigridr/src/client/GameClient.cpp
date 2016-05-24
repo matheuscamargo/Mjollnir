@@ -39,7 +39,8 @@ void playGame(GameClient& client) {
   GameInit gameInit;
   client.ready(gameInit);
   init(gameInit);
-  GameInfo gameInfo = gameInit.gameInfo;
+  
+  GameInfo gameInfo;
   while (true) {
     client.getGameInfo(gameInfo);
     if (gameInfo.gameStatus == GameStatus::FINISHED) {

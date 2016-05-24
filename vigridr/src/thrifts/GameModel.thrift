@@ -24,6 +24,5 @@ struct GameInfo {
 }
 
 struct GameInit {
-  1: required GameInfo gameInfo,
-  2: required GameDescription.GameDescription gameDescription,
+  1: required GameDescription.GameDescription gameDescription,
 }
