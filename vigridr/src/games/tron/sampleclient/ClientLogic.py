@@ -29,10 +29,6 @@ class Solution:
         self.height = gameInit.gameDescription.field.height
         self.table = [[-1 for j in range(self.height)] for i in range(self.width)]
 
-        for i, player in enumerate(gameInit.gameInfo.worldModel.players):
-            for pos in player.body:
-                self.table[pos.x][pos.y] = i
-
         self.me = gameInit.gameDescription.myIndex
 
     def play_turn(self, wm, turn):
@@ -55,9 +51,10 @@ class Solution:
         """
         print len(self.table)
 
-        # Place new heads
-        self.table[wm.players[0].body[-1].x][wm.players[0].body[-1].y] = 0
-        self.table[wm.players[1].body[-1].x][wm.players[1].body[-1].y] = 1
+        # Updating positions
+        for i, player in enumerate(wm.players):
+            for pos in player.body:
+                self.table[pos.x][pos.y] = i
 
         # Print the board
         print "Turn", turn

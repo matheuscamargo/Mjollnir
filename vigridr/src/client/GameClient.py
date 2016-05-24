@@ -31,7 +31,7 @@ from GameModel.ttypes import GameStatus
 def play_game(client):
     gameInit = client.ready()
     solution = Solution(gameInit)
-    gameInfo = gameInit.gameInfo
+    
     while True:
         gameInfo = client.getGameInfo()
         if gameInfo.gameStatus == GameStatus.FINISHED:

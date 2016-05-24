@@ -353,7 +353,6 @@ void GameManager::getGameInfo(GameInfo& gameInfo, int32_t playerId) {
 }
 
 void GameManager::getGameInit(GameInit& gameInit, int32_t playerId) {
-  getGameInfo(gameInit.gameInfo, playerId);
   gameInit.gameDescription = gameLogic_.getGameDescription(playerId);
   LOG("GetGameInit %d", playerId);
 }

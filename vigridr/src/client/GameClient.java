@@ -9,8 +9,9 @@ public class GameClient
 {
     public static void playGame(Game.Client client) throws TException {
         GameInit gameInit = client.ready();
-        GameInfo gameInfo = gameInit.getGameInfo();
         ClientLogic solution = new ClientLogic(gameInit);
+        
+        GameInfo gameInfo;
         while (true) {
             gameInfo = client.getGameInfo();
             if (GameStatus.FINISHED.equals(gameInfo.getGameStatus())) {
