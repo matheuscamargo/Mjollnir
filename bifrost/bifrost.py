@@ -1252,10 +1252,13 @@ def apiRegister():
         })
         _user.__class__ = User
         success = True
+        error = None
     except StormpathError, err:
+        logger.warn(err);
         success = False
+        error = err.message
 
-    response_dict = {'success' : success}
+    response_dict = {'success' : success, 'error': error}
     return jsonify(**response_dict)
 
 @app.route('/api/challenge/<challenge_name>')
