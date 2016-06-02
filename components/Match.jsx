@@ -11,9 +11,17 @@ export default class MyComponent extends React.Component {
     // TODO: Does any game support more than 2 players?
     return (
       <div>
-        Match {this.props.id.m}
-        <input type="button" value="Play" hidden={this.props.scores || (!this.props.players[0] || !this.props.players[1])} onClick={this._handleClick}/>
-        <table>
+        <table className="table">
+          <thead>
+            <tr>
+              <td>
+                Match {this.props.id.m}
+              </td>
+              <td>
+                <input type="button" className="btn btn-default" value="Play" disabled={this.props.scores || (!this.props.players[0] || !this.props.players[1])} onClick={this._handleClick}/>
+              </td>
+            </tr>
+          </thead>
           <tbody>
             <tr>
               <td>

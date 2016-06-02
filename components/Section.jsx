@@ -7,7 +7,7 @@ export default class MyComponent extends React.Component {
     return (
       <div>
         Section {this.props.id}
-        <table>
+        <table className="table">
           <tbody>
             <tr>
               {_.map(this.props.rounds, function(round) {

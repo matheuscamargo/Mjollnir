@@ -65,7 +65,8 @@ class TournamentStore{
 
     function GetMatchesPromises(tournament) {
       return _.map(_.filter(tournament.matches, function(match) {
-        return tournament.isPlayable(match);
+        // See if game has the players propagated and has not been scored yet
+        return tournament.isPlayable(match) && (!Array.isArray(match.m));
       }), function(playableMatch) {
         return new Promise(function(resolve, reject) {
           //this.tournament = toDesiredSchema(this.tournamentInfo, this.tournamentRaw);
@@ -100,6 +101,13 @@ class TournamentStore{
 
   handlePlayMatchSuccess(matchInfo) {
     //console.log(matchInfo);
+    var reason = this.tournamentRaw.unscorable(matchInfo.id);
+    if (reason !== null) {
+      console.log(reason); // either invalid parameters or complaining about rewriting history
+    }
+    else {
+      this.tournamentRaw.score(matchInfo.id, matchInfo.results);
+    }
     this.tournamentRaw.score(matchInfo.id, matchInfo.results);
     this.tournament = toDesiredSchema(this.tournamentInfo, this.tournamentRaw);
   }
@@ -111,7 +119,7 @@ class TournamentStore{
   handleEnd() {
     this.tournamentRaw = [];
     this.tournamentInfo = [];
-    this.tournament = [];
+    this.tournament = {};
   }
 }
 

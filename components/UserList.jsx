@@ -20,9 +20,7 @@ export default class MyComponent extends React.Component {
     var selectedUsers = _.filter(this.props.users, function(u) {return u.selected;});
     var options = tournamentOptions.map(function(option) {
             return (
-                <option key={option} value={option}>
-                    {option}
-                </option>
+                <option key={option} value={option}>{option}</option>
             );
         });
 
@@ -60,10 +58,8 @@ export default class MyComponent extends React.Component {
                   <tbody>
                     {_.map(this.props.users, function(user) {
                       return (
-                        <tr key={_.uniqueId('u_')}>
-                          <UserAction user={user} text="Add" action={UserActions.selectUser} btnCondition={user.selected}>
-                          </UserAction>
-                        </tr>
+                        <UserAction key={_.uniqueId('u_')} user={user} text="Add" action={UserActions.selectUser} btnCondition={user.selected}>
+                        </UserAction>
                       );
                     })}
                   </tbody>
@@ -87,10 +83,8 @@ export default class MyComponent extends React.Component {
                   <tbody>
                     {_.map(selectedUsers, function(user) {
                       return (
-                        <tr key={_.uniqueId('us_')}>
-                          <UserAction user={user} text="Remove" action={UserActions.deselectUser}>
-                          </UserAction>
-                        </tr>
+                        <UserAction key={_.uniqueId('us_')} user={user} text="Remove" action={UserActions.deselectUser}>
+                        </UserAction>
                       );
                     })}
                   </tbody>

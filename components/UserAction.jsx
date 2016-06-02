@@ -9,7 +9,7 @@ export default class MyComponent extends React.Component {
 
   render() {
     return (
-      <div>
+      <tr>
         <td>
           {this.props.user.name}
         </td>
@@ -19,7 +19,8 @@ export default class MyComponent extends React.Component {
         <td>
           <input className="btn btn-default" type="button" value={this.props.text} disabled={this.props.btnCondition} onClick={this._handleClick}/>
         </td>
-      </div>);
+      </tr>
+    );
   }
 
   _handleClick(e) {
