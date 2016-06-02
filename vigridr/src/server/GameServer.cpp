@@ -11,10 +11,11 @@
 #include "GameManager.h"
 #include "GameService.h"
 #include "../utils/Log.h"
+#include "../utils/StringUtils.h"
 #include "../thrifts/gen-cpp/Game.h"
 
-DEFINE_int32(port1, 9090, "Port used by the first client.");
-DEFINE_int32(port2, 9091, "Port used by the second client.");
+DEFINE_string(ports,"9090,9091", "Ports used by clients.");
+DEFINE_int32(nplayers, 2, "Number of clients");
 
 const char* const kVersion = "v1.1";
 const char* const kUsageMessage =
@@ -38,7 +39,9 @@ int main(int argc, char **argv) {
   gflags::SetUsageMessage(kUsageMessage);
   gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-  auto gameManager = std::make_shared<GameManager>(FLAGS_port1, FLAGS_port2);
+  std::vector<std::string> portStrings = mjollnir::vigridr::utils::split(FLAGS_ports, ',');
+
+  auto gameManager = std::make_shared<GameManager>(std::stoi(portStrings[0]), std::stoi(portStrings[1]));
   auto serviceInit = [&](int32_t port) {
     boost::shared_ptr<GameService> handler(new GameService(gameManager, port));
 
@@ -64,8 +67,8 @@ int main(int argc, char **argv) {
     server.serve();
     LOG("Done");
   };
-  std::thread player1Service(serviceInit, FLAGS_port1);
-  std::thread player2Service(serviceInit, FLAGS_port2);
+  std::thread player1Service(serviceInit, std::stoi(portStrings[0]));
+  std::thread player2Service(serviceInit, std::stoi(portStrings[1]));
   player1Service.join();
   player2Service.join();
   

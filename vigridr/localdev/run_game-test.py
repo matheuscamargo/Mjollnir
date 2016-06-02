@@ -11,14 +11,28 @@ try:
         'stdout': open(path.join('server', 'result'), 'w'),
         'stderr': open(path.join('server', 'output'), 'w'),
     }
+
+    #Adding number of clients as parameters
+    server_kwargs['args'].append('--nplayers')
+    server_kwargs['args'].append(str(len([0,1])))
+
+    server_kwargs['args'].append('--players')
+    players_string = ",".join(str(uid) for uid in [1,2])
+    server_kwargs['args'].append(players_string)
+
+    server_kwargs['args'].append('--ports')
+    ports_string = ",".join( '909' + str(idx) for idx in [0,1])
+    server_kwargs['args'].append(ports_string)
+
+    print server_kwargs
     
     # Player parameters (id and port)        
-    for idx in [0, 1]:
-        server_kwargs['args'].append('--player' + str(idx + 1))
-        server_kwargs['args'].append('uid' + str(idx + 1)) # I guess uid can be any random thing (but if is COMPUTER there's something special)
-    for idx in [0, 1]:
-        server_kwargs['args'].append('--port' + str(idx + 1))
-        server_kwargs['args'].append('909' + str(idx))
+    # for idx in [0, 1]:
+    #     server_kwargs['args'].append('--player' + str(idx + 1))
+    #     server_kwargs['args'].append('uid' + str(idx + 1)) # I guess uid can be any random thing (but if is COMPUTER there's something special)
+    # for idx in [0, 1]:
+    #     server_kwargs['args'].append('--port' + str(idx + 1))
+    #     server_kwargs['args'].append('909' + str(idx))
         
     # Construction of client parameters
     client_kwargs = []
