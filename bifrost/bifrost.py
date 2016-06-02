@@ -1291,6 +1291,7 @@ def play(cid, uids, rounds, tid = None):
         if error:
             return error
 
+    print(r['mid'], file=sys.stderr)
     return False
 
 

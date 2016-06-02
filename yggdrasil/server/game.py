@@ -32,7 +32,7 @@ class SiidNullError(Exception):
     pass
 
 class Game():
-    def __init__(self, siids, uids, cid, pid, tid, logger):
+    def __init__(self, siids, uids, cid, pid, tid, mid, logger):
         self.logger = logger
         self.exts = []
         # Transforming a string of fa list back to a list
@@ -40,7 +40,7 @@ class Game():
         self.uids = json.loads(uids)
         self.num_players = len(self.uids)
         self.pid = pid
-        self.mid = str(uuid4())
+        self.mid = mid
         self.tid = tid
         self.game = path.join(SANDBOXES, 'game-' + self.mid)
         self.result = {
@@ -76,6 +76,9 @@ class Game():
             for line in traceback.format_exception(t, v, tr):
                 self.logger.error(line[:-1])
         return True
+
+    def getmid(self):
+        return self.mid
 
     def download(self):
         for siid in self.siids:
