@@ -1291,7 +1291,7 @@ def play(cid, uids, rounds, tid = None):
         if error:
             return error
 
-    print r['mid']
+    #print r['mid']
     return False
 
 
