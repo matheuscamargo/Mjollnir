@@ -1217,6 +1217,41 @@ def matches():
 
 # REST API
 
+@app.route('/api/join/<gid>', methods=['GET'])
+def apiJoinGroup(gid):
+    """
+    Allows a user to join/leave a group
+    """
+    response = {'success': False}
+    username = request.args.get('username')
+    if not username:
+        return jsonify(**response)
+
+    group = mongodb.groups.find_one({ 'gid': gid })
+    if not group:
+        return jsonify(**response)
+
+    if username not in group['users']:
+        mongodb.groups.update(
+            { 'gid': gid },
+            { '$push':
+                {
+                    'users': username
+                }
+            }
+        )
+    else:
+        mongodb.groups.update(
+            { 'gid': gid },
+            { '$pull':
+                {
+                    'users': username
+                }
+            }
+        )
+    response = {'success': True}
+    return jsonify(**response)
+
 @app.route('/api/group/<gid>', methods=['GET', 'POST'])
 def apiGroup(gid):
     """
