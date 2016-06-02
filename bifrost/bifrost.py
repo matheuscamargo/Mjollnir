@@ -1293,15 +1293,15 @@ def apiGroups():
     """
     Renders a list of groups the user can see
     """
-    username = 'ilharco'
-    # username = user.username
-    # if not username:
-    #     abort(400)
+    groups_dict = {'groups': []}
+    username = request.args.get('username')
+    if not username:
+        return jsonify(**groups_dict)
 
-    # user_in_db = mongodb.users.find_one({ 'username': username })
+    user_in_db = mongodb.users.find_one({ 'username': username })
 
-    # if not user_in_db:
-    #     abort(404)
+    if not user_in_db:
+        return jsonify(**groups_dict)
 
     groups = filter(lambda group: not group['admin_only'] or username in group['admins'] or is_active_user_in('Dev'), mongodb.groups.find())
     groups_objs = []
@@ -1309,6 +1309,10 @@ def apiGroups():
         current_group = {}
         current_group['id'] = group['gid']
         current_group['name'] = group['name']
+        if username in group['users']:
+            current_group['situation'] = "Leave"
+        else:
+            current_group['situation'] = "Join"
         groups_objs.append(current_group)
     groups_dict = {'groups': groups_objs}
     return jsonify(**groups_dict)
