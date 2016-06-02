@@ -689,10 +689,14 @@ def tournament(tid):
 
 @app.route('/tournament/<tid>/playgame', methods=['POST'])
 def tournamentplaygame(tid):
-    error, mid = play(request.form['cid'], request.form['ids'], request.form['rounds'], None)
+    for username in request.form['ids']:
+        user_in_db = mongodb.users.find_one({ 'username': username })
+        users.append(user_in_db['uid'])
+    
+    error, mid = play(request.form['cid'], users, request.form['rounds'], None)
     return mid
 
-@app.route('/tournament/<tid>/getmatch/<mid>', methods=['POST'])
+@app.route('/tournament/<tid>/match/<mid>')
 def tournamentgetmatch(tid, mid):
     match = mongodb.matches.find_one({ 'mid': mid })
     if not match:
@@ -716,9 +720,9 @@ def tournamentgetmatch(tid, mid):
         match['winner'] = 'Score: ' + str(match['users'][0]['rank'])
     else:
         if match['users'][0]['rank'] == 1 and match['users'][1]['rank'] == 2:
-            match['winner'] = match['users'][0]['uid']
+            match['winner'] = match['usernames'][0]
         elif match['users'][0]['rank'] == 2 and match['users'][1]['rank'] == 1:
-            match['winner'] = match['users'][1]['uid']
+            match['winner'] = match['usernames'][1]['uid']
         else: 
             match['users'][0]['uid']
 
