@@ -687,7 +687,62 @@ def tournament(tid):
     return render_template('tournament.html', tournament = tournament, matches = matches, names_type = group['users_name_type'])
 
 
+@app.route('/tournament/<tid>/playgame', methods=['POST'])
+def tournamentplaygame(tid):
+    error, mid = play(request.form['cid'], request.form['ids'], request.form['rounds'], None)
+    return mid
 
+@app.route('/tournament/<tid>/getmatch/<mid>', methods=['POST'])
+def tournamentgetmatch(tid, mid):
+    match = mongodb.matches.find_one({ 'mid': mid })
+    if not match:
+        abort(404)
+
+    challenge = mongodb.challenges.find_one({ 'cid': match['cid'] })
+
+    if not challenge:
+        raise Exception("Couldn't find a challenge with cid " + match['cid'])
+
+    users = list(mongodb.users.find({'uid': {'$in': [user['uid'] for user in match['users']]}}))
+    users_dict = {user['uid']: user for user in users}
+
+    time_delta = datetime.datetime.utcnow() - match['datetime']
+    match['time_since'] = time_since_from_seconds(time_delta.total_seconds())
+    match['challenge_name'] = challenge['name']
+    match['visualizer'] = challenge['visualizer']
+    match['usernames'] = [users_dict[user['uid']]['username'] for user in match['users']]
+
+    if match['challenge_name'] == 'Wumpus':
+        match['winner'] = 'Score: ' + str(match['users'][0]['rank'])
+    else:
+        if match['users'][0]['rank'] == 1 and match['users'][1]['rank'] == 2:
+            match['winner'] = match['users'][0]['uid']
+        elif match['users'][0]['rank'] == 2 and match['users'][1]['rank'] == 1:
+            match['winner'] = match['users'][1]['uid']
+        else: 
+            match['users'][0]['uid']
+
+    match['users'] = users
+
+    # Checking for errors
+    if 'errors' in match:
+        errors = match['errors']
+        culprits = []
+        if 'server' in errors:
+            culprits.append('on the server')
+            errors.remove('server')
+        culprits.extend([('on the %s solution' % users_dict[uid]['username']) for uid in errors])
+        if len(culprits) > 1:
+            s = ', '.join(culprits[:-1]) + ' and ' + culprits[-1]
+        else:
+            s = culprits[0]
+        match['error_message'] = 'There was an error %s during this match.' % s
+    else:
+        match['error_message'] = None
+
+    custom_title = ' vs '.join(match['usernames']) + ' on ' + match['challenge_name']
+
+    return match['winner']
 
 def make_ranking(matches, tournament, group, names_dict):
 
@@ -835,9 +890,9 @@ def group(gid):
             challenge = mongodb.challenges.find_one({'cid': cid})
 
             if challenge['name'] == 'Wumpus':
-                error = play(cid = cid, uids = [user_id], rounds = rounds)
+                error, mid = play(cid = cid, uids = [user_id], rounds = rounds)
             else:
-                error = play(cid = cid, uids = [user_id, opponent], rounds = rounds)
+                error, mid = play(cid = cid, uids = [user_id, opponent], rounds = rounds)
 
             if error:
                 return render_template('group.html', group = group, playForm = playForm, tournamentForm = tournamentForm, error = error)
@@ -868,9 +923,9 @@ def group(gid):
                 return redirect(url_for('.matches'))
 
             if challenge['name'] == 'Wumpus':
-                error = play(cid = cid, uids = [player1], rounds = rounds)
+                error, mid = play(cid = cid, uids = [player1], rounds = rounds)
             else:
-                error = play(cid = cid, uids = [player1, player2], rounds = rounds)
+                error, mid = play(cid = cid, uids = [player1, player2], rounds = rounds)
 
             if error:
                 return render_template('group.html', group = group, playForm = playForm, tournamentForm = tournamentForm, error = error)
@@ -1292,7 +1347,7 @@ def play(cid, uids, rounds, tid = None):
             return error
 
     #print r['mid']
-    return False
+    return False, r['mid']
 
 
 
