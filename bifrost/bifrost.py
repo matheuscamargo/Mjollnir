@@ -1217,6 +1217,59 @@ def matches():
 
 # REST API
 
+@app.route('/api/group/<gid>', methods=['GET', 'POST'])
+def apiGroup(gid):
+    """
+    getting info from a group
+    """
+    group = mongodb.groups.find_one({'gid': gid})
+    if not group or ( user.username not in group['admins'] and group['admin_only'] ):
+        abort(404)
+    
+    user_id = user.custom_data['uid']
+
+    group_users = list()
+    for player in group['users']:
+        user_in_db = mongodb.users.find_one({ 'username': player})
+        uid = user_in_db['uid']
+        name = player
+
+        if group['users_name_type'] == 'full_name':
+            # In case the user don't have a full name (old users)
+            if 'given_name' in user_in_db and 'surname' in user_in_db:
+                name = user_in_db['given_name'] + ' ' + user_in_db['surname']
+
+        # We are considering that players can't play against themselves
+        if uid != user_id:
+            group_users.append((uid, name))
+
+    limit = 5
+    tournaments = list( mongodb.tournaments.find({ 'gid': group['gid']}).sort('datetime_started', pymongo.DESCENDING).limit(limit) )
+
+    challenges = list( mongodb.challenges.find({}) )
+    #challenges_choices = [(challenge['cid'], challenge['name']) for challenge in challenges]
+
+    for tournament in tournaments:
+        time_delta = datetime.datetime.utcnow() - tournament['datetime_started']
+        tournament['time_since'] = time_since_from_seconds( time_delta.total_seconds() )
+
+
+    if request.method == 'GET':
+        response = {}
+        response['description'] = group['description']
+        play = {}
+        play['challenges'] = []
+        for challenge in challenges:
+            play['challenges'].append({'id':challenge['cid'], 'name':challenge['name']})
+        play['opponents'] = []
+        for opponent in group_users:
+            play['opponents'].append({'id':opponent[0], 'name':opponent[1]})
+        response['play'] = play
+        response['tournaments'] = []
+        for tournament in tournaments:
+            response['tournaments'].append({'id':tournament['tid'], 'name':tournament['challenge_name'], 'date':tournament['time_since']})
+        return jsonify(**response)
+
 @app.route('/api/news')
 def apiNews():
     """
@@ -1286,9 +1339,9 @@ def apiRegister():
     return jsonify(**response_dict)
 
 @app.route('/api/challenge/<challenge_name>')
-def apiChallangesRanking(challenge_name):
+def apiChallengesRanking(challenge_name):
     """
-    returns a JSON object that represents the list of ratings for that challange
+    returns a JSON object that represents the list of ratings for that challenge
     """
     challenge = mongodb.challenges.find_one({'name': challenge_name})
     rank = {}
