@@ -5,6 +5,8 @@ import alt from '../alt';
 import TournamentActions from '../actions/TournamentActions';
 import TournamentSource from '../sources/TournamentSource';
 
+var GET_AGAIN_TIME = 500;
+
 function toDesiredSchema(TournamentInfo, TournamentRaw) {
   var DuelTournament = TournamentRaw;
 
@@ -19,7 +21,7 @@ function toDesiredSchema(TournamentInfo, TournamentRaw) {
                                    })
                                  };})
                                };});
-  return {name: TournamentInfo.name, sections: DesiredSchema};
+  return {name: TournamentInfo.name, sections: DesiredSchema, challenge: TournamentInfo.challenge};
 }
 
 class TournamentStore{
@@ -72,11 +74,23 @@ class TournamentStore{
           //this.tournament = toDesiredSchema(this.tournamentInfo, this.tournamentRaw);
           //TournamentStore.emitChange();
           console.log("Jogando jogo: " + playableMatch.p);
-          TournamentSource.playMatch(playableMatch.id).then(function(matchResult) {
-            console.log("Fim do jogo: " + matchResult.p + ": " + matchResult.m);
-            self.handlePlayMatchSuccess(matchResult);
-            self.emitChange();
-            resolve();
+          TournamentSource.playMatch(playableMatch.id).then(function(matchInfo) {
+            var tryGetResult = (matchInfo) => {
+              console.log("Tentando achar resultado do jogo: " + playableMatch.p);
+              TournamentSource.getMatch(matchInfo).then(function(matchResult) {
+                if(matchResult) {
+                  console.log("Fim do jogo: " + matchResult.p + ": " + matchResult.m);
+                  self.handlePlayMatchSuccess(matchResult);
+                  self.emitChange();
+                  resolve();
+                }
+                else {
+                  setTimeout(tryGetResult(matchInfo), GET_AGAIN_TIME);
+                }
+              });
+            };
+
+            tryGetResult(matchInfo);
           });
         });
       });

@@ -17,11 +17,24 @@ class TournamentSource {
 
   playMatch(matchInfo) {
     return new Promise(function(resolve, reject) {
+      // Simulating POST
+      setTimeout(function() {
+        resolve(matchInfo);
+      }, 500 + Math.random() * 500);
+    });
+  }
+
+  getMatch(matchInfo) {
+    return new Promise(function(resolve, reject) {
+      // Simulating GET request to find desired matchId
       setTimeout(function() {
         var x = _.random(0, 1);
         var y = 1-x;
-        resolve(_.extend({id: matchInfo}, {results: [x, y]}));
-      }, 500 + Math.random() * 500);
+        if(Math.random() > 0.2)
+          resolve(_.extend({id: matchInfo}, {results: [x, y]}));
+        else
+          resolve(false);
+      }, 500);
     });
   }
 }

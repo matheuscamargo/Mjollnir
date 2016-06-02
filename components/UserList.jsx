@@ -5,20 +5,29 @@ import TournamentActions from '../actions/TournamentActions';
 import UserActions from '../actions/UserActions';
 import UserAction from './UserAction.jsx';
 
-var tournamentOptions = ['single', 'double', 'group'];
+var tournamentOptions = {
+  types: ['single', 'double', 'group'],
+  challenges: ['ttt'],
+};
 
 export default class MyComponent extends React.Component {
   constructor(props) {
       super(props);
       this._handleClickTournament = this._handleClickTournament.bind(this);
-      this._handleChange = this._handleChange.bind(this);
+      this._handleTypeChange = this._handleTypeChange.bind(this);
+      this._handleChallengeChange = this._handleChallengeChange.bind(this);
 
-      this.state = {typeSelected: 'single'};
+      this.state = {typeSelected: 'single', challengeSelected: 'ttt'};
   }
 
   render() {
     var selectedUsers = _.filter(this.props.users, function(u) {return u.selected;});
-    var options = tournamentOptions.map(function(option) {
+    var typeOptions = tournamentOptions.types.map(function(option) {
+            return (
+                <option key={option} value={option}>{option}</option>
+            );
+        });
+    var challengeOptions = tournamentOptions.challenges.map(function(option) {
             return (
                 <option key={option} value={option}>{option}</option>
             );
@@ -94,26 +103,42 @@ export default class MyComponent extends React.Component {
           </tbody>
         </table>
         <div className="col-md-6 col-md-offset-3">
-          Tournament Type:
-          <select className='form-control'
-                  value={this.state.typeSelected}
-                  onChange={this._handleChange}>
-              {options}
-          </select>
-          <input type="button" value="Start Tournament" hidden={this.props.scores} onClick={this._handleClickTournament}/>
+          <div>
+            Tournament Type:
+            <select className='form-control'
+                    value={this.state.typeSelected}
+                    onChange={this._handleTypeChange}>
+                {typeOptions}
+            </select>
+          </div>
+          <div>
+            Tournament Type:
+            <select className='form-control'
+                    value={this.state.challengeSelected}
+                    onChange={this._handleChallengeChange}>
+                {challengeOptions}
+            </select>
+          </div>
+          <div>
+            <input type="button" className="btn btn-default" value="Start Tournament" hidden={this.props.scores} onClick={this._handleClickTournament}/>
+          </div>
         </div>
       </div>);
   }
 
   _handleClickTournament(e) {
     //TODO:  Add correct seeding stuff and fix this:
-    TournamentActions.create({name: 'TOURNAMENT', type: this.state.typeSelected, players: _.map(_.filter(this.props.users, function(u) {return u.selected;}), function(p) {
+    TournamentActions.create({name: 'TOURNAMENT', type: this.state.typeSelected, challenge:this.state.challengeSelected, players: _.map(_.filter(this.props.users, function(u) {return u.selected;}), function(p) {
         return p.name;
       })
     });
   }
 
-  _handleChange(e) {
-        this.setState({typeSelected: e.target.value});
-    }
+  _handleTypeChange(e) {
+    this.setState({typeSelected: e.target.value});
+  }
+
+  _handleChallengeChange(e) {
+    this.setState({challengeSelected: e.target.value});
+  }
 }
