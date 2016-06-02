@@ -55,7 +55,7 @@ try:
     killed = False
     if server_process.returncode != 0:
         killed = True
-        print 'error: server'
+        print 'something went wrong on server, probably it was killed before his children'
 
 finally:
     server_kwargs['stdout'].close()
@@ -82,12 +82,11 @@ if winner == '-1':
     print 'Result: tie'
 
 elif winner[0:3] == '909':
-    for idx in range(self.num_players):
+    for idx in range(0,2):
         if idx == int(winner[3:]):
-            print 'Winner: ' + idx
+            print 'Winner: ' + str(idx)
         
 elif winner[0:2] == 's:':
-    print 'Acho que quer dizer que o jogo nao tem 2 players, so um score absoluto: Score: ' + winner[2:]
-    print 'Olhar codigo do game.py do Yggdrasil e procurar por \'elif winner[0:2] == \'s:\''    
+    print 'Game with just 1 player, score: ' + winner[2:]
 else:
     print 'Unknown result: ' + winner

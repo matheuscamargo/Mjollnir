@@ -83,19 +83,23 @@ angular.module('hermod.services', [])
         registerUser: function(data) {
             var deferred = $q.defer();
             var promise = deferred.promise;
-            console.log("register");
 
-            $http.post(SERVER.url + "api/register", data)
-            .success(function(data) {
-              console.log(data);
-                if (data.success) {
-                  deferred.resolve('Welcome ' + name + '!');
-                }
-                else {
-                  deferred.reject('Wrong credentials.');
-                }
-            });
-
+            if (data.password != data.confirmpassword) {
+              deferred.reject("Please make sure your passwords match.");
+            }
+            else {
+              $http.post(SERVER.url + "api/register", data)
+              .success(function(data) {
+                console.log(data);
+                  if (data.success) {
+                    deferred.resolve('Welcome ' + name + '!');
+                  }
+                  else {
+                    deferred.reject(data.error);
+                  }
+              });
+            }
+            
             promise.success = function(fn) {
                 promise.then(fn);
                 return promise;

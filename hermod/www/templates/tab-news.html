@@ -1,15 +1,19 @@
 <ion-view view-title="News">
   <ion-content class="padding">
-    <button class="button button-block button-assertive" ng-click="test()">TEST IS LOGGED</button>
-    <p>{{vartest}}</p>
-    <ion-list>
-      <ion-item ng-repeat="item in news">
-        <div>
-          <p>{{item.title}}</p>
-          <p>{{item.author}}</p>
-          <p>{{item.datetime}}</p>
-          <p>{{item.content}}</p>
-        </div>
+    <ion-list class="list card">
+      <ion-item ng-repeat="new in news">
+          <div class="item ">
+            <h2>{{new.title}}</h2>
+            <p>{{new.datetime}}</p>
+          </div>
+
+          <div class="item item-body">
+            <p ng-bind-html="new.content"></p>
+            <p>
+              <a href="#" class="subdued">posted by {{new.author}}</a>
+            </p>
+          </div>
+
       </ion-item>
     </ion-list>
   </ion-content>
