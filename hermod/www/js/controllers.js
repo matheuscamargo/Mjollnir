@@ -1,6 +1,6 @@
 angular.module('hermod.controllers', [])
 
-.controller('NewsCtrl', function($scope, $http, SERVER) {
+.controller('NewsCtrl', function($scope, $http, SERVER, NewsMock) {
 
   $http({
       url: SERVER.url + "api/news",
@@ -9,15 +9,8 @@ angular.module('hermod.controllers', [])
       $scope.news = data.news;
   });
 
-  $scope.test = function () {
-    $http({
-        url: SERVER.url + "api/is_logged",
-    })
-    .then(function(res) {
-      console.log(res);
-        $scope.vartest = res;
-    });
-  };
+  // Mock
+  // $scope.news = NewsMock.getNews();
 
 })
 
@@ -41,6 +34,7 @@ angular.module('hermod.controllers', [])
   .success(function(data) {
       $scope.rank = data.rank;
   });
+
   // Mock
   // $scope.rank = ChallengesMock.getRank();
 })
@@ -49,6 +43,7 @@ angular.module('hermod.controllers', [])
     $scope.data = {};
  
     $scope.login = function() {
+        // -- make sure it is not mocked --
         LoginService.autoLogin($scope.data.username, $scope.data.password).success(function(data) {
             $state.go('tab.news');
         }).error(function() {
