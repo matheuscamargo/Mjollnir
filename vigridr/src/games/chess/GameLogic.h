@@ -52,7 +52,7 @@ class GameLogic {
   bool hasFinished_;
   const size_t boardSize_ = 8;
   const size_t numberOfPlayers_ = 2;
-  int tempGameCounter = 20;
+  int tempGameCounter = 27;
 };
 
 }}  // namespaces

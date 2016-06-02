@@ -19,6 +19,7 @@ GameLogic::GameLogic(int32_t playerId1, int32_t playerId2) {
     }
     board.push_back(line);
   }
+
   board[0][0] = createPiece(Type::TOWER, PlayerColor::BLACK);
   board[0][1] = createPiece(Type::HORSE, PlayerColor::BLACK);
   board[0][2] = createPiece(Type::BISHOP, PlayerColor::BLACK);
@@ -30,11 +31,12 @@ GameLogic::GameLogic(int32_t playerId1, int32_t playerId2) {
   board[7][0] = createPiece(Type::TOWER, PlayerColor::WHITE);
   board[7][1] = createPiece(Type::HORSE, PlayerColor::WHITE);
   board[7][2] = createPiece(Type::BISHOP, PlayerColor::WHITE);
-  board[7][3] = createPiece(Type::KING, PlayerColor::WHITE);
-  board[7][4] = createPiece(Type::QUEEN, PlayerColor::WHITE);
+  board[7][3] = createPiece(Type::QUEEN, PlayerColor::WHITE);
+  board[7][4] = createPiece(Type::KING, PlayerColor::WHITE);
   board[7][5] = createPiece(Type::BISHOP, PlayerColor::WHITE);
   board[7][6] = createPiece(Type::HORSE, PlayerColor::WHITE);
   board[7][7] = createPiece(Type::TOWER, PlayerColor::WHITE);
+
   for (int i = 0; i < 8; i++) {
     board[1][i] = createPiece(Type::PAWN, PlayerColor::BLACK);
     board[6][i] = createPiece(Type::PAWN, PlayerColor::WHITE);
@@ -43,6 +45,7 @@ GameLogic::GameLogic(int32_t playerId1, int32_t playerId2) {
 }
 
 bool GameLogic::update(Command command, int32_t playerId) {
+  
   if(tempGameCounter-- > 0) {
 
     movePiece(command);
