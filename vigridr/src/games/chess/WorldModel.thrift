@@ -1,6 +1,6 @@
 namespace cpp mjollnir.vigridr
 
-enum Piece {
+enum Type {
 	PAWN = 1,
 	TOWER = 2,
 	HORSE = 3,
@@ -8,6 +8,16 @@ enum Piece {
 	QUEEN = 5,
 	KING = 6,
 	EMPTY = 7
+}
+
+enum PlayerColor {
+  BLACK = 0,
+  WHITE = 1
+}
+
+struct Piece {
+	1: required Type type,
+	2: optional PlayerColor owner
 }
 
 struct WorldModel {

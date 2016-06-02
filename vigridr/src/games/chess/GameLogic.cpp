@@ -13,29 +13,31 @@ GameLogic::GameLogic(int32_t playerId1, int32_t playerId2) {
   for (size_t i = 0; i < boardSize_; i++) {
     std::vector<Piece> line;    
     for (size_t i = 0; i < boardSize_; i++) {
-      line.push_back(Piece::EMPTY);
+      Piece newPiece;
+      newPiece.type = Type::EMPTY;
+      line.push_back(newPiece);
     }
     board.push_back(line);
   }
-  board[0][0] = Piece::TOWER;
-  board[0][1] = Piece::HORSE;
-  board[0][2] = Piece::BISHOP;
-  board[0][3] = Piece::KING;
-  board[0][4] = Piece::QUEEN;
-  board[0][5] = Piece::BISHOP;
-  board[0][6] = Piece::HORSE;
-  board[0][7] = Piece::TOWER;
-  board[7][0] = Piece::TOWER;
-  board[7][1] = Piece::HORSE;
-  board[7][2] = Piece::BISHOP;
-  board[7][3] = Piece::QUEEN;
-  board[7][4] = Piece::KING;
-  board[7][5] = Piece::BISHOP;
-  board[7][6] = Piece::HORSE;
-  board[7][7] = Piece::TOWER;
+  board[0][0] = createPiece(Type::TOWER, PlayerColor::BLACK);
+  board[0][1] = createPiece(Type::HORSE, PlayerColor::BLACK);
+  board[0][2] = createPiece(Type::BISHOP, PlayerColor::BLACK);
+  board[0][3] = createPiece(Type::QUEEN, PlayerColor::BLACK);
+  board[0][4] = createPiece(Type::KING, PlayerColor::BLACK);
+  board[0][5] = createPiece(Type::BISHOP, PlayerColor::BLACK);
+  board[0][6] = createPiece(Type::HORSE, PlayerColor::BLACK);
+  board[0][7] = createPiece(Type::TOWER, PlayerColor::BLACK);
+  board[7][0] = createPiece(Type::TOWER, PlayerColor::WHITE);
+  board[7][1] = createPiece(Type::HORSE, PlayerColor::WHITE);
+  board[7][2] = createPiece(Type::BISHOP, PlayerColor::WHITE);
+  board[7][3] = createPiece(Type::KING, PlayerColor::WHITE);
+  board[7][4] = createPiece(Type::QUEEN, PlayerColor::WHITE);
+  board[7][5] = createPiece(Type::BISHOP, PlayerColor::WHITE);
+  board[7][6] = createPiece(Type::HORSE, PlayerColor::WHITE);
+  board[7][7] = createPiece(Type::TOWER, PlayerColor::WHITE);
   for (int i = 0; i < 8; i++) {
-    board[1][i] = Piece::PAWN;
-    board[6][i] = Piece::PAWN;
+    board[1][i] = createPiece(Type::PAWN, PlayerColor::BLACK);
+    board[6][i] = createPiece(Type::PAWN, PlayerColor::WHITE);
   }
   worldModel_.board = board;
 }
@@ -58,10 +60,12 @@ GameDescription GameLogic::getGameDescription(int32_t playerId) const {
 }
 
 void GameLogic::movePiece(Command command) {
+  Piece tempPiece =
+    worldModel_.board[command.coordTo.x][command.coordTo.y];
   worldModel_.board[command.coordTo.x][command.coordTo.y] =
     worldModel_.board[command.coordFrom.x][command.coordFrom.y];
   worldModel_.board[command.coordFrom.x][command.coordFrom.y] =
-    Piece::EMPTY;
+    tempPiece;
 }
 
 WorldModel GameLogic::getWorldModel() const {
@@ -118,6 +122,13 @@ GameResult GameLogic::createGameResult(std::string result, int32_t id) {
     return GameResult::TIED;
   }
   return GameResult::LOST;
+}
+
+Piece GameLogic::createPiece(Type type, PlayerColor owner) {
+  Piece newPiece;
+  newPiece.type = type;
+  newPiece.owner = owner;
+  return newPiece;
 }
 
 }}  // namespaces

@@ -44,6 +44,7 @@ class GameLogic {
  private:
   void movePiece(Command command);
   void setTableCoordinate_(const Coordinate& coordinate, Piece piece);
+  Piece createPiece(Type type, PlayerColor owner);
   WorldModel worldModel_;
   TotalWorldModel twm_;
   int32_t player1_, player2_;

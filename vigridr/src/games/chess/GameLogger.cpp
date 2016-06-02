@@ -22,13 +22,25 @@ ptree createPt(const WorldModel& wm) {
   for (auto line : wm.board) {
     ptree linePt;
     for (auto elem : line) {
-      std::string elemStr =
-        (elem == Piece::PAWN) ? "P" : 
-        (elem == Piece::TOWER) ? "T" :
-        (elem == Piece::HORSE) ? "H" :   
-        (elem == Piece::BISHOP) ? "B" :  
-        (elem == Piece::QUEEN) ? "Q" :       
-        (elem == Piece::KING) ? "K" : "-";
+      std::string elemStr;
+      if (elem.owner == PlayerColor::BLACK) {
+        elemStr =
+          (elem.type == Type::PAWN) ? "P" : 
+          (elem.type == Type::TOWER) ? "T" :
+          (elem.type == Type::HORSE) ? "H" :   
+          (elem.type == Type::BISHOP) ? "B" :  
+          (elem.type == Type::QUEEN) ? "Q" :       
+          (elem.type == Type::KING) ? "K" : "-";
+      }
+      else {        
+        elemStr =
+          (elem.type == Type::PAWN) ? "p" : 
+          (elem.type == Type::TOWER) ? "t" :
+          (elem.type == Type::HORSE) ? "h" :   
+          (elem.type == Type::BISHOP) ? "b" :  
+          (elem.type == Type::QUEEN) ? "q" :       
+          (elem.type == Type::KING) ? "k" : "-";
+      }
       linePt.push_back(std::make_pair("", ptree(elemStr)));
     }
     tablePt.push_back(std::make_pair("", linePt));
@@ -49,14 +61,27 @@ void GameLogger::logWorldModel(const WorldModel& wm, const TotalWorldModel& twm)
 }
 
 char toChar(Piece p) {
-  switch(p) {
-    case Piece::PAWN: return 'P';
-    case Piece::TOWER: return 'T';
-    case Piece::HORSE: return 'H';
-    case Piece::BISHOP: return 'B';
-    case Piece::QUEEN: return 'Q';
-    case Piece::KING: return 'K';
-    default: return '-';
+  if (p.owner == PlayerColor::BLACK) {
+    switch(p.type) {
+      case Type::PAWN: return 'P';
+      case Type::TOWER: return 'T';
+      case Type::HORSE: return 'H';
+      case Type::BISHOP: return 'B';
+      case Type::QUEEN: return 'Q';
+      case Type::KING: return 'K';
+      default: return '-';
+    }
+  }
+  else {    
+    switch(p.type) {
+      case Type::PAWN: return 'p';
+      case Type::TOWER: return 't';
+      case Type::HORSE: return 'h';
+      case Type::BISHOP: return 'b';
+      case Type::QUEEN: return 'q';
+      case Type::KING: return 'k';
+      default: return '-';
+    }
   }
 }
 

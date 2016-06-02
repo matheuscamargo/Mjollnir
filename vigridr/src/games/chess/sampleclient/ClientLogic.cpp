@@ -12,6 +12,7 @@ using ::mjollnir::vigridr::GameResult;
 using ::mjollnir::vigridr::_GameResult_VALUES_TO_NAMES;
 using ::mjollnir::vigridr::Piece;
 using ::mjollnir::vigridr::PlayerColor;
+using ::mjollnir::vigridr::Type;
 
 
 /*
@@ -55,7 +56,7 @@ Command playTurn(const WorldModel& wm, int32_t turn) {
   while(true) {
     size_t x = rand()%8;
     size_t y = rand()%8;
-    if (wm.board[x][y] != Piece::EMPTY) {
+    if (wm.board[x][y].type != Type::EMPTY) {
       command.coordFrom.x = x;
       command.coordFrom.y = y;
       break;
@@ -65,7 +66,7 @@ Command playTurn(const WorldModel& wm, int32_t turn) {
   while(true) {
     size_t x = rand()%8;
     size_t y = rand()%8;
-    if (wm.board[x][y] == Piece::EMPTY) {
+    if (wm.board[x][y].type == Type::EMPTY) {
       command.coordTo.x = x;
       command.coordTo.y = y;
       break;
