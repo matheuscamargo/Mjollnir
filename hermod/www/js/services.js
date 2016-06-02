@@ -10,7 +10,7 @@ angular.module('hermod.services', [])
 
             // TODO: persistent login
 
-            $http.post(API.url + "api/login",
+            $http.post(API.url + "/api/login",
               {
                 username: username,
                 password: password
@@ -88,7 +88,7 @@ angular.module('hermod.services', [])
               deferred.reject("Please make sure your passwords match.");
             }
             else {
-              $http.post(API.url + "api/register", data)
+              $http.post(API.url + "/api/register", data)
               .success(function(data) {
                 console.log(data);
                   if (data.success) {

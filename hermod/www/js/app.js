@@ -13,7 +13,7 @@ angular.module('hermod',
 
 .constant('API', {
   // Url used to reach the server (Bifrost)
-  url: 'http://192.168.0.27:5000/'
+  url: 'http://192.168.0.27:5000'
 })
 
 .run(function($ionicPlatform, $stormpath) {
@@ -65,9 +65,6 @@ angular.module('hermod',
         controller: 'NewsCtrl'
       }
     },
-    sp: {
-      authenticate: true
-    }
   })
 
   .state('tab.challenges', {
@@ -109,7 +106,10 @@ angular.module('hermod',
   .state('register', {
     url: '/register',
     templateUrl: 'templates/register.html',
-    controller: 'RegisterCtrl'
+    controller: 'RegisterCtrl',
+    sp: {
+      authenticate: true
+    }
   });
 
   // if none of the above states are matched, use this as the fallback
@@ -117,7 +117,7 @@ angular.module('hermod',
   // $urlRouterProvider.otherwise('/login');
   $urlRouterProvider.otherwise( function($injector, $location) {
       var $state = $injector.get("$state");
-      $state.go("login"); //redirect to a 404 page
+      $state.go("login");
   });
 
 
