@@ -1332,6 +1332,7 @@ def apiRegister():
         success = True
         error = None
     except StormpathError, err:
+        logger.warn(err);
         success = False
         error = err.message
 
