@@ -7,21 +7,14 @@
 angular.module('hermod', 
   ['ionic', 
   'hermod.controllers', 
-  'hermod.services', 
-  'stormpath', 
-  'stormpath.templates'])
+  'hermod.services'])
 
 .constant('API', {
   // Url used to reach the server (Bifrost)
   url: 'http://192.168.0.27:5000'
 })
 
-.run(function($ionicPlatform, $stormpath) {
-
-  $stormpath.uiRouter({
-    loginState: 'login',
-    defaultPostLoginState: 'tabs.news'
-  });
+.run(function($ionicPlatform) {
 
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -39,13 +32,10 @@ angular.module('hermod',
 
 })
 
-.config(function($stateProvider, $urlRouterProvider, $httpProvider, API, STORMPATH_CONFIG) {
+.config(function($stateProvider, $urlRouterProvider, $httpProvider, API) {
 
   $httpProvider.defaults.useXDomain = true;
   delete $httpProvider.defaults.headers.common['X-Requested-With'];
-
-
-  STORMPATH_CONFIG.ENDPOINT_PREFIX = API.url;
 
   // Settting up the various states for Angular UI router.
   // Each state's controller can be found in controllers.js
@@ -84,9 +74,6 @@ angular.module('hermod',
         templateUrl: 'templates/tab-groups.html',
         controller: 'GroupsCtrl'
       }
-    },
-    sp: {
-      authenticate: true
     }
   })
 
@@ -106,19 +93,12 @@ angular.module('hermod',
   .state('register', {
     url: '/register',
     templateUrl: 'templates/register.html',
-    controller: 'RegisterCtrl',
-    sp: {
-      authenticate: true
-    }
+    controller: 'RegisterCtrl'
   });
 
   // if none of the above states are matched, use this as the fallback
   // TODO: new state to check if already logged in
-  // $urlRouterProvider.otherwise('/login');
-  $urlRouterProvider.otherwise( function($injector, $location) {
-      var $state = $injector.get("$state");
-      $state.go("login");
-  });
+  $urlRouterProvider.otherwise('/login');
 
 
 });

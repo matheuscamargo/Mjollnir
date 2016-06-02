@@ -188,7 +188,7 @@ DEBUG = str(environ.get('MJOLLNIR_DEBUG')).lower()
 DEBUG = (DEBUG == '1' or DEBUG == 'true')
 
 app = Flask(__name__)
-CORS(app, origins="http://localhost:8100", supports_credentials=True)
+CORS(app)
 
 logger = logging.getLogger('werkzeug')
 logger.setLevel(logging.INFO)
@@ -1216,16 +1216,6 @@ def matches():
 
 
 # REST API
-
-# STORMPATH ENDPOINTS
-
-@app.route('/me')
-def me():
-    user_dict = {}
-    for field in dir(user):
-        attibute = getattr(user, field)
-        user_dict[field] = str(attibute)
-    return jsonify(user_dict)
 
 @app.route('/api/group/<gid>', methods=['GET', 'POST'])
 def apiGroup(gid):
