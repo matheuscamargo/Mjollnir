@@ -1235,6 +1235,31 @@ def apiNews():
     return jsonify(**news_dict)
 
 
+@app.route('/api/groups')
+def apiGroups():
+    """
+    Renders a list of groups the user can see
+    """
+    username = 'ilharco'
+    # username = user.username
+    # if not username:
+    #     abort(400)
+
+    # user_in_db = mongodb.users.find_one({ 'username': username })
+
+    # if not user_in_db:
+    #     abort(404)
+
+    groups = filter(lambda group: not group['admin_only'] or username in group['admins'] or is_active_user_in('Dev'), mongodb.groups.find())
+    groups_objs = []
+    for group in groups:
+        current_group = {}
+        current_group['id'] = group['gid']
+        current_group['name'] = group['name']
+        groups_objs.append(current_group)
+    groups_dict = {'groups': groups_objs}
+    return jsonify(**groups_dict)
+
 @app.route('/api/register', methods=['POST'])
 def apiRegister():
     """
@@ -1254,6 +1279,7 @@ def apiRegister():
         success = True
         error = None
     except StormpathError, err:
+        logger.warn(err);
         success = False
         error = err.message
 
@@ -1292,11 +1318,11 @@ def apiChallangesRanking(challenge_name):
 
 
 @app.route('/api/is_logged', methods=['GET'])
-@login_required
 def apiIsLogged():
     """
     returns wether or not the user is logged in
     """
+    logger.warn("USER:" + str(user.is_authenticated()) + ".")
     response_dict = {'success' : True}
     return jsonify(**response_dict)
 
