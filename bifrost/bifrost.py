@@ -1257,11 +1257,20 @@ def apiGroup(gid):
     """
     getting info from a group
     """
+
+    username = request.args.get('username')
+    _user = mongodb.users.find_one({ 'username': username})
+
+    response = {}
+    if not _user:
+        return jsonify(**response)
+
     group = mongodb.groups.find_one({'gid': gid})
-    if not group or ( user.username not in group['admins'] and group['admin_only'] ):
-        abort(404)
     
-    user_id = user.custom_data['uid']
+    if not group or ( username not in group['admins'] and group['admin_only'] ):
+        return jsonify(**response)
+    
+    user_id = _user['uid']
 
     group_users = list()
     for player in group['users']:
