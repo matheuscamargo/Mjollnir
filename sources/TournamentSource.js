@@ -18,26 +18,33 @@ class TournamentSource {
   playMatch(matchInfo) {
     return new Promise(function(resolve, reject) {
       // Simulating POST
-      setTimeout(function() {
-        var cid = matchInfo.challenge;
-        console.log(matchInfo.players);
-        var ids = matchInfo.players;
-        resolve(matchInfo);
-      }, 500 + Math.random() * 500);
+      $.ajax({
+        type: "POST",
+        url: "/tournament/1/playgame",
+        data: {
+          cid: matchInfo.challenge,
+          ids: matchInfo.players,
+          rounds: 1,
+        },
+        success: function(response) {
+          console.log(response);
+          resolve(response);
+        },
+      });
     });
   }
 
   getMatch(matchInfo) {
     return new Promise(function(resolve, reject) {
       // Simulating GET request to find desired matchId
-      setTimeout(function() {
-        var x = _.random(0, 1);
-        var y = 1-x;
-        if(Math.random() > 0.2)
-          resolve({results: [x, y]});
-        else
-          resolve(false);
-      }, 500);
+      $.ajax({
+        type: "GET",
+        url: "/tournament/1/match/" + matchId,
+        success: function(response) {
+          console.log(response);
+          resolve(response);
+        },
+      });
     });
   }
 }
