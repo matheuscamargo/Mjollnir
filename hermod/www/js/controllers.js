@@ -1,23 +1,16 @@
 angular.module('hermod.controllers', [])
 
-.controller('NewsCtrl', function($scope, $http, SERVER) {
+.controller('NewsCtrl', function($scope, $http, API, NewsMock) {
 
   $http({
-      url: SERVER.url + "api/news",
+      url: API.url + "/api/news",
   })
   .success(function(data) {
       $scope.news = data.news;
   });
 
-  $scope.test = function () {
-    $http({
-        url: SERVER.url + "api/is_logged",
-    })
-    .then(function(res) {
-      console.log(res);
-        $scope.vartest = res;
-    });
-  };
+  // Mock
+  // $scope.news = NewsMock.getNews();
 
 })
 
@@ -31,24 +24,31 @@ angular.module('hermod.controllers', [])
 
 })
 
-.controller('ChallengeDetailCtrl', function($scope, SERVER, $stateParams, $http, ChallengesMock) {
+.controller('ChallengeDetailCtrl', function($scope, API, $stateParams, $http, ChallengesMock) {
 
   $scope.challengeName = $stateParams.challengeName;
 
   $http({
-      url: SERVER.url + "api/challenge/" + $stateParams.challengeName,
+      url: API.url + "/api/challenge/" + $stateParams.challengeName,
   })
   .success(function(data) {
       $scope.rank = data.rank;
   });
+
   // Mock
   // $scope.rank = ChallengesMock.getRank();
+})
+
+.controller('GroupsCtrl', function($scope, $http) {
+
+
 })
 
 .controller('LoginCtrl', function($scope, LoginService, $ionicPopup, $state) {
     $scope.data = {};
  
     $scope.login = function() {
+        // -- make sure it is not mocked --
         LoginService.autoLogin($scope.data.username, $scope.data.password).success(function(data) {
             $state.go('tab.news');
         }).error(function() {

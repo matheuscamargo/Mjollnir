@@ -2,7 +2,7 @@ angular.module('hermod.services', [])
 
 // Service to handle the check of credentials 
 
-.service('LoginService', function($q, $http, SERVER) {
+.service('LoginService', function($q, $http, API) {
     return {
         loginUser: function(username, password) {
             var deferred = $q.defer();
@@ -10,7 +10,7 @@ angular.module('hermod.services', [])
 
             // TODO: persistent login
 
-            $http.post(SERVER.url + "api/login",
+            $http.post(API.url + "/api/login",
               {
                 username: username,
                 password: password
@@ -78,7 +78,7 @@ angular.module('hermod.services', [])
     };
 })
 
-.service('RegisterService', function($q, $http, SERVER) {
+.service('RegisterService', function($q, $http, API) {
     return {
         registerUser: function(data) {
             var deferred = $q.defer();
@@ -88,7 +88,7 @@ angular.module('hermod.services', [])
               deferred.reject("Please make sure your passwords match.");
             }
             else {
-              $http.post(SERVER.url + "api/register", data)
+              $http.post(API.url + "/api/register", data)
               .success(function(data) {
                 console.log(data);
                   if (data.success) {
@@ -99,7 +99,7 @@ angular.module('hermod.services', [])
                   }
               });
             }
-            
+
             promise.success = function(fn) {
                 promise.then(fn);
                 return promise;
@@ -149,6 +149,32 @@ angular.module('hermod.services', [])
           }];
         }
     };
+})
+
+// Mock for the news info
+
+.service('NewsMock', function($q) {
+    return {
+        getNews: function() {
+          return [
+          {
+            "author":"vyrp",
+            "content":"Start playing this ancient game of tactics and moving pieces.<br>\r\nWrite a solution, and challenge the masters!\r\n\r\n<a href=\"http://mjollnir.rro.im/challenge/Backgammon\">Backgammon</a> is now available for submissions!",
+            "datetime":"Thu, 29 Oct 2015 09:52:07 GMT",
+            "title":"New Challenge: Backgammon!"
+          },
+          {
+            "author":"vyrp",
+            "content":"Enter a dangerous cave, fight a terrible monster and come back with glory and a treasure!\r\n\r\nThe <a href=\"/challenge/Wumpus\">World of Wumpus</a> challenge is online, and you may now submit a fearless solution!",
+            "datetime":"Thu, 22 Oct 2015 03:26:33 GMT",
+            "title":"New Challenge: Wumpus!"
+          }];
+        }
+    };
 });
+
+
+
+
 
 

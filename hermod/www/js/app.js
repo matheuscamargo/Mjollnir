@@ -4,14 +4,18 @@
 // the 2nd parameter is an array of 'requires'
 // 'hermod.services' is found in services.js
 // 'hermod.controllers' is found in controllers.js
-angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
+angular.module('hermod', 
+  ['ionic', 
+  'hermod.controllers', 
+  'hermod.services'])
 
-.constant('SERVER', {
+.constant('API', {
   // Url used to reach the server (Bifrost)
-  url: 'http://192.168.0.26:5000/'
+  url: 'http://192.168.0.27:5000'
 })
 
 .run(function($ionicPlatform) {
+
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -25,9 +29,10 @@ angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
       StatusBar.styleDefault();
     }
   });
+
 })
 
-.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+.config(function($stateProvider, $urlRouterProvider, $httpProvider, API) {
 
   $httpProvider.defaults.useXDomain = true;
   delete $httpProvider.defaults.headers.common['X-Requested-With'];
@@ -49,7 +54,7 @@ angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
         templateUrl: 'templates/tab-news.html',
         controller: 'NewsCtrl'
       }
-    }
+    },
   })
 
   .state('tab.challenges', {
@@ -58,6 +63,16 @@ angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
       'tab-challenges': {
         templateUrl: 'templates/tab-challenges.html',
         controller: 'ChallengesCtrl'
+      }
+    }
+  })
+
+  .state('tab.groups', {
+    url: '/groups',
+    views: {
+      'tab-groups': {
+        templateUrl: 'templates/tab-groups.html',
+        controller: 'GroupsCtrl'
       }
     }
   })
@@ -85,36 +100,5 @@ angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
   // TODO: new state to check if already logged in
   $urlRouterProvider.otherwise('/login');
 
-});
 
-
-
-angular.module('ionicApp', ['ionic'])
-
-.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
-  $ionicConfigProvider.tabs.position('bottom');
-  
-  $stateProvider
-    .state('tabs', {
-      url: "/tab",
-      abstract: true,
-      templateUrl: "templates/tabs.html"
-    })
-    .state('tabs.home', {
-      url: "/home",
-      views: {
-        'home-tab': {
-          templateUrl: "templates/home.html",
-          controller: 'HomeTabCtrl'
-        }
-      }
-    });
-
-
-   $urlRouterProvider.otherwise("/tab/home");
-
-})
-
-.controller('HomeTabCtrl', function($scope) {
-  console.log('HomeTabCtrl');
 });
