@@ -9,7 +9,7 @@ var GET_AGAIN_TIME = 500;
 
 function toDesiredSchema(TournamentInfo, TournamentRaw) {
   var DuelTournament = TournamentRaw;
-
+  // TODO: Add seeding;
   var OrganizeBySection = _.groupBy(DuelTournament.matches,  function(num){ return num.id.s;});
   var DesiredSchema = _.map(OrganizeBySection, function(value, key) {
                               return { id: key, rounds: _.map(_.groupBy(value, function(num) {
@@ -21,7 +21,7 @@ function toDesiredSchema(TournamentInfo, TournamentRaw) {
                                    })
                                  };})
                                };});
-  return {name: TournamentInfo.name, sections: DesiredSchema, challenge: TournamentInfo.challenge};
+  return {name: TournamentInfo.name, sections: DesiredSchema};
 }
 
 class TournamentStore{
@@ -65,7 +65,7 @@ class TournamentStore{
   handlePlayAll() {
     var self = this;
 
-    function GetMatchesPromises(tournament) {
+    function GetMatchesPromises(tournament, tournamentInfo) {
       return _.map(_.filter(tournament.matches, function(match) {
         // See if game has the players propagated and has not been scored yet
         return tournament.isPlayable(match) && (!Array.isArray(match.m));
@@ -74,12 +74,14 @@ class TournamentStore{
           //this.tournament = toDesiredSchema(this.tournamentInfo, this.tournamentRaw);
           //TournamentStore.emitChange();
           console.log("Jogando jogo: " + playableMatch.p);
-          TournamentSource.playMatch(playableMatch.id).then(function(matchInfo) {
+          // TODO: change hardcoded -1 to get from actual seed
+          var players = _.map(playableMatch.p, function(id) {return tournamentInfo.players[id - 1];});
+          TournamentSource.playMatch({challengeId: tournamentInfo.challenge, players: players}).then(function(matchInfo) {
             var tryGetResult = (matchInfo) => {
-              console.log("Tentando achar resultado do jogo: " + playableMatch.p);
               TournamentSource.getMatch(matchInfo).then(function(matchResult) {
                 if(matchResult) {
                   console.log("Fim do jogo: " + matchResult.p + ": " + matchResult.m);
+                  _.extend(matchResult, {id: playableMatch.id});
                   self.handlePlayMatchSuccess(matchResult);
                   self.emitChange();
                   resolve();
@@ -96,17 +98,17 @@ class TournamentStore{
       });
     }
 
-    function RunAllMatches(tournament){
+    function RunAllMatches(tournament, tournamentInfo){
       if(tournament.isDone()){
         return;
       }
-      var nextStep = Promise.all(GetMatchesPromises(tournament));
+      var nextStep = Promise.all(GetMatchesPromises(tournament, tournamentInfo));
       nextStep.then(function(values) {
-        RunAllMatches(tournament);
+        RunAllMatches(tournament, tournamentInfo);
       });
     }
 
-    RunAllMatches(this.tournamentRaw);
+    RunAllMatches(this.tournamentRaw, this.tournamentInfo);
   }
 
   handlePlayMatch(matchInfo){
@@ -115,13 +117,6 @@ class TournamentStore{
 
   handlePlayMatchSuccess(matchInfo) {
     //console.log(matchInfo);
-    var reason = this.tournamentRaw.unscorable(matchInfo.id);
-    if (reason !== null) {
-      console.log(reason); // either invalid parameters or complaining about rewriting history
-    }
-    else {
-      this.tournamentRaw.score(matchInfo.id, matchInfo.results);
-    }
     this.tournamentRaw.score(matchInfo.id, matchInfo.results);
     this.tournament = toDesiredSchema(this.tournamentInfo, this.tournamentRaw);
   }

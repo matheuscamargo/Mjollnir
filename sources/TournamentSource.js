@@ -19,6 +19,9 @@ class TournamentSource {
     return new Promise(function(resolve, reject) {
       // Simulating POST
       setTimeout(function() {
+        var cid = matchInfo.challenge;
+        console.log(matchInfo.players);
+        var ids = matchInfo.players;
         resolve(matchInfo);
       }, 500 + Math.random() * 500);
     });
@@ -31,7 +34,7 @@ class TournamentSource {
         var x = _.random(0, 1);
         var y = 1-x;
         if(Math.random() > 0.2)
-          resolve(_.extend({id: matchInfo}, {results: [x, y]}));
+          resolve({results: [x, y]});
         else
           resolve(false);
       }, 500);
