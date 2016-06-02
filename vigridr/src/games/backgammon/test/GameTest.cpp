@@ -58,7 +58,7 @@ class GameLogicTest : public ::testing::Test, protected GameLogic {
  protected:
 
   GameLogicTest() :
-    GameLogic(9090, 9091),
+    GameLogic(std::vector<int32_t>{9090, 9091}),
     EMPTY_BOARD(24, {0, 0}) { }
 
   const vector<Point> EMPTY_BOARD;

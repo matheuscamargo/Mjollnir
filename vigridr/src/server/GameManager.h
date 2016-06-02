@@ -8,6 +8,7 @@
 #include <mutex>
 #include <thread>
 #include <condition_variable>
+#include <vector>
 
 #include "GameLogic.h"
 #include "GameTimer.h"
@@ -61,7 +62,7 @@ class PlayerTurnData {
  */
 class GameManager {
  public:
-  GameManager(int32_t playerId0, int32_t playerId1);
+  GameManager(const std::vector<int32_t> &playerIds);
   ~GameManager();
 
   CommandStatus update(const Command& command, int32_t playerId);

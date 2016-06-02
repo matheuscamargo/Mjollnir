@@ -2,6 +2,7 @@
 #define VIGRIDR_SERVER_GAME_LOGIC_H
 
 #include <string>
+#include <vector>
 
 #include "../thrifts/gen-cpp/Command_types.h"
 #include "../thrifts/gen-cpp/WorldModel_types.h"
@@ -39,7 +40,7 @@ class GameLogic {
  public:
   bool shouldPrintWorldModel(int32_t playerId);
   bool shouldIncrementCycle(int32_t playerId);
-  GameLogic(int32_t playerId1, int32_t playerId2);
+  GameLogic(const std::vector<int32_t> &playerIds);
   bool update(Command command, int32_t playerId);
   WorldModel getWorldModel() const;
   size_t getWorldSize() const;

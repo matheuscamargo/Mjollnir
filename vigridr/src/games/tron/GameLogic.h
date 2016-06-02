@@ -18,7 +18,7 @@ class GameLogic {
  public:
   bool shouldPrintWorldModel(int32_t playerId);
   bool shouldIncrementCycle(int32_t playerId);
-  GameLogic(int32_t playerId1, int32_t playerId2);
+  GameLogic(const std::vector<int32_t> &playerIds);
   bool update(Command command, int32_t playerId);
   WorldModel getWorldModel();
   bool isFinished();

@@ -42,13 +42,17 @@ void PlayerTurnData::setGameResult(GameResult result) {
   result_ = result;
 }
 
-GameManager::GameManager(int32_t playerId0, int32_t playerId1)
-  : idToIdx_({{playerId0, 0}, {playerId1, 1}}),
-    idxToId_({{playerId0, playerId1}}),
-    gameLogic_(playerId0, playerId1) {
+GameManager::GameManager(const std::vector<int32_t> &playerIds)
+  : gameLogic_(playerIds) {
+
+  for (size_t i = 0; i < playerIds.size(); i++) {
+    idToIdx_[playerIds[i]] = i;
+    idxToId_[i] = playerIds[i];
+  }
+
   turn_ = 0;
   srand(time(NULL));
-  initializeGame(playerId0, playerId1);
+  initializeGame(playerIds[0], playerIds[1]);
   updaterThread_ = std::thread([this]() {
     updaterTask();
     // calling game end handlers callback

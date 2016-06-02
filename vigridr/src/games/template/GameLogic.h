@@ -35,7 +35,7 @@ class GameLogic {
   /**
    *  Each player has an unique id
    */
-  GameLogic(int32_t playerId1, int32_t playerId2);
+  GameLogic(const std::vector<int32_t> &playerIds);
 
   /**
    *  Method to update  the world model given a player command
