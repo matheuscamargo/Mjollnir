@@ -39,6 +39,11 @@ angular.module('hermod.controllers', [])
   // $scope.rank = ChallengesMock.getRank();
 })
 
+.controller('GroupsCtrl', function($scope, $http) {
+
+
+})
+
 .controller('LoginCtrl', function($scope, LoginService, $ionicPopup, $state) {
     $scope.data = {};
  

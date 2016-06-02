@@ -2,7 +2,7 @@ angular.module('hermod.services', [])
 
 // Service to handle the check of credentials 
 
-.service('LoginService', function($q, $http, SERVER) {
+.service('LoginService', function($q, $http, API) {
     return {
         loginUser: function(username, password) {
             var deferred = $q.defer();
@@ -10,7 +10,7 @@ angular.module('hermod.services', [])
 
             // TODO: persistent login
 
-            $http.post(SERVER.url + "api/login",
+            $http.post(API.url + "api/login",
               {
                 username: username,
                 password: password
@@ -78,7 +78,7 @@ angular.module('hermod.services', [])
     };
 })
 
-.service('RegisterService', function($q, $http, SERVER) {
+.service('RegisterService', function($q, $http, API) {
     return {
         registerUser: function(data) {
             var deferred = $q.defer();
@@ -88,7 +88,7 @@ angular.module('hermod.services', [])
               deferred.reject("Please make sure your passwords match.");
             }
             else {
-              $http.post(SERVER.url + "api/register", data)
+              $http.post(API.url + "api/register", data)
               .success(function(data) {
                 console.log(data);
                   if (data.success) {

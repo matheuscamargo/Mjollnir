@@ -4,14 +4,25 @@
 // the 2nd parameter is an array of 'requires'
 // 'hermod.services' is found in services.js
 // 'hermod.controllers' is found in controllers.js
-angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
+angular.module('hermod', 
+  ['ionic', 
+  'hermod.controllers', 
+  'hermod.services', 
+  'stormpath', 
+  'stormpath.templates'])
 
-.constant('SERVER', {
+.constant('API', {
   // Url used to reach the server (Bifrost)
-  url: 'http://192.168.0.26:5000/'
+  url: 'http://192.168.0.27:5000/'
 })
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $stormpath) {
+
+  $stormpath.uiRouter({
+    loginState: 'login',
+    defaultPostLoginState: 'tabs.news'
+  });
+
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -25,12 +36,16 @@ angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
       StatusBar.styleDefault();
     }
   });
+
 })
 
-.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+.config(function($stateProvider, $urlRouterProvider, $httpProvider, API, STORMPATH_CONFIG) {
 
   $httpProvider.defaults.useXDomain = true;
   delete $httpProvider.defaults.headers.common['X-Requested-With'];
+
+
+  STORMPATH_CONFIG.ENDPOINT_PREFIX = API.url;
 
   // Settting up the various states for Angular UI router.
   // Each state's controller can be found in controllers.js
@@ -49,6 +64,9 @@ angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
         templateUrl: 'templates/tab-news.html',
         controller: 'NewsCtrl'
       }
+    },
+    sp: {
+      authenticate: true
     }
   })
 
@@ -59,6 +77,19 @@ angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
         templateUrl: 'templates/tab-challenges.html',
         controller: 'ChallengesCtrl'
       }
+    }
+  })
+
+  .state('tab.groups', {
+    url: '/groups',
+    views: {
+      'tab-groups': {
+        templateUrl: 'templates/tab-groups.html',
+        controller: 'GroupsCtrl'
+      }
+    },
+    sp: {
+      authenticate: true
     }
   })
 
@@ -83,38 +114,11 @@ angular.module('hermod', ['ionic', 'hermod.controllers', 'hermod.services'])
 
   // if none of the above states are matched, use this as the fallback
   // TODO: new state to check if already logged in
-  $urlRouterProvider.otherwise('/login');
-
-});
-
-
-
-angular.module('ionicApp', ['ionic'])
-
-.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
-  $ionicConfigProvider.tabs.position('bottom');
-  
-  $stateProvider
-    .state('tabs', {
-      url: "/tab",
-      abstract: true,
-      templateUrl: "templates/tabs.html"
-    })
-    .state('tabs.home', {
-      url: "/home",
-      views: {
-        'home-tab': {
-          templateUrl: "templates/home.html",
-          controller: 'HomeTabCtrl'
-        }
-      }
-    });
+  // $urlRouterProvider.otherwise('/login');
+  $urlRouterProvider.otherwise( function($injector, $location) {
+      var $state = $injector.get("$state");
+      $state.go("login"); //redirect to a 404 page
+  });
 
 
-   $urlRouterProvider.otherwise("/tab/home");
-
-})
-
-.controller('HomeTabCtrl', function($scope) {
-  console.log('HomeTabCtrl');
 });
