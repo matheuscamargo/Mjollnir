@@ -5,7 +5,8 @@
     Bifrost, or sometimes Bilrost or Bivrost, is a burning rainbow bridge
     that reaches between Midgard (the world) and Asgard, the realm of the gods.
 """
-
+from __future__ import print_function # In python 2.7
+import sys
 import boto
 import urllib
 import datetime
