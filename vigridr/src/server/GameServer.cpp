@@ -15,7 +15,7 @@
 #include "../thrifts/gen-cpp/Game.h"
 
 DEFINE_string(ports,"9090,9091", "Ports used by clients.");
-DEFINE_int32(nplayers, 2, "Number of clients");
+DEFINE_uint64(nplayers, 2, "Number of clients");
 
 const char* const kVersion = "v1.1";
 const char* const kUsageMessage =
@@ -40,8 +40,12 @@ int main(int argc, char **argv) {
   gflags::ParseCommandLineFlags(&argc, &argv, true);
 
   std::vector<std::string> portStrings = mjollnir::vigridr::utils::split(FLAGS_ports, ',');
+  std::vector<int32_t> portsInts;
+  for (size_t i = 0; i < portStrings.size(); i++) {
+    portsInts.push_back(std::stoi(portStrings[i]));
+  }
 
-  auto gameManager = std::make_shared<GameManager>(std::stoi(portStrings[0]), std::stoi(portStrings[1]));
+  auto gameManager = std::make_shared<GameManager>(portsInts);
   auto serviceInit = [&](int32_t port) {
     boost::shared_ptr<GameService> handler(new GameService(gameManager, port));
 
@@ -67,10 +71,19 @@ int main(int argc, char **argv) {
     server.serve();
     LOG("Done");
   };
-  std::thread player1Service(serviceInit, std::stoi(portStrings[0]));
-  std::thread player2Service(serviceInit, std::stoi(portStrings[1]));
-  player1Service.join();
-  player2Service.join();
+
+  std::vector<std::thread> playerServices;
+  for (size_t i = 0; i < FLAGS_nplayers; i++) {
+    playerServices.push_back(std::thread(serviceInit, std::stoi(portStrings[i])));
+  }
+
+  for (size_t i = 0; i < FLAGS_nplayers; i++) {
+    playerServices[i].join();
+  }  
+  // std::thread player1Service(serviceInit, std::stoi(portStrings[0]));
+  // std::thread player2Service(serviceInit, std::stoi(portStrings[1]));
+  // player1Service.join();
+  // player2Service.join();
   
   //Workaround solution so that clients have time to finish by themselves
   //Before the server is killed

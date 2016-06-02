@@ -46,14 +46,14 @@ std::ostream& operator<<(std::ostream& os, vector<T> v) {
 
 /** Methods from GameLogic **/
 
-GameLogic::GameLogic(int32_t playerId1, int32_t playerId2) {
+GameLogic::GameLogic(const std::vector<int32_t> &playerIds) {
   srand(time(NULL));
-  player1_ = playerId1;
-  player2_ = playerId2;
+  player1_ = playerIds[0];
+  player2_ = playerIds[1];
   winner_ = "-1";
   hasFinished_ = false;
-  playerIdToInvalid_[playerId1] = false;
-  playerIdToInvalid_[playerId2] = false;
+  playerIdToInvalid_[playerIds[0]] = false;
+  playerIdToInvalid_[playerIds[1]] = false;
 
   worldModel_.board = {
     {2, 0},

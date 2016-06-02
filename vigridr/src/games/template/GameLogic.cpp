@@ -4,10 +4,10 @@
 
 namespace mjollnir { namespace vigridr {
 
-GameLogic::GameLogic(int32_t playerId1, int32_t playerId2) {
+GameLogic::GameLogic(const std::vector<int32_t> &playerIds) {
   const std::string kNoWinner = "-1";
-  player1_ = playerId1;
-  player2_ = playerId2;
+  player1_ = playerIds[0];
+  player2_ = playerIds[1];
   winner_ = kNoWinner;
   hasFinished_ = false;
   // TODO: implement initialization logic

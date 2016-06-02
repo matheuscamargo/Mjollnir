@@ -4,9 +4,9 @@
 
 namespace mjollnir { namespace vigridr {
 
-GameLogic::GameLogic(int32_t playerId1, int32_t playerId2) {
-  player1_ = playerId1;
-  player2_ = playerId2;
+GameLogic::GameLogic(const std::vector<int32_t> &playerIds) {
+  player1_ = playerIds[0];
+  player2_ = playerIds[1];
   winner_ = std::to_string(kNoWinner);
   hasFinished_ = false;
   for (int32_t i = 0; i < kWidth; ++i) {
@@ -21,7 +21,7 @@ GameLogic::GameLogic(int32_t playerId1, int32_t playerId2) {
       Coordinate pos;
       pos.x = kpInit[i][j].first;
       pos.y = kpInit[i][j].second;
-      field_[pos.x][pos.y] = (i==0 ? playerId1 : playerId2);
+      field_[pos.x][pos.y] = (i==0 ? playerIds[0] : playerIds[1]);
       worldModel_.players[i].body.push_back(pos);
     }
   }

@@ -1,12 +1,13 @@
 #include "../server/GameLogic.h"
 #include "gtest/gtest.h"
+#include <vector>
 
 namespace mjollnir { namespace vigridr {
 
 class GameLogicTest : public ::testing::Test {
  protected:
 
-  GameLogicTest() : game1(9090, 9091) { }
+  GameLogicTest() : game1(std::vector<int32_t>{9090, 9091}) { }
 
   void CleanTable() {
     Coordinate coord;
