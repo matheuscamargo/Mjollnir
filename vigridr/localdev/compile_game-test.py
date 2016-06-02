@@ -5,7 +5,8 @@ from subprocess import check_call
 
 VIGRIDR_SRC = '/Mjollnir/vigridr/src'
 TEST_SRC = '/Mjollnir/vigridr/localdev'
-CURRENT_GAME = 'go'
+### To compile, just change the next 3 values ###
+CURRENT_GAME = 'tictactoe'
 PLAYER_LOGIC_FILES = ['Player1Logic', 'Player2Logic']
 CLIENT_EXTENSION = 'cpp'
 SERVER_EXTENSION = 'cpp'
