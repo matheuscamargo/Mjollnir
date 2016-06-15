@@ -27,7 +27,18 @@ class GameLogic {
  public:
   bool shouldPrintWorldModel(int32_t playerId);
   bool shouldIncrementCycle(int32_t playerId);
+
+  /**
+   *  Each player has an unique id
+   */
   GameLogic(const std::vector<int32_t> &playerIds);
+
+  /**
+   *  Method to update  the world model given a player command
+   *  Don't worry with multi threading
+   *  The player who sends first executes first
+   *  Returns true if successfully updated
+   */
   bool update(Command command, int32_t playerId);
   WorldModel getWorldModel() const;
   std::vector<Command>& getMoveList(int32_t playerId);

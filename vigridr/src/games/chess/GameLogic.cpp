@@ -63,12 +63,12 @@ GameDescription GameLogic::getGameDescription(int32_t playerId) const {
 }
 
 void GameLogic::movePiece(Command command) {
-  Piece tempPiece =
-    worldModel_.board[command.coordTo.x][command.coordTo.y];
+  Piece emptyPiece;
+  emptyPiece.type = Type::EMPTY;
   worldModel_.board[command.coordTo.x][command.coordTo.y] =
     worldModel_.board[command.coordFrom.x][command.coordFrom.y];
   worldModel_.board[command.coordFrom.x][command.coordFrom.y] =
-    tempPiece;
+    emptyPiece;
 }
 
 WorldModel GameLogic::getWorldModel() const {
