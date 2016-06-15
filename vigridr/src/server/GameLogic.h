@@ -72,7 +72,7 @@ class GameLogic {
   /**
    * Receives the id of the first player
    */
-  void setFirstPlayer(int32_t playerId);
+  void setFirstPlayer(int32_t playerId){};
 
  private:
   WorldModel worldModel_;

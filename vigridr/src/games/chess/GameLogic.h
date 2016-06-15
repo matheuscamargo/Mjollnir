@@ -15,7 +15,7 @@ class GameLogic {
  public:
   bool shouldPrintWorldModel(int32_t playerId);
   bool shouldIncrementCycle(int32_t playerId);
-  GameLogic(int32_t playerId1, int32_t playerId2);
+  GameLogic(const std::vector<int32_t> &playerIds);
   bool update(Command command, int32_t playerId);
   WorldModel getWorldModel() const;
   bool isFinished() const;
@@ -23,6 +23,7 @@ class GameLogic {
   GameDescription getGameDescription(int32_t playerId) const;
   TotalWorldModel getTotalWorldModel() const;
   size_t getNumberOfPlayers() const;
+  void setFirstPlayer(int32_t playerId){};
   /**
    *  Specific function to use at GameLogicTest test suite
    */

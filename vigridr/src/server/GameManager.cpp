@@ -126,9 +126,9 @@ void GameManager::initializeGame(const std::vector<int32_t> &playerIds) {
     gameLogic_.setFirstPlayer(firstPlayer == 0 ? playerId0 : playerId1 );
   }
   GameLogger::logGameDescription(gameLogic_.getGameDescription(playerId0),
-                                 FLAGS_player1,
+                                 players[0],
                                  gameLogic_.getGameDescription(playerId1),
-                                 FLAGS_player2);
+                                 players[1]);
   gameInfo_.cycle = 0;
   gameInfo_.gameStatus = GameStatus::WAITING;
   timer_.startInitializationCycle();

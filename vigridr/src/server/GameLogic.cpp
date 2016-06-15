@@ -424,7 +424,4 @@ void GameLogic::setDice_forTest(const vector<int32_t>& dice) {
   worldModel_.dice = dice;
 }
 
-GameResult GameLogic::setFirstPlayer(int32_t playerId) {
-}
-
 }}  // namespaces

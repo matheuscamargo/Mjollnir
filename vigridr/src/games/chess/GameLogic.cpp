@@ -4,9 +4,9 @@
 
 namespace mjollnir { namespace vigridr {
 
-GameLogic::GameLogic(int32_t playerId1, int32_t playerId2) {
-  player1_ = playerId1;
-  player2_ = playerId2;
+GameLogic::GameLogic(const std::vector<int32_t> &playerIds) {
+  player1_ = playerIds[0];
+  player2_ = playerIds[1];
   winner_ = "-1";
   hasFinished_ = false;
   std::vector<std::vector<Piece> > board;
@@ -63,6 +63,7 @@ GameDescription GameLogic::getGameDescription(int32_t playerId) const {
 }
 
 void GameLogic::movePiece(Command command) {
+  
   Piece emptyPiece;
   emptyPiece.type = Type::EMPTY;
   worldModel_.board[command.coordTo.x][command.coordTo.y] =
