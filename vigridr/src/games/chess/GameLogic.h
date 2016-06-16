@@ -23,7 +23,7 @@ class GameLogic {
   GameDescription getGameDescription(int32_t playerId) const;
   TotalWorldModel getTotalWorldModel() const;
   size_t getNumberOfPlayers() const;
-  void setFirstPlayer(int32_t playerId){};
+  void setFirstPlayer(int32_t playerId);
   /**
    *  Specific function to use at GameLogicTest test suite
    */
@@ -48,7 +48,7 @@ class GameLogic {
   Piece createPiece(Type type, PlayerColor owner);
   WorldModel worldModel_;
   TotalWorldModel twm_;
-  int32_t player1_, player2_;
+  int32_t player1_, player2_, whitePlayerId_;
   std::string winner_;
   bool hasFinished_;
   const size_t boardSize_ = 8;

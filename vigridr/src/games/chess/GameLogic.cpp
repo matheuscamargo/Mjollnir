@@ -44,8 +44,11 @@ GameLogic::GameLogic(const std::vector<int32_t> &playerIds) {
   worldModel_.board = board;
 }
 
+void GameLogic::setFirstPlayer(int32_t playerId) {
+  whitePlayerId_ = playerId;
+}
+
 bool GameLogic::update(Command command, int32_t playerId) {
-  
   if(tempGameCounter-- > 0) {
 
     movePiece(command);
@@ -57,8 +60,8 @@ bool GameLogic::update(Command command, int32_t playerId) {
 
 GameDescription GameLogic::getGameDescription(int32_t playerId) const {
   GameDescription gameDescription;
-  gameDescription.myColor = (playerId == player1_) ?
-    PlayerColor::BLACK : PlayerColor::WHITE;
+  gameDescription.myColor = (playerId == whitePlayerId_) ?
+    PlayerColor::WHITE : PlayerColor::BLACK;
   return gameDescription;
 }
 
