@@ -1245,17 +1245,16 @@ def matches():
 @app.route('/protected')
 @jwt_required()
 def protected():
-    return '%s' % current_identity
+    return '%s' % current_identity['username']
 
 @app.route('/api/join/<gid>', methods=['GET'])
+@jwt_required()
 def apiJoinGroup(gid):
     """
     Allows a user to join/leave a group
     """
     response = {'success': False}
-    username = request.args.get('username')
-    if not username:
-        return jsonify(**response)
+    username = current_identity['username']
 
     group = mongodb.groups.find_one({ 'gid': gid })
     if not group:
@@ -1283,13 +1282,12 @@ def apiJoinGroup(gid):
     return jsonify(**response)
 
 @app.route('/api/group/<gid>', methods=['GET', 'POST'])
+@jwt_required()
 def apiGroup(gid):
     """
     getting info from a group
     """
-
-    username = request.args.get('username')
-    _user = mongodb.users.find_one({ 'username': username})
+    _user = current_identity 
 
     response = {}
     if not _user:
@@ -1345,6 +1343,7 @@ def apiGroup(gid):
         return jsonify(**response)
 
 @app.route('/api/news')
+@jwt_required()
 def apiNews():
     """
     returns a JSON object that represents the list of news
@@ -1363,16 +1362,14 @@ def apiNews():
 
 
 @app.route('/api/groups')
+@jwt_required()
 def apiGroups():
     """
     Renders a list of groups the user can see
     """
     groups_dict = {'groups': []}
-    username = request.args.get('username')
-    if not username:
-        return jsonify(**groups_dict)
 
-    user_in_db = mongodb.users.find_one({ 'username': username })
+    user_in_db = current_identity
 
     if not user_in_db:
         return jsonify(**groups_dict)
@@ -1391,33 +1388,8 @@ def apiGroups():
     groups_dict = {'groups': groups_objs}
     return jsonify(**groups_dict)
 
-@app.route('/api/register', methods=['POST'])
-def apiRegister():
-    """
-    register a new user
-    """
-    try:
-        # Create a new Stormpath User.
-        data = json.loads(request.data)
-        _user = stormpath_manager.application.accounts.create({
-            'email': data['email'],
-            'username': data['username'],
-            'password': data['password'],
-            'given_name': data['given_name'],
-            'surname': data['surname'],
-        })
-        _user.__class__ = User
-        success = True
-        error = None
-    except StormpathError, err:
-        logger.warn(err);
-        success = False
-        error = err.message
-
-    response_dict = {'success' : success, 'error': error}
-    return jsonify(**response_dict)
-
 @app.route('/api/challenge/<challenge_name>')
+@jwt_required()
 def apiChallengesRanking(challenge_name):
     """
     returns a JSON object that represents the list of ratings for that challenge
@@ -1447,42 +1419,31 @@ def apiChallengesRanking(challenge_name):
     rank["rank"] = challenge_solutions
     return jsonify(**rank)
 
-
-@app.route('/api/is_logged', methods=['GET'])
-def apiIsLogged():
+@app.route('/api/register', methods=['POST'])
+def apiRegister():
     """
-    returns wether or not the user is logged in
-    """
-    logger.warn("USER:" + str(user.is_authenticated()) + ".")
-    response_dict = {'success' : True}
-    return jsonify(**response_dict)
-
-
-@app.route('/api/login', methods=['POST'])
-def apiLogin():
-    """
-    returns weather or not a user with the passed credentials exists in the database
+    register a new user
     """
     try:
+        # Create a new Stormpath User.
         data = json.loads(request.data)
-
-        username = data['username']
-        password = data['password']
-
-        _user = User.from_login(
-            username,
-            password
-        )
-
-        success = bool(mongodb.users.find_one({ 'username': _user.username }))
-        login_user(_user, remember=True)
-        
-    except Exception as e:
+        _user = stormpath_manager.application.accounts.create({
+            'email': data['email'],
+            'username': data['username'],
+            'password': data['password'],
+            'given_name': data['given_name'],
+            'surname': data['surname'],
+        })
+        _user.__class__ = User
+        success = True
+        error = None
+    except StormpathError, err:
+        logger.warn(err);
         success = False
+        error = err.message
 
-    response_dict = {'success' : success}
+    response_dict = {'success' : success, 'error': error}
     return jsonify(**response_dict)
-
     
 def allPlay(cid, rounds, group, challenge_name):
     """
