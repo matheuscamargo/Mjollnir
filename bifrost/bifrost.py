@@ -689,13 +689,13 @@ def tournament(tid):
 
 @app.route('/tournament/<tid>/playgame', methods=['POST'])
 def tournamentplaygame(tid):
+    logger.warn('Request.form[ids] ' + request.form['ids'])
     users = []
-    for username in request.form['ids']:
-        logger.warn('O QUE ESTA DANDO DE ERRADO MEU DEUS ' + username)
+    for username in request.form.get('ids'):        
         user_in_db = mongodb.users.find_one({ 'username': username })
         users.append(user_in_db['uid'])
     
-    error, mid = play(request.form['cid'], users, request.form['rounds'], None)
+    error, mid = play(request.form.get('cid'), users, request.form.get('rounds'), None)
     return mid
 
 @app.route('/tournament/<tid>/match/<mid>')

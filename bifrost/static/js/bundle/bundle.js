@@ -25526,12 +25526,6 @@ var TournamentSource = function () {
   }, {
     key: 'playMatch',
     value: function playMatch(matchInfo) {
-      var x = {
-        cid: matchInfo.challenge,
-        ids: matchInfo.players,
-        rounds: 1
-      };
-      console.log("informações: " + x);
       return new Promise(function (resolve, reject) {
         // Simulating POST
         $.ajax({
