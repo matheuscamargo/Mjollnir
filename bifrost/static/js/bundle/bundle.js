@@ -25742,7 +25742,7 @@ var TournamentStore = function () {
                     console.log("Fim do jogo: " + result.p + ": " + result.m);
                     var response = {
                       id: playableMatch.id,
-                      results: result
+                      results: result.m
                     };
                     self.handlePlayMatchSuccess(response);
                     self.emitChange();
