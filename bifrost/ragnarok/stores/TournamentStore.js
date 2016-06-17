@@ -76,7 +76,7 @@ class TournamentStore{
           console.log("Jogando jogo: " + playableMatch.p);
           // TODO: change hardcoded -1 to get from actual seed
           var players = _.map(playableMatch.p, function(id) {return tournamentInfo.players[id - 1];});
-          TournamentSource.playMatch({challengeId: tournamentInfo.challenge, players: players}).then(function(matchInfo) {
+          TournamentSource.playMatch({challenge: tournamentInfo.challenge, players: players}).then(function(matchInfo) {
             var tryGetResult = (matchInfo) => {
               TournamentSource.getMatch(matchInfo).then(function(matchResult) {
                 if(matchResult) {

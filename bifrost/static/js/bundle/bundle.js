@@ -25526,6 +25526,12 @@ var TournamentSource = function () {
   }, {
     key: 'playMatch',
     value: function playMatch(matchInfo) {
+      var x = {
+        cid: matchInfo.challenge,
+        ids: matchInfo.players,
+        rounds: 1
+      };
+      console.log(x);
       return new Promise(function (resolve, reject) {
         // Simulating POST
         $.ajax({
@@ -25725,7 +25731,7 @@ var TournamentStore = function () {
             var players = _underscore2.default.map(playableMatch.p, function (id) {
               return tournamentInfo.players[id - 1];
             });
-            _TournamentSource2.default.playMatch({ challengeId: tournamentInfo.challenge, players: players }).then(function (matchInfo) {
+            _TournamentSource2.default.playMatch({ challenge: tournamentInfo.challenge, players: players }).then(function (matchInfo) {
               var tryGetResult = function tryGetResult(matchInfo) {
                 _TournamentSource2.default.getMatch(matchInfo).then(function (matchResult) {
                   if (matchResult) {
