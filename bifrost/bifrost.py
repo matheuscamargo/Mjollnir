@@ -1242,11 +1242,6 @@ def matches():
 
 # REST API
 
-@app.route('/protected')
-@jwt_required()
-def protected():
-    return '%s' % current_identity['username']
-
 @app.route('/api/join/<gid>', methods=['GET'])
 @jwt_required()
 def apiJoinGroup(gid):
@@ -1325,7 +1320,6 @@ def apiGroup(gid):
         time_delta = datetime.datetime.utcnow() - tournament['datetime_started']
         tournament['time_since'] = time_since_from_seconds( time_delta.total_seconds() )
 
-
     if request.method == 'GET':
         response = {}
         response['description'] = group['description']
@@ -1341,6 +1335,15 @@ def apiGroup(gid):
         for tournament in tournaments:
             response['tournaments'].append({'id':tournament['tid'], 'name':tournament['challenge_name'], 'date':tournament['time_since']})
         return jsonify(**response)
+
+
+    data = json.loads(request.data)
+    rounds = data['rounds']
+    cid = data['cid']
+    opponent = data['opponent']
+    challenge = data['challenge']
+    error = {'error': play(cid = cid, uids = [user_id, opponent], rounds = rounds)}
+    return jsonify(**error)
 
 @app.route('/api/news')
 @jwt_required()
