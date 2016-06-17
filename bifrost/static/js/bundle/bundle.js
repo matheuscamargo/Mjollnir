@@ -25736,6 +25736,10 @@ var TournamentStore = function () {
               var tryGetResult = function tryGetResult(matchInfo) {
                 _TournamentSource2.default.getMatch(matchInfo).then(function (matchResult) {
                   if (matchResult) {
+                    matchResult.p = playableMatch.p;
+                    matchResult.m = _underscore2.default.map(players, function (p) {
+                      return p == matchResult ? 1 : 0;
+                    });
                     console.log("Fim do jogo: " + matchResult.p + ": " + matchResult.m);
                     _underscore2.default.extend(matchResult, { id: playableMatch.id });
                     self.handlePlayMatchSuccess(matchResult);

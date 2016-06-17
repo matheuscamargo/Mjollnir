@@ -81,6 +81,8 @@ class TournamentStore{
             var tryGetResult = (matchInfo) => {
               TournamentSource.getMatch(matchInfo).then(function(matchResult) {
                 if(matchResult) {
+                  matchResult.p = playableMatch.p;
+                  matchResult.m = _.map(players, function(p){ return p == matchResult ? 1 : 0;});
                   console.log("Fim do jogo: " + matchResult.p + ": " + matchResult.m);
                   _.extend(matchResult, {id: playableMatch.id});
                   self.handlePlayMatchSuccess(matchResult);
