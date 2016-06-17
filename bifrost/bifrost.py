@@ -31,6 +31,7 @@ from flask import (
     request,
     url_for,
     Markup,
+    jsonify,
 )
 from flask.ext.stormpath import (
     StormpathManager,
@@ -696,7 +697,7 @@ def tournamentplaygame(tid):
     
     error, mid = play(request.json['cid'], users, request.json['rounds'], None)
     
-    return flask.jsonify(mid = mid)
+    return jsonify(mid = mid)
 
 @app.route('/tournament/<tid>/match/<mid>')
 def tournamentgetmatch(tid, mid):
