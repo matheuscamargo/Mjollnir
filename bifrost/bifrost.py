@@ -695,7 +695,7 @@ def tournamentplaygame(tid):
         user_in_db = mongodb.users.find_one({ 'username': username })
         users.append(user_in_db['uid'])
     
-    error, mid = play(request.json['cid'], users, request.json['rounds'], None)
+    error, mid = play(cid = request.json['cid'], uids = users, rounds = request.json['rounds'])
     
     return jsonify(mid = mid, users = users)
 
