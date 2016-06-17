@@ -25531,7 +25531,7 @@ var TournamentSource = function () {
         ids: matchInfo.players,
         rounds: 1
       };
-      console.log(x);
+      console.log("informações: " + x);
       return new Promise(function (resolve, reject) {
         // Simulating POST
         $.ajax({
