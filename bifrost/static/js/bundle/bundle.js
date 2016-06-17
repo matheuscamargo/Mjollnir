@@ -800,7 +800,7 @@ var MyComponent = function (_React$Component) {
     _this._handleTypeChange = _this._handleTypeChange.bind(_this);
     _this._handleChallengeChange = _this._handleChallengeChange.bind(_this);
 
-    _this.state = { typeSelected: 'single', challengeSelected: challenges[0] };
+    _this.state = { typeSelected: 'single', challengeSelected: tournamentOptions.challenges[0] };
     return _this;
   }
 

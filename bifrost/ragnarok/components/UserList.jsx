@@ -17,7 +17,7 @@ export default class MyComponent extends React.Component {
       this._handleTypeChange = this._handleTypeChange.bind(this);
       this._handleChallengeChange = this._handleChallengeChange.bind(this);
 
-      this.state = {typeSelected: 'single', challengeSelected: challenges[0]};
+      this.state = {typeSelected: 'single', challengeSelected: tournamentOptions.challenges[0]};
   }
 
   render() {
