@@ -25736,7 +25736,7 @@ var TournamentStore = function () {
               var tryGetResult = function tryGetResult(matchInfo) {
                 _TournamentSource2.default.getMatch(matchInfo).then(function (matchResult) {
                   if (matchResult) {
-                    result = {};
+                    var result = {};
                     result.p = playableMatch.p;
                     result.m = _underscore2.default.map(players, function (p) {
                       return p == matchResult ? 1 : 0;

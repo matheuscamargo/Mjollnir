@@ -81,7 +81,7 @@ class TournamentStore{
             var tryGetResult = (matchInfo) => {
               TournamentSource.getMatch(matchInfo).then(function(matchResult) {
                 if(matchResult) {
-                  result = {};
+                  var result = {};
                   result.p = playableMatch.p;
                   result.m = _.map(players, function(p){ return p == matchResult ? 1 : 0;});
                   console.log("Fim do jogo: " + result.p + ": " + result.m);
