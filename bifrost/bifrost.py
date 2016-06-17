@@ -1242,6 +1242,84 @@ def matches():
 
 # REST API
 
+@app.route('/api/tournament/<tid>')
+# @jwt_required()
+def apiTournament(tid):
+    """
+    Page to visualize a tournament.
+    """
+    tournament = mongodb.tournaments.find_one({ 'tid': tid })
+    tournament_dict = {'matches': [], 'ranking': []}
+    if not tournament:
+        return jsonify(**tournament_dict)
+
+    group = mongodb.groups.find_one({'gid': tournament['gid']})
+    if not group:
+        return jsonify(**tournament_dict)
+
+    matches = list( mongodb.matches.find({ 'tid': tid }) )
+
+    names_dict = dict()
+    for match in matches:
+
+        for idx in range(len(match['users'])):
+            
+            uid = match['users'][idx]['uid']
+            
+            if uid not in names_dict:
+                
+                user = mongodb.users.find_one({'uid': uid})
+                names_dict[uid] = dict()
+                if 'given_name' in user and 'surname' in user:
+                    names_dict[uid]['full_name'] = user['given_name'] + ' ' + user['surname']
+                else: 
+                    names_dict[uid]['full_name'] = user['username']
+                names_dict[uid]['username'] = user['username']
+
+            match['users'][idx]['username'] = names_dict[uid]['username']
+            match['users'][idx]['full_name'] = names_dict[uid]['full_name']
+
+        if 'errors' in match:
+            match['error_message'] = ''
+            for counter, error in enumerate(match['errors']):
+                if error == 'server':
+                    match['error_message'] += '%d) There was a problem in the server. ' % (counter + 1)
+                else:
+                    match['error_message'] += '%d) There was a problem with %s\'s submission. ' % (counter + 1, names_dict[error]['username'])
+        else:
+            if len(match['users']) == 1:
+                winner = match['users'][0]['rank']
+            else:
+                winner = dict()
+                if match['users'][0]['rank'] == 1 and match['users'][1]['rank'] == 2:
+                    winner['username'] = match['users'][0]['username']
+                    winner['full_name'] = match['users'][0]['username']
+
+                elif match['users'][1]['rank'] == 1 and match['users'][0]['rank'] == 2:
+                    winner['username'] = match['users'][1]['username']
+                    winner['full_name'] = match['users'][1]['username']
+                else:
+                    winner['username'] = 'Tie!'
+                    winner['full_name'] = 'Tie!'
+
+            match['winner'] = winner
+
+        match['_id'] = str(match['_id'])
+
+    if len(matches) < tournament['total_matches']:
+    
+        return render_template('tournament.html', tournament = tournament, matches = matches, names_type = group['users_name_type'])
+    
+    if 'ranking' not in tournament:
+        ranking = make_ranking(matches, tournament, group, names_dict)
+        mongodb.tournaments.update({'tid': tid}, {'$set': {'ranking': ranking}})  
+        tournament['ranking'] = ranking      
+    else:
+        ranking = tournament['ranking']
+        
+    tournament_dict = {'matches': matches, 'ranking': ranking}
+    return jsonify(**tournament_dict)
+
 @app.route('/api/join/<gid>', methods=['GET'])
 @jwt_required()
 def apiJoinGroup(gid):
@@ -1284,7 +1362,7 @@ def apiGroup(gid):
     """
     _user = current_identity 
     username = _user['username']
-    
+
     response = {}
     if not _user:
         return jsonify(**response)
