@@ -70,6 +70,8 @@ from wtforms.validators import DataRequired
 from wtforms.validators import NumberRange
 from wtforms.validators import Optional
 
+from flask_jwt import JWT, jwt_required, current_identity
+
 ##### Classes
 ## TODO: extract to another file
 class ChallengeDescriptionForm(Form):
@@ -237,6 +239,29 @@ app.jinja_env.globals.update(MJOLLNIR_DEBUG = DEBUG)
 # Stormpath
 stormpath_manager = StormpathManager(app)
 stormpath_manager.login_view = '.login'
+
+def authenticate(username, password):
+    _user = User.from_login(
+            username,
+            password
+        )
+
+    return _user
+
+def identity(payload):
+    username = payload['identity']
+    _user = mongodb.users.find_one({ 'username': username })
+    logger.info("USER:" + _user['username'])
+    return _user
+
+jwt = JWT(app, authenticate, identity)
+
+@jwt.jwt_payload_handler
+def make_payload(identity):
+    iat = datetime.datetime.utcnow()
+    exp = iat + datetime.timedelta(days = 100) 
+    nbf = iat + app.config.get('JWT_NOT_BEFORE_DELTA')
+    return {'exp': exp, 'iat': iat, 'nbf': nbf, 'identity': identity.username}
 
 # Mongodb
 mongo_client = MongoClient(app.config['MONGOLAB_URI'])
@@ -1216,6 +1241,11 @@ def matches():
 
 
 # REST API
+
+@app.route('/protected')
+@jwt_required()
+def protected():
+    return '%s' % current_identity
 
 @app.route('/api/join/<gid>', methods=['GET'])
 def apiJoinGroup(gid):
