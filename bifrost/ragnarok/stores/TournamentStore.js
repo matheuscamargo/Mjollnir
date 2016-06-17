@@ -85,8 +85,11 @@ class TournamentStore{
                   result.p = playableMatch.p;
                   result.m = [players[0] == matchResult ? 1 : 0, players[1] == matchResult ? 1 : 0];
                   console.log("Fim do jogo: " + result.p + ": " + result.m);
-                  _.extend(result, {id: playableMatch.id});
-                  self.handlePlayMatchSuccess(result);
+                  var response = {
+                    id: playableMatch.id,
+                    results: result
+                  };
+                  self.handlePlayMatchSuccess(response);
                   self.emitChange();
                   resolve();
                 }
