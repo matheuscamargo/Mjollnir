@@ -1355,8 +1355,9 @@ def play(cid, uids, rounds, tid = None):
     try:
         mid = r.json['mid']
         return False, mid
-
-    return False, 0
+    
+    else: 
+        return False, 0
 
 
 
