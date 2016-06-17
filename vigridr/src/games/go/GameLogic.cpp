@@ -61,6 +61,7 @@ GameLogic::GameLogic(const std::vector<int32_t> &playerIds) {
       grid_[x][y] = new Stone( EMPTY, x, y );
     }
   }
+  updateMoveList_();
 }
 
 // TODO: Change logic of /Mjollnir/vigridr/src/server/GameManager.cpp to receive
@@ -88,8 +89,8 @@ bool GameLogic::update(Command command, int32_t playerId) {
         wMove_ = -1;
       }
     }
-
     updateWorldModel_();
+    updateMoveList_();
 
     if( matchFinished_() ) {
       hasFinished_ = true;
@@ -109,6 +110,10 @@ GameDescription GameLogic::getGameDescription(int32_t playerId) const {
 
 WorldModel GameLogic::getWorldModel() const {
   return worldModel_;
+}
+
+std::vector<Command>& GameLogic::getMoveList(int32_t playerId) {
+  return moveList_;
 }
 
 void GameLogic::setTableCoordinate(
@@ -135,6 +140,20 @@ std::string GameLogic::getWinner() const {
 
 void GameLogic::setWinner(std::string value) {
   winner_ = value;
+}
+
+void GameLogic::updateMoveList_() {
+  moveList_.clear();
+  Command command;
+  for(int32_t i = 0; i < boardSize_; i++) {
+    for(int32_t j = 0; j < boardSize_; j++) {
+      if (worldModel_.table[i][j] == Marker::UNMARKED) {
+        command.coordinate.x = i;
+        command.coordinate.y = j;
+        moveList_.push_back(command);
+      }
+    }
+  }
 }
 
 // Can delete this method?

@@ -42,6 +42,10 @@ void PlayerTurnData::setGameResult(GameResult result) {
   result_ = result;
 }
 
+void PlayerTurnData::setMoveList(std::vector<Command>& moveList) {
+  moveList_ = moveList;
+}
+
 GameManager::GameManager(const std::vector<int32_t> &playerIds)
   : gameLogic_(playerIds) {
 
@@ -99,6 +103,9 @@ void GameManager::initializeGame(const std::vector<int32_t> &playerIds) {
   std::vector<std::string> players = utils::split(FLAGS_players, ',');
 
   gameInfo_.worldModel = gameLogic_.getWorldModel();
+  for (size_t i = 0; i < kMaxPlayers; ++i) {
+      playerTurnData_[i].setMoveList(gameLogic_.getMoveList(playerTurnData_[i].getId()));
+  }
   GameLogger::logGameDescription(gameLogic_.getGameDescription(playerIds[0]),
                                  players[0],
                                  gameLogic_.getGameDescription(playerIds[1]),
@@ -131,6 +138,9 @@ void GameManager::nextTurn() {
     }
     gameInfo_.gameStatus = GameStatus::RUNNING;
     gameInfo_.worldModel = gameLogic_.getWorldModel();
+    for (size_t i = 0; i < kMaxPlayers; ++i) {
+        playerTurnData_[i].setMoveList(gameLogic_.getMoveList(playerTurnData_[i].getId()));
+    }
     int32_t playerOnTurn = playerTurnData_[0].isTurn() ? playerTurnData_[0].getId() : playerTurnData_[1].getId();
     if (gameLogic_.shouldIncrementCycle(playerOnTurn)) {
       gameInfo_.cycle++;
@@ -369,6 +379,7 @@ void GameManager::getGameInfo(GameInfo& gameInfo, int32_t playerId) {
     std::unique_lock<std::mutex> lock(playerMutex_[idx]);
     gameInfo.isMyTurn = playerTurnData_[idx].isTurn();
     gameInfo.gameResult = playerTurnData_[idx].getGameResult();
+    gameInfo.moveList = playerTurnData_[idx].getMoveList();
   }
 }
 

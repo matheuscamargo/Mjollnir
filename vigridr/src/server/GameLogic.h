@@ -1,101 +1,75 @@
 #ifndef VIGRIDR_SERVER_GAME_LOGIC_H
 #define VIGRIDR_SERVER_GAME_LOGIC_H
 
-#include <vector>
-#include <utility>
-#include <string>
-
 #include "../thrifts/gen-cpp/Command_types.h"
+#include "../thrifts/gen-cpp/Command_constants.h"
 #include "../thrifts/gen-cpp/WorldModel_types.h"
 #include "../thrifts/gen-cpp/GameDescription_types.h"
 #include "../thrifts/gen-cpp/GameResult_types.h"
+#include <unordered_map>
+#include <string>
+#include <vector>
 
 namespace mjollnir { namespace vigridr {
 
-  struct TotalWorldModel {};
+struct TotalWorldModel {};
 
-/**
- *  This class should be implemented for each game providing the
- *  logic necessary to run the game
- */
+Move make_move(int32_t src, int32_t dst);
+
+std::ostream& operator<<(std::ostream& os, Move& m);
+
+std::ostream& operator<<(std::ostream& os, Command& c);
+
+template<typename T>
+std::ostream& operator<<(std::ostream& os, std::vector<T> v);
+
 class GameLogic {
  public:
-  /**
-  *  Tells GameManager if it should print the world model
-  *  It should't exist if Vigridr is refactored to accept any
-  *  number of players
-  */
   bool shouldPrintWorldModel(int32_t playerId);
-
-  /**
-  *  Tells GameManager if it should increment the cycle counter
-  */
   bool shouldIncrementCycle(int32_t playerId);
-
-  /**
-   *  Each player has an unique id
-   */
-  GameLogic(int32_t playerId1, int32_t playerId2);
-
-  /**
-   *  Method to update  the world model given a player command
-   *  Don't worry with multi threading
-   *  The player who sends first executes first
-   *  Returns true if successfully updated
-   */
+  GameLogic(const std::vector<int32_t> &playerIds);
   bool update(Command command, int32_t playerId);
-
-  /**
-   *  Returns the world model
-   */
   WorldModel getWorldModel() const;
-
-  /**
-   *  Returns the total world model which is the world model for
-   *  partially observable games
-   */
-  TotalWorldModel getTotalWorldModel() const;
-
-  /**
-   *  Tells weather the game has finished or not
-   */
+  std::vector<Command>& getMoveList(int32_t playerId);
   bool isFinished() const;
-
-  /**
-   *  Returns the winner (only called if isFinished()==true)
-   *  In case of a tie returns -1
-   *  In case of a score return s:score
-   */
   std::string getWinner() const;
-
-  /**
-   *  Returns the gameDescription.
-   *  Called when the player connects for the first time (and never again)
-   *  Should provide initialization info
-   */
   GameDescription getGameDescription(int32_t playerId) const;
-
-  /**
-   * Returns the number of players for the game
-   */
+  TotalWorldModel getTotalWorldModel() const;
   size_t getNumberOfPlayers() const;
-
-  /**
-   * Returns the game result for player with id 'id'
-   */
   GameResult createGameResult(std::string result, int32_t id);
 
- private:
+  // Number of checkers for each player. Short name because it is used a lot.
+  const static int32_t NC = 15;
+
+  // Number of points on the board. Short name because it is used a lot.
+  const static size_t NP = 24;
+
+  const int32_t BEAR_OFF = g_Command_constants.BEAR_OFF;
+  const int32_t FROM_BAR = g_Command_constants.FROM_BAR;
+
+ protected:
+  bool all_checkers_in_home_board_(WorldModel wm, PlayerColor color);
+  std::vector<Command> calculate_possibilities_(WorldModel wm, Command command, PlayerColor color);
+  PlayerColor color_(int32_t playerId) const;
+  std::vector<Command> filter_commands_(const std::vector<Command>& possible_commands, PlayerColor color);
+  void move_(int32_t src, int32_t dst, PlayerColor color);
+  void rollDice_();
+  bool try_move_(const WorldModel& wm, int32_t src, int32_t dst, PlayerColor color, WorldModel& new_wm);
+
+  void setBoard_forTest(const std::vector<Point>& board);
+  void setDice_forTest(const std::vector<int32_t>& dice);
+
   WorldModel worldModel_;
+  std::vector<Command> moveList_;
   TotalWorldModel twm_;
-  int32_t player1_;
-  int32_t player2_;
+  int32_t player1_, player2_;
   std::string winner_;
-  static const std::string kNoWinner;
+  std::unordered_map<int32_t, bool> playerIdToInvalid_;
   bool hasFinished_;
   const size_t numberOfPlayers_ = 2;
-
 };
+
+Point make_point(int32_t reds, int32_t whites);
 
 }}  // namespaces
 

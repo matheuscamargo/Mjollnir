@@ -30,6 +30,7 @@ class GameLogic {
   GameLogic(const std::vector<int32_t> &playerIds);
   bool update(Command command, int32_t playerId);
   WorldModel getWorldModel() const;
+  std::vector<Command>& getMoveList(int32_t playerId);
   bool isFinished() const;
   std::string getWinner() const;
   GameDescription getGameDescription(int32_t playerId) const;
@@ -59,6 +60,7 @@ class GameLogic {
   void setDice_forTest(const std::vector<int32_t>& dice);
 
   WorldModel worldModel_;
+  std::vector<Command> moveList_;
   TotalWorldModel twm_;
   int32_t player1_, player2_;
   std::string winner_;

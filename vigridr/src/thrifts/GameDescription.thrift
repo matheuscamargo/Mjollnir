@@ -1,9 +1,12 @@
+include "WorldModel.thrift"
+
 namespace cpp mjollnir.vigridr
 
-/**
- *  GameDescription that is sent to the player when he connects
- *  It should contain the initialization info (e.g. a map description)
- */
+enum PlayerColor {
+  RED = 0,
+  WHITE = 1
+}
+
 struct GameDescription {
-  1: required i32 sampleDescription
+  1: required PlayerColor myColor
 }

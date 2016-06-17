@@ -23,8 +23,6 @@ try:
     server_kwargs['args'].append('--ports')
     ports_string = ",".join( '909' + str(idx) for idx in [0,1])
     server_kwargs['args'].append(ports_string)
-
-    print server_kwargs
     
     # Player parameters (id and port)        
     # for idx in [0, 1]:

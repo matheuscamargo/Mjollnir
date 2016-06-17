@@ -16,6 +16,7 @@ using namespace ::mjollnir::vigridr;
  */
 void init(const GameInit& gameInit) {
     std::cout << "C++ Client" << std::endl;
+    srand(time(NULL));
 }
 
 /*
@@ -34,8 +35,13 @@ void init(const GameInit& gameInit) {
  *     A Command instance - a Command contains a field called direction of type enum Direction.
  *                          Direction values: RIGHT, UP, LEFT, DOWN.
  */
-Command playTurn(const WorldModel& wm, int32_t turn) {
+Command playTurn(const WorldModel& wm,
+  const std::vector<Command>& moveList, int32_t turn) {
   Command command;
+
+  size_t index = rand()%moveList.size();
+  command = moveList[index];
+  
   return command;
 }
 

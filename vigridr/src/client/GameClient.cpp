@@ -48,7 +48,7 @@ void playGame(GameClient& client) {
       break;
     }
     if (gameInfo.isMyTurn) {
-      Command command = playTurn(gameInfo.worldModel, gameInfo.cycle);
+      Command command = playTurn(gameInfo.worldModel, gameInfo.moveList, gameInfo.cycle);
       client.sendCommand(command);
     }
   }

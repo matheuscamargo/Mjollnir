@@ -23,6 +23,21 @@ GameLogic::GameLogic(const std::vector<int32_t> &playerIds) {
 
   //initializeWorld_();
   initializeWorldFromRusselBook_();
+  Command command;
+  command.action = Action::FORWARD;
+  moveList_.push_back(command);
+  command.action = Action::TURNRIGHT;
+  moveList_.push_back(command);
+  command.action = Action::TURNLEFT;
+  moveList_.push_back(command);
+  command.action = Action::STAY;
+  moveList_.push_back(command);
+  command.action = Action::SHOOT;
+  moveList_.push_back(command);
+  command.action = Action::GRAB;
+  moveList_.push_back(command);
+  command.action = Action::CLIMB;
+  moveList_.push_back(command);
 }
 
 void GameLogic::initializeWorld(std::vector<std::vector<WorldSquare>> map) {
@@ -321,6 +336,10 @@ GameDescription GameLogic::getGameDescription(int32_t playerId) const {
 
 WorldModel GameLogic::getWorldModel() const {
   return worldModel_;
+}
+
+std::vector<Command>& GameLogic::getMoveList(int32_t playerId) {
+  return moveList_;
 }
 
 bool GameLogic::shouldPrintWorldModel(int32_t playerId){

@@ -32,6 +32,7 @@ class PlayerTurnData {
   void clearCommand();
   void setIsTurn(bool isTurn);
   void setGameResult(GameResult result);
+  void setMoveList(std::vector<Command>& moveList);
 
   Command getCommand() const { return command_; }
   bool isCommandSet() const { return isCommandSet_; }
@@ -39,6 +40,7 @@ class PlayerTurnData {
   bool isTurn() const { return isTurn_; }
   int32_t getId() const { return id_; }
   GameResult getGameResult() const { return result_; }
+  std::vector<Command> getMoveList() const { return moveList_; }
  private:
   void setId(int32_t id) { id_ = id; }
 
@@ -48,6 +50,7 @@ class PlayerTurnData {
   time_point lastUpdateTime_;
   bool isTurn_;
   GameResult result_;
+  std::vector<Command> moveList_;
 };
 
 /**

@@ -23,14 +23,15 @@ Move make_move(int32_t src, int32_t dst) {
   return mv;
 }
 
-std::ostream& operator<<(std::ostream& os, Move m) {
+std::ostream& operator<<(std::ostream& os,const  Move& m) {
     return os << m.src << "->" << m.dst;
 }
 
-std::ostream& operator<<(std::ostream& os, Command c) {
+std::ostream& operator<<(std::ostream& os, Command& c) {
     os << "(";
-    for (auto move : c.moves) {
-      os << move << ", ";
+    for (Move& move : c.moves) {
+      os << move.src << "->" << move.dst;
+      os << ", ";
     }
     return os << ")";
 }
@@ -91,7 +92,7 @@ void init(const GameInit& gameInit) {
  * However, it is not complete, so it sometimes sends invalid commands.
  *
  * Parameters:
- *     wm   - an instance of the WorldModel class that contains the following fields:
+ *     mwm   - an instance of the WorldModel class that contains the following fields:
  *            bar       - type Point. The number of checkers for each player in the bar.
  *            board     - vector of Point. Always contains 24 elements.
  *            borne_off - type Point. The number of checkers that each player has borne off.
@@ -108,7 +109,8 @@ void init(const GameInit& gameInit) {
  *                          src and dst must be in the interval [0, 24).
  *                          Additionally, src can be FROM_BAR and dst can be BEAR_OFF.
  */
-Command playTurn(const WorldModel& cwm, int32_t turn) {
+Command playTurn(const WorldModel& wm,
+  const std::vector<Command>& moveList, int32_t turn) {
     //const int32_t BEAR_OFF = g_Command_constants.BEAR_OFF;
     const int32_t FROM_BAR = g_Command_constants.FROM_BAR;
 
@@ -117,37 +119,41 @@ Command playTurn(const WorldModel& cwm, int32_t turn) {
         return lastCommand;
     }
 
-    WorldModel wm = cwm;
+    WorldModel mwm = wm;
+
     lastTurn = turn;
-    std::cout << turn << ": " << wm.dice << " ";
+    std::cout << turn;
+    std::cout << ": ";
+    std::cout << mwm.dice;
+    std::cout << " ";
 
     // Calculate the several dice combinations
     std::vector<std::vector<int32_t>> diceCombinations;
-    if (wm.dice[0] == wm.dice[1]) {
-        wm.dice.push_back(wm.dice[0]);
-        wm.dice.push_back(wm.dice[0]);
-        diceCombinations.push_back(wm.dice);
+    if (mwm.dice[0] == mwm.dice[1]) {
+        mwm.dice.push_back(mwm.dice[0]);
+        mwm.dice.push_back(mwm.dice[0]);
+        diceCombinations.push_back(mwm.dice);
     }
     else {
-      diceCombinations.push_back(wm.dice);
-      diceCombinations.push_back({ wm.dice[1], wm.dice[0] });
+      diceCombinations.push_back(mwm.dice);
+      diceCombinations.push_back({ mwm.dice[1], mwm.dice[0] });
     }
 
     Command command;
     for (const std::vector<int32_t> dice : diceCombinations) {
         for (int32_t die : dice) {
             // If I have a checkers in the bar, I must move it
-            if (wm.bar[me] > 0) {
+            if (mwm.bar[me] > 0) {
                 int32_t src = FROM_BAR;
                 int32_t dst = start - direction + die * direction;
-                if (wm.board[dst][other] <= 1) {
+                if (mwm.board[dst][other] <= 1) {
                     command.moves.push_back(make_move(src, dst));
-                    wm.bar[me]--;
-                    wm.board[dst][me]++;
+                    mwm.bar[me]--;
+                    mwm.board[dst][me]++;
                     // If I hit an opponent
-                    if (wm.board[dst][other] == 1) {
-                        wm.board[dst][other]--;
-                        wm.bar[other]++;
+                    if (mwm.board[dst][other] == 1) {
+                        mwm.board[dst][other]--;
+                        mwm.bar[other]++;
                     }
                     continue;
                 }
@@ -159,20 +165,20 @@ Command playTurn(const WorldModel& cwm, int32_t turn) {
             // In order, try to move a piece
             for (int32_t src = start; src != end + direction; src += direction) {
                 int32_t dst = src + die * direction;
-                if (0 <= dst && dst <= 23 && wm.board[src][me] > 0 && wm.board[dst][other] <= 1) {
+                if (0 <= dst && dst <= 23 && mwm.board[src][me] > 0 && mwm.board[dst][other] <= 1) {
                     command.moves.push_back(make_move(src, dst));
-                    wm.board[src][me]--;
-                    wm.board[dst][me]++;
+                    mwm.board[src][me]--;
+                    mwm.board[dst][me]++;
                     // If I hit an opponent
-                    if (wm.board[dst][other] == 1) {
-                        wm.board[dst][other]--;
-                        wm.bar[other]++;
+                    if (mwm.board[dst][other] == 1) {
+                        mwm.board[dst][other]--;
+                        mwm.bar[other]++;
                     }
                     break;
                 }
             }
         }
-        if (command.moves.size() == wm.dice.size()) {
+        if (command.moves.size() == mwm.dice.size()) {
             break;
         }
     }

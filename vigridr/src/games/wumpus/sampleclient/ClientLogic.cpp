@@ -36,21 +36,12 @@ void init(const GameInit& gameInit) {
  *     A Command instance - a Command contains a field called action of enum Action.
  *                          Action fields: FORWARD, TURNRIGHT, TURNLEFT, STAY, SHOOT, GRAB and CLIMB.
  */
-Command playTurn(const WorldModel& wm, int32_t turn) {
+Command playTurn(const WorldModel& wm,
+  const std::vector<Command>& moveList, int32_t turn) {
   Command command;
-  int move = rand()%3;
-
-  std::cout << turn << ": ";
-  if(move == 0){
-    std::cout << "FORWARD" << std::endl;
-    command.action = Action::FORWARD;
-  } else if(move == 1){
-    std::cout << "TURNRIGHT" << std::endl;
-    command.action = Action::TURNRIGHT;
-  } else {
-    std::cout << "TURNLEFT" << std::endl;
-    command.action = Action::TURNLEFT;
-  }
+  
+  size_t index = rand()%moveList.size();
+  command = moveList[index];
 
   return command;
 }

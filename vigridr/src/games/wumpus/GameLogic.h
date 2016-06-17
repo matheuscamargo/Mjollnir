@@ -43,6 +43,7 @@ class GameLogic {
   GameLogic(const std::vector<int32_t> &playerIds);
   bool update(Command command, int32_t playerId);
   WorldModel getWorldModel() const;
+  std::vector<Command>& getMoveList(int32_t playerId);
   size_t getWorldSize() const;
   bool isFinished() const;
   std::string getWinner() const;
@@ -76,6 +77,7 @@ class GameLogic {
   bool randomPlay_(int32_t playerId);
   
   WorldModel worldModel_;
+  std::vector<Command> moveList_;
   TotalWorldModel twm_;
   int32_t player1_, player2_, score_;
   std::string winner_;

@@ -47,18 +47,12 @@ void init(const GameInit& gameInit) {
  *     A Command instance - a Command contains a field called coordinate of class Coordinate.
  *                          A Coordinate contains two fields of type int32_t, x and y.
  */
-Command playTurn(const WorldModel& wm, int32_t turn) {
+Command playTurn(const WorldModel& wm,
+  const std::vector<Command>& moveList, int32_t turn) {
   Command command;
 
-  while(true) {
-    size_t x = rand()%3;
-    size_t y = rand()%3;
-    if (wm.table[x][y] == Marker::UNMARKED) {
-      command.coordinate.x = x;
-      command.coordinate.y = y;
-      break;
-    }
-  }
+  size_t index = rand()%moveList.size();
+  command = moveList[index];
 
   std::cout << turn << ": " << command.coordinate << std::endl;
   return command;

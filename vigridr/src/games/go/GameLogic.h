@@ -92,6 +92,7 @@ class GameLogic {
   GameLogic(const std::vector<int32_t> &playerIds);
   bool update(Command command, int32_t playerId);
   WorldModel getWorldModel() const;
+  std::vector<Command>& getMoveList(int32_t playerId);
   bool isFinished() const;
   std::string getWinner() const;
   GameDescription getGameDescription(int32_t playerId) const;
@@ -116,6 +117,7 @@ class GameLogic {
   GameResult createGameResult(std::string result, int32_t id);
 
  private:
+  void updateMoveList_();
   void setTableCoordinate_(const Coordinate& coordinate, Marker marker);
   bool checkTableCoordinate_(const Coordinate& coordinate, Marker marker);
   bool isPassMove_(int32_t x, int32_t y);
@@ -135,6 +137,7 @@ class GameLogic {
   Group getGroup_( int x, int y, Group currGroup );
   Player scoreArea_();
   WorldModel worldModel_;
+  std::vector<Command> moveList_;
   TotalWorldModel twm_;
   int32_t player1_, player2_;
   int32_t koPosX_, koPosY_;

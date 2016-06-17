@@ -25,6 +25,10 @@ GameLogic::GameLogic(const std::vector<int32_t> &playerIds) {
       worldModel_.players[i].body.push_back(pos);
     }
   }
+  std::vector<Command> moveList;
+  moveList_.push_back(moveList);
+  moveList_.push_back(moveList);
+  updateMoveList_();
 }
 
 Coordinate GameLogic::getUpdatedHeadPosition(Coordinate pos, Direction dir) {
@@ -69,6 +73,7 @@ bool GameLogic::update(Command command, int32_t playerId) {
   if (isValidCoordinate(nextHeadPosition) &&
       field_[nextHeadPosition.x][nextHeadPosition.y] == kEmpty) {
     field_[nextHeadPosition.x][nextHeadPosition.y] = playerId;
+    updateMoveList_();
   }
   else {
     if (winner_ == std::to_string(kNoWinner)) {
@@ -82,6 +87,38 @@ bool GameLogic::update(Command command, int32_t playerId) {
   return true;
 }
 
+void GameLogic::updateMoveList_() {
+  Command command;
+  for (int idx = 0; idx <= 1; idx++) {
+    moveList_[idx].clear();
+    Coordinate currentHeadCoord = worldModel_.players[idx].body.back();
+    Coordinate nextHeadCoord = getUpdatedHeadPosition(currentHeadCoord, Direction::UP);
+    if (isValidCoordinate(nextHeadCoord) && 
+          field_[nextHeadCoord.x][nextHeadCoord.y] == kEmpty) {
+      command.direction = Direction::UP;
+      moveList_[idx].push_back(command);
+    }
+    nextHeadCoord = getUpdatedHeadPosition(currentHeadCoord, Direction::DOWN);
+    if (isValidCoordinate(nextHeadCoord) && 
+          field_[nextHeadCoord.x][nextHeadCoord.y] == kEmpty) {
+      command.direction = Direction::DOWN;
+      moveList_[idx].push_back(command);
+    }
+    nextHeadCoord = getUpdatedHeadPosition(currentHeadCoord, Direction::LEFT);
+    if (isValidCoordinate(nextHeadCoord) && 
+          field_[nextHeadCoord.x][nextHeadCoord.y] == kEmpty) {
+      command.direction = Direction::LEFT;
+      moveList_[idx].push_back(command);
+    }
+    nextHeadCoord = getUpdatedHeadPosition(currentHeadCoord, Direction::RIGHT);
+    if (isValidCoordinate(nextHeadCoord) && 
+          field_[nextHeadCoord.x][nextHeadCoord.y] == kEmpty) {
+      command.direction = Direction::RIGHT;
+      moveList_[idx].push_back(command);
+    }
+  }
+}
+
 bool GameLogic::shouldPrintWorldModel(int32_t playerId){
   return true;
 }
@@ -92,6 +129,17 @@ bool GameLogic::shouldIncrementCycle(int32_t playerId){
 
 WorldModel GameLogic::getWorldModel() {
   return worldModel_;
+}
+
+std::vector<Command>& GameLogic::getMoveList(int32_t playerId) {
+  size_t idx = 0;
+  if(playerId == player1_){
+    idx = 0;
+  }
+  else if(playerId == player2_){
+    idx = 1;
+  }
+  return moveList_[idx];
 }
 
 bool GameLogic::isFinished() {

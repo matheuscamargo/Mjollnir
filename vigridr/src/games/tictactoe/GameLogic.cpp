@@ -15,6 +15,7 @@ GameLogic::GameLogic(const std::vector<int32_t> &playerIds) {
       {Marker::UNMARKED,Marker::UNMARKED,Marker::UNMARKED}
   };
   worldModel_.table = table;
+  updateMoveList_();
 }
 
 bool GameLogic::update(Command command, int32_t playerId) {
@@ -28,6 +29,7 @@ bool GameLogic::update(Command command, int32_t playerId) {
       setTableCoordinate_(command.coordinate, Marker::O);
       hasFinished_ = checkVictory_(worldModel_, Marker::O , playerId);
     }
+    updateMoveList_();
     if(checkDraw_(worldModel_)) { hasFinished_ = true; }
     return true;
   }
@@ -42,6 +44,10 @@ GameDescription GameLogic::getGameDescription(int32_t playerId) const {
 
 WorldModel GameLogic::getWorldModel() const {
   return worldModel_;
+}
+
+std::vector<Command>& GameLogic::getMoveList(int32_t playerId) {
+  return moveList_;
 }
 
 void GameLogic::setTableCoordinate(
@@ -73,6 +79,20 @@ std::string GameLogic::getWinner() const {
 
 void GameLogic::setWinner(std::string value) {
   winner_ = value;
+}
+
+void GameLogic::updateMoveList_() {
+  moveList_.clear();
+  Command command;
+  for(size_t i = 0; i < boardSize_; i++) {
+    for(size_t j = 0; j < boardSize_; j++) {
+      if (worldModel_.table[i][j] == Marker::UNMARKED) {
+        command.coordinate.x = i;
+        command.coordinate.y = j;
+        moveList_.push_back(command);
+      }
+    }
+  }
 }
 
 bool GameLogic::randomPlay_(int32_t playerId) {

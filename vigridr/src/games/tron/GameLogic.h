@@ -21,6 +21,7 @@ class GameLogic {
   GameLogic(const std::vector<int32_t> &playerIds);
   bool update(Command command, int32_t playerId);
   WorldModel getWorldModel();
+  std::vector<Command>& getMoveList(int32_t playerId);
   bool isFinished();
   std::string getWinner();
   GameDescription getGameDescription(int32_t playerId) const;
@@ -29,10 +30,12 @@ class GameLogic {
   GameResult createGameResult(std::string result, int32_t id);
 
  private:
+  void updateMoveList_();
   bool isValidCoordinate(Coordinate pos);
   Coordinate getUpdatedHeadPosition(Coordinate pos, Direction dir);
 
   WorldModel worldModel_;
+  std::vector<std::vector<Command>> moveList_;
   TotalWorldModel twm_;
   int32_t player1_, player2_;
   std::string winner_;

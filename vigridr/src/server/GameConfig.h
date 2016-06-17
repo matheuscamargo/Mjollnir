@@ -6,27 +6,10 @@
 #include "GameType.h"
 
 namespace mjollnir { namespace vigridr { namespace config {
-
-/**
- *  Time for the client to process the world model and send the command
- */
-const std::chrono::milliseconds cycleDurationMs(1000);  // >= 3ms
-
-/**
- *  Delay before the first cycle (for connection and initialization)
- */
-const std::chrono::seconds firstCycleDurationS(4);
-
-/**
- *  An upper bound on the time the server takes to update the world model
- */
-const std::chrono::milliseconds updateTimeUpperBoundMs(10);
-
-/**
- *  Type of the game (it can be either GameType::TURN or GameType::CONTINUOUS)
- */
-const GameType gameType = GameType::CONTINUOUS;
-
+const std::chrono::milliseconds cycleDurationMs(3000);  // >= 3ms
+const std::chrono::seconds firstCycleDurationS(8);
+const std::chrono::milliseconds updateTimeUpperBoundMs(2);
+const GameType gameType = GameType::TURN;
 }}}
 
 #endif

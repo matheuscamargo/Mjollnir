@@ -6,8 +6,7 @@ from subprocess import check_call
 VIGRIDR_SRC = '/Mjollnir/vigridr/src'
 TEST_SRC = '/Mjollnir/vigridr/localdev'
 ### To compile, just change the next 4 values ###
-CURRENT_GAME = 'tictactoe'
-PLAYER_LOGIC_FILES = ['Player1Logic', 'Player2Logic']
+CURRENT_GAME = 'backgammon'
 CLIENT_EXTENSION = 'cpp'
 SERVER_EXTENSION = 'cpp'
 
@@ -35,9 +34,9 @@ try:
 except:
 	pass
 
-for player_logic_file in PLAYER_LOGIC_FILES:
+for x in range(0, 2):
 	print('======================== Setting up client ' + str(idx) + ' ========================')
-	shutil.copy(os.path.join(TEST_SRC, player_logic_file + '.' + CLIENT_EXTENSION), os.path.join(VIGRIDR_SRC, 'client', 'ClientLogic.' + CLIENT_EXTENSION))
+	shutil.copy(os.path.join(VIGRIDR_SRC, 'games', CURRENT_GAME, 'sampleclient', 'ClientLogic.' + CLIENT_EXTENSION), os.path.join(VIGRIDR_SRC, 'client', 'ClientLogic.' + CLIENT_EXTENSION))
 
 	print('======================== Running make client' + CLIENT_EXTENSION + ' ========================')
 	os.chdir('..')
