@@ -725,7 +725,7 @@ def tournamentgetmatch(tid, mid):
         if match['users'][0]['rank'] == 1 and match['users'][1]['rank'] == 2:
             match['winner'] = match['usernames'][0]
         elif match['users'][0]['rank'] == 2 and match['users'][1]['rank'] == 1:
-            match['winner'] = match['usernames'][1]['uid']
+            match['winner'] = match['usernames'][1]
         else: 
             match['users'][0]['uid']
 
