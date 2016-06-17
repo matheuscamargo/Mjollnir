@@ -16,7 +16,13 @@ class TournamentSource {
   }
 
   playMatch(matchInfo) {
-    return new Promise(function(resolve, reject) {
+  	var x = {
+          cid: matchInfo.challenge,
+          ids: matchInfo.players,
+          rounds: 1,
+        };
+  	console.log(x);
+	return new Promise(function(resolve, reject) {
       // Simulating POST
       $.ajax({
         type: "POST",
