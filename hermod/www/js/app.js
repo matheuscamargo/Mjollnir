@@ -14,7 +14,8 @@ angular.module('hermod',
   url: 'http://192.168.0.132:5000'
 })
 
-.run(function($ionicPlatform, User) {
+.run(function($ionicPlatform, $http, $localStorage) {
+  $http.defaults.headers.common.Authorization = "JWT " + $localStorage.token;
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -120,6 +121,12 @@ angular.module('hermod',
         controller: 'GroupTournamentsCtrl'
       }
     },
+  })
+
+  .state('tournament-detail', {
+    url: '/tournament/:tournamentId',
+    templateUrl: 'templates/tournament-detail.html',
+    controller: 'TournamentDetailCtrl'
   })
   
   .state('login', {

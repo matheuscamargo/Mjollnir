@@ -1,56 +1,30 @@
-angular.module('hermod.services', [])
-
-
-.service("User", function() {
-    
-    this.username = null;
-    this.token = null;
-
-    this.setToken = function(new_token) {
-        this.token = new_token;
-    };
-    this.getToken = function() {
-        return this.token;
-    };
-    this.setUsername = function(new_username) {
-        this.username = new_username;
-    };
-    this.getUsername = function() {
-        return this.username;
-    };
-            
-})
+angular.module('hermod.services', ['ngStorage'])
 
 // Service to handle the check of credentials 
 
-.service('LoginService', function($q, API, User, $http) {
+.service('LoginService', function($q, API, $http, $localStorage) {
     return {
         loginUser: function(username, password) {
             var deferred = $q.defer();
             var promise = deferred.promise;
 
 
-            User.setUsername(username);
+            //User.setUsername(username);
+            $localStorage.username = username;
 
             $http.post(API.url + "/auth",
               {
                 username: username,
                 password: password
               }).
-            then(function(data) {
-              console.log(data);
-                if (data.data.access_token) {
+            then(function(res) {
+              //console.log(res);
+                if (res.data.access_token) {
                   // Set token and headers
-                  User.setToken(data.data.access_token);
-                  var header = {
-                    "Username": User.getUsername(),
-                    "Authorization": "JWT " + User.getToken(),
-                    "Content-Type":'application/json'
-                  };
-                  //$http.defaults.headers.common.Authorization = 'Basic YmVlcDpib29w';
-                  $http.defaults.headers.common.Authorization = "JWT " + User.getToken();
-                  // $httpProvider.defaults.headers.get = header;
-                  // $httpProvider.defaults.headers.post = header;
+                  // User.setToken(res.data.access_token);
+                  $localStorage.token = res.data.access_token;
+                  // $http.defaults.headers.common.Authorization = "JWT " + User.getToken();
+                  $http.defaults.headers.common.Authorization = "JWT " + $localStorage.token;
                   deferred.resolve("Welcome");
                 }
                 else {
@@ -172,12 +146,12 @@ angular.module('hermod.services', [])
           return [
           {
             sequence: 1,
-            username: 'lucasmullerm',
+            username: 'Mock user 1',
             rating: '8001 ± 500'
           },
           {
             sequence: 2,
-            username: 'gabrielilharco',
+            username: 'Mock user 2',
             rating: '7000 ± 500'
           }];
         }
@@ -191,13 +165,13 @@ angular.module('hermod.services', [])
         getNews: function() {
           return [
           {
-            "author":"vyrp",
+            "author":"Mock User",
             "content":"Start playing this ancient game of tactics and moving pieces.<br>\r\nWrite a solution, and challenge the masters!\r\n\r\n<a href=\"http://mjollnir.rro.im/challenge/Backgammon\">Backgammon</a> is now available for submissions!",
             "datetime":"Thu, 29 Oct 2015 09:52:07 GMT",
             "title":"New Challenge: Backgammon!"
           },
           {
-            "author":"vyrp",
+            "author":"Mock User",
             "content":"Enter a dangerous cave, fight a terrible monster and come back with glory and a treasure!\r\n\r\nThe <a href=\"/challenge/Wumpus\">World of Wumpus</a> challenge is online, and you may now submit a fearless solution!",
             "datetime":"Thu, 22 Oct 2015 03:26:33 GMT",
             "title":"New Challenge: Wumpus!"

@@ -91,8 +91,37 @@ angular.module('hermod.controllers', [])
 
 })
 
-.controller('LoginCtrl', function($scope, LoginService, $ionicPopup, $state) {
+.controller('TournamentDetailCtrl', function($scope, API, $stateParams, $http, ChallengesMock) {
+
+  $scope.tournamentId = $stateParams.tournamentId;
+
+  $http({
+      url: API.url + "/api/tournament/" + $stateParams.tournamentId,
+  })
+  .success(function(data) {
+      for (i = 0; i < data.ranking.length; i++) { 
+          data.ranking[i][0].rank = i + 1;
+      }
+    //console.log(data);
+      $scope.ranking = data.ranking;
+      $scope.matches = data.matches;
+  });
+
+  // Mock
+  // $scope.rank = ChallengesMock.getRank();
+})
+
+
+.controller('LoginCtrl', function($scope, LoginService, $ionicPopup, $state, $localStorage, $http, API) {
+  
+
+    $http.get(API.url + "/api/news")
+    .then(function(data){$state.go("tab.news");},
+          function(res) {console.log("fail");});
+
     $scope.data = {};
+
+    //console.log($localStorage.token);
  
     $scope.login = function() {
         // -- make sure it is not mocked --
