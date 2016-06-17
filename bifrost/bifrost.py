@@ -695,7 +695,8 @@ def tournamentplaygame(tid):
         users.append(user_in_db['uid'])
     
     error, mid = play(request.json['cid'], users, request.json['rounds'], None)
-    return render_template('about.html')
+    
+    return flask.jsonify(mid = mid)
 
 @app.route('/tournament/<tid>/match/<mid>')
 def tournamentgetmatch(tid, mid):
