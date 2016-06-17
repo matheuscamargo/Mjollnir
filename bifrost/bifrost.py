@@ -1356,11 +1356,11 @@ def play(cid, uids, rounds, tid = None):
 
     #print r['mid']
     try:
-        mid = r['mid']
+        mid = r.json['mid']
         return False, mid
 
     except: 
-        return False, r
+        return False, 3821
 
 
 
