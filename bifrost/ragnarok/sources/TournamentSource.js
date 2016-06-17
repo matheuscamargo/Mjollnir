@@ -27,6 +27,7 @@ class TournamentSource {
         type: "POST",
         url: "/tournament/1/playgame",
         data: JSON.stringify(data, null, '\t'),
+        contentType: 'application/json;charset=UTF-8',
         success: function(response) {
           console.log(response);
           resolve(response);
