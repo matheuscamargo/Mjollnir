@@ -1324,11 +1324,11 @@ def play(cid, uids, rounds, tid = None):
         sub = mongodb.submissions.find_one({ 'uid': uid, 'cid': cid })
 
         if not sub:
-            return "No submission found for one of the players", 0
+            return "No submission found for one of the players", 1
 
         # TODO: We should use a previous submission if we can
         if sub['build_status'] != 'Success':
-            return "One of the submissions haven't built properly", 0
+            return "One of the submissions haven't built properly", 2
 
         subs.append(sub)
 
@@ -1351,7 +1351,7 @@ def play(cid, uids, rounds, tid = None):
             logger.warn('[%s] Exception in /run: %s' % (time.strftime('%Y-%m-%d %H:%M:%S'), e.message))
 
         if error:
-            return error, 0
+            return error, 3
 
     #print r['mid']
     try:
