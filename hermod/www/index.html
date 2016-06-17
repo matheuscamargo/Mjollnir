@@ -27,7 +27,12 @@
     <!--
       The nav bar that will be updated as we navigate between views.
     -->
-    <ion-nav-bar class="bar-stable">
+    <ion-nav-bar class="bar-stable" ng-controller="NavBarCtrl">
+      <ion-nav-buttons side="primary">
+        <button class="button" ng-click="logout()">
+          Logout
+        </button>
+      </ion-nav-buttons>
     </ion-nav-bar>
     <!--
       The views will be rendered in the <ion-nav-view> directive below
