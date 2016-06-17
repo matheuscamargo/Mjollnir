@@ -25530,7 +25530,7 @@ var TournamentSource = function () {
         // Simulating POST
         $.ajax({
           type: "POST",
-          url: "/tournament/1/playgame",
+          url: "/tournament/1/",
           data: {
             cid: matchInfo.challenge,
             ids: matchInfo.players,

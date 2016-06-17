@@ -689,6 +689,7 @@ def tournament(tid):
 
 @app.route('/tournament/<tid>/playgame', methods=['POST'])
 def tournamentplaygame(tid):
+    print("Chamando campeonato" + ids)
     for username in request.form['ids']:
         user_in_db = mongodb.users.find_one({ 'username': username })
         users.append(user_in_db['uid'])
