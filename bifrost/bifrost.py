@@ -1355,8 +1355,8 @@ def play(cid, uids, rounds, tid = None):
             return error, 3
 
     #print r['mid']
-
-    jr = json.loads(r)
+    a = r.read()
+    jr = json.loads(a)
     mid = jr['mid']
     return False, mid
 
