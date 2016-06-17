@@ -47,6 +47,9 @@ class TournamentSource {
           console.log(response);
           resolve(response);
         },
+        error: function() {
+        	resolve(false);
+        },
       });
     });
   }

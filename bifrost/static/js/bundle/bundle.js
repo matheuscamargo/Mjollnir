@@ -25557,6 +25557,9 @@ var TournamentSource = function () {
           success: function success(response) {
             console.log(response);
             resolve(response);
+          },
+          error: function error() {
+            resolve(false);
           }
         });
       });
