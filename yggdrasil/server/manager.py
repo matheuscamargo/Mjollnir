@@ -5,6 +5,7 @@ import json
 import logging
 import threading
 import time
+from flask import Flask, jsonify
 from dbmanager import get_game_names
 from game import Compiler, Game
 from logging.handlers import TimedRotatingFileHandler
@@ -67,19 +68,19 @@ class GamesManager(threading.Thread):
     def run_game(self, siids, uids, cid, tid):
 
         if not self.is_alive() or not self.running:
-            return {
+            return jsonify({
                 'status': 'error',
                 'error': 'Game thread not running',
                 'mid': 0
-            }
+            })
 
         if cid not in self.game_names:
             self.logger.warn("[%s] cid %s doesn't exist" % (now(), cid))
-            return {
+            return jsonify({
                 'status': 'error',
                 'error': "cid %s doesn't exist" % (cid,),
                 'mid': 0
-            }
+            })
 
         pid = self.game_names[cid]
 
@@ -87,17 +88,17 @@ class GamesManager(threading.Thread):
             mid = str(uuid4())
             self.games_queue.put((siids, uids, cid, tid, mid, RUN))
             self.logger.info('[%s] Enqueued game %s in %s' % (now(), siids, pid))
-            return {
+            return jsonify({
                 'status': 'ok',
                 'mid': mid
-            }
+            })
         except Exception as e:
             self.logger.info('[%s] Could not enqueue %s in %s\n%s' % (now(), siids, cid, str(e)))
-            return {
+            return jsonify({
                 'status': 'error',
                 'error': 'Could not enqueue the requested game',
                 'mid': 0
-            }
+            })
 
     def compile(self, sid, cid):
         if not self.is_alive() or not self.running:
