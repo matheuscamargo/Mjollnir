@@ -18,6 +18,7 @@ class TournamentSource {
   playMatch(matchInfo) {
 	return new Promise(function(resolve, reject) {
       // Simulating POST
+      console.log(matchInfo.challenge)
       var data = {
           cid: matchInfo.challenge,
           ids: matchInfo.players,
@@ -41,7 +42,7 @@ class TournamentSource {
       // Simulating GET request to find desired matchId
       $.ajax({
         type: "GET",
-        url: "/tournament/1/match/" + matchId,
+        url: "/tournament/1/match/" + matchInfo.mid,
         success: function(response) {
           console.log(response);
           resolve(response);

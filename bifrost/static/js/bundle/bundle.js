@@ -25528,6 +25528,7 @@ var TournamentSource = function () {
     value: function playMatch(matchInfo) {
       return new Promise(function (resolve, reject) {
         // Simulating POST
+        console.log(matchInfo.challenge);
         var data = {
           cid: matchInfo.challenge,
           ids: matchInfo.players,
@@ -25552,7 +25553,7 @@ var TournamentSource = function () {
         // Simulating GET request to find desired matchId
         $.ajax({
           type: "GET",
-          url: "/tournament/1/match/" + matchId,
+          url: "/tournament/1/match/" + matchInfo.mid,
           success: function success(response) {
             console.log(response);
             resolve(response);
