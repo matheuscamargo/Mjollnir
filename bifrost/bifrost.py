@@ -691,6 +691,7 @@ def tournament(tid):
 def tournamentplaygame(tid):
     users = []
     for username in request.form['ids']:
+        logger.warn('O QUE ESTA DANDO DE ERRADO MEU DEUS' + request.form.['ids'])
         user_in_db = mongodb.users.find_one({ 'username': username })
         users.append(user_in_db['uid'])
     
