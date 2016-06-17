@@ -18,6 +18,7 @@ class GameLogic {
   GameLogic(const std::vector<int32_t> &playerIds);
   bool update(Command command, int32_t playerId);
   WorldModel getWorldModel() const;
+  std::vector<Command>& getMoveList(int32_t playerId);
   bool isFinished() const;
   std::string getWinner() const;
   GameDescription getGameDescription(int32_t playerId) const;
@@ -64,6 +65,7 @@ class GameLogic {
   void unmovePiece(Command command);
   Coordinate getKingCoordinateOfPlayer(PlayerColor color);
   WorldModel worldModel_;
+  std::vector<Command> moveList_;
   TotalWorldModel twm_;
   int32_t player1_, player2_, whitePlayerId_;
   std::string winner_;

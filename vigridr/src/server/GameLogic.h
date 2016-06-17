@@ -27,18 +27,7 @@ class GameLogic {
  public:
   bool shouldPrintWorldModel(int32_t playerId);
   bool shouldIncrementCycle(int32_t playerId);
-
-  /**
-   *  Each player has an unique id
-   */
   GameLogic(const std::vector<int32_t> &playerIds);
-
-  /**
-   *  Method to update  the world model given a player command
-   *  Don't worry with multi threading
-   *  The player who sends first executes first
-   *  Returns true if successfully updated
-   */
   bool update(Command command, int32_t playerId);
   WorldModel getWorldModel() const;
   std::vector<Command>& getMoveList(int32_t playerId);
@@ -48,6 +37,7 @@ class GameLogic {
   TotalWorldModel getTotalWorldModel() const;
   size_t getNumberOfPlayers() const;
   GameResult createGameResult(std::string result, int32_t id);
+  void setFirstPlayer(int32_t playerId){};
 
   // Number of checkers for each player. Short name because it is used a lot.
   const static int32_t NC = 15;
@@ -69,12 +59,7 @@ class GameLogic {
 
   void setBoard_forTest(const std::vector<Point>& board);
   void setDice_forTest(const std::vector<int32_t>& dice);
-  /**
-   * Receives the id of the first player
-   */
-  void setFirstPlayer(int32_t playerId){};
 
- private:
   WorldModel worldModel_;
   std::vector<Command> moveList_;
   TotalWorldModel twm_;

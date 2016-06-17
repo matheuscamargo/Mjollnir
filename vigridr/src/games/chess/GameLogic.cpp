@@ -43,6 +43,7 @@ GameLogic::GameLogic(const std::vector<int32_t> &playerIds) {
     board[6][i] = createPiece(Type::PAWN, PlayerColor::WHITE);
   }
   worldModel_.board = board;
+  moveList_ = getAllValidMovesOfPlayer(PlayerColor::WHITE);
 }
 
 void GameLogic::setFirstPlayer(int32_t playerId) {
@@ -54,6 +55,12 @@ bool GameLogic::update(Command command, int32_t playerId) {
 
   if(isValidCommand) {
     movePiece(command);
+    if (playerId == whitePlayerId_) {
+      moveList_ = getAllValidMovesOfPlayer(PlayerColor::BLACK);
+    }
+    else {      
+      moveList_ = getAllValidMovesOfPlayer(PlayerColor::WHITE);
+    }
     return true;
   }
   return false;
@@ -466,6 +473,10 @@ void GameLogic::unmovePiece(Command command) {
 
 WorldModel GameLogic::getWorldModel() const {
   return worldModel_;
+}
+
+std::vector<Command>& GameLogic::getMoveList(int32_t playerId) {
+  return moveList_;
 }
 
 void GameLogic::setTableCoordinate(

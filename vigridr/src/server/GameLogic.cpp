@@ -352,6 +352,21 @@ bool GameLogic::update(Command command, int32_t playerId) {
   }
 
   rollDice_();
+
+  // Calculate all possible commands
+  if (worldModel_.dice[0] == worldModel_.dice[1]) {
+    worldModel_.dice.push_back(worldModel_.dice[0]);
+    worldModel_.dice.push_back(worldModel_.dice[0]);
+    possible_commands = calculate_possibilities_(worldModel_, Command(), color);
+  } else {
+    possible_commands = calculate_possibilities_(worldModel_, Command(), color);
+    worldModel_.dice = { worldModel_.dice[1], worldModel_.dice[0] };
+    auto possible_commands2 = calculate_possibilities_(worldModel_, Command(), color);
+    possible_commands.insert(possible_commands.end(), possible_commands2.begin(), possible_commands2.end());
+  }
+
+  moveList_ = filter_commands_(possible_commands, color);
+
   return success;
 }
 
