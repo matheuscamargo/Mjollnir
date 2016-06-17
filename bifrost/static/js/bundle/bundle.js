@@ -785,7 +785,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var tournamentOptions = {
   types: ['single', 'double', 'group'],
-  challenges: ['ttt']
+  challenges: ['61dd3230-2ea1-4cc1-b521-457f91b03a9e']
 };
 
 var MyComponent = function (_React$Component) {

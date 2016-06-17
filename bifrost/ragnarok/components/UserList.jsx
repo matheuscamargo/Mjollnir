@@ -7,7 +7,7 @@ import UserAction from './UserAction.jsx';
 
 var tournamentOptions = {
   types: ['single', 'double', 'group'],
-  challenges: ['ttt'],
+  challenges: ['61dd3230-2ea1-4cc1-b521-457f91b03a9e'],
 };
 
 export default class MyComponent extends React.Component {
