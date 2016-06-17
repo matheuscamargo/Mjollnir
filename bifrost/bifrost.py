@@ -697,7 +697,7 @@ def tournamentplaygame(tid):
     
     error, mid = play(request.json['cid'], users, request.json['rounds'], None)
     
-    return jsonify(mid = mid)
+    return jsonify(mid = mid, users = users)
 
 @app.route('/tournament/<tid>/match/<mid>')
 def tournamentgetmatch(tid, mid):
