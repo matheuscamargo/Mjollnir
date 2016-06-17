@@ -46,6 +46,23 @@ class GameLogic {
   void movePiece(Command command);
   void setTableCoordinate_(const Coordinate& coordinate, Piece piece);
   Piece createPiece(Type type, PlayerColor owner);
+  bool validCommand(Command command, int32_t playerId);
+  bool validRock(Command command, int32_t playerId);
+  bool validFrom(Command command, int32_t playerId);
+  bool validMove(Command command, int32_t playerId);
+  bool playerInCheckAfterCommand(Command command, int32_t playerId);
+  bool isInsideTheBoard(Coordinate coord);
+  std::vector<Command> getValidMoves(Coordinate coord);
+  bool isEmpty(Coordinate coord);
+  bool hasPieceOfColor(Coordinate coord, PlayerColor color);
+  PlayerColor getOpositeColor(PlayerColor color);
+  void addTowerMoves(Coordinate& coord, Command& command, std::vector<Command>& v);
+  void addBishopMoves(Coordinate& coord, Command& command, std::vector<Command>& v);
+  bool equalCommand(Command c1, Command c2);
+  bool equalCoordinate(Coordinate c1, Coordinate c2);
+  std::vector<Command> getAllValidMovesOfPlayer(PlayerColor color);
+  void unmovePiece(Command command);
+  Coordinate getKingCoordinateOfPlayer(PlayerColor color);
   WorldModel worldModel_;
   TotalWorldModel twm_;
   int32_t player1_, player2_, whitePlayerId_;
@@ -53,7 +70,6 @@ class GameLogic {
   bool hasFinished_;
   const size_t boardSize_ = 8;
   const size_t numberOfPlayers_ = 2;
-  int tempGameCounter = 27;
 };
 
 }}  // namespaces
