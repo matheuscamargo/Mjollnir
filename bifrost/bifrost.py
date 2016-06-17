@@ -694,8 +694,8 @@ def tournamentplaygame(tid):
         user_in_db = mongodb.users.find_one({ 'username': username })
         users.append(user_in_db['uid'])
     
-    error, mid = play(request.json['cid'], users, request.json['rounds'], None)
-    return mid
+    error = play(request.json['cid'], users, request.json['rounds'], None)
+    return 0
 
 @app.route('/tournament/<tid>/match/<mid>')
 def tournamentgetmatch(tid, mid):
@@ -895,9 +895,9 @@ def group(gid):
             challenge = mongodb.challenges.find_one({'cid': cid})
 
             if challenge['name'] == 'Wumpus':
-                error, mid = play(cid = cid, uids = [user_id], rounds = rounds)
+                error = play(cid = cid, uids = [user_id], rounds = rounds)
             else:
-                error, mid = play(cid = cid, uids = [user_id, opponent], rounds = rounds)
+                error = play(cid = cid, uids = [user_id, opponent], rounds = rounds)
 
             if error:
                 return render_template('group.html', group = group, playForm = playForm, tournamentForm = tournamentForm, error = error)
@@ -928,9 +928,9 @@ def group(gid):
                 return redirect(url_for('.matches'))
 
             if challenge['name'] == 'Wumpus':
-                error, mid = play(cid = cid, uids = [player1], rounds = rounds)
+                error = play(cid = cid, uids = [player1], rounds = rounds)
             else:
-                error, mid = play(cid = cid, uids = [player1, player2], rounds = rounds)
+                error = play(cid = cid, uids = [player1, player2], rounds = rounds)
 
             if error:
                 return render_template('group.html', group = group, playForm = playForm, tournamentForm = tournamentForm, error = error)
@@ -1290,14 +1290,14 @@ def allPlay(cid, rounds, group, challenge_name):
 
     if challenge_name == 'Wumpus':
         for user in users:
-            error, mid = play(cid = cid, uids = [user['uid']], rounds = rounds, tid = tid) 
+            error = play(cid = cid, uids = [user['uid']], rounds = rounds, tid = tid) 
             if not error:
                 playing = playing + 1
 
     else:
         for i in xrange(len(users) - 1):
             for j in xrange(i + 1, len(users)):
-                error, mid = play(cid = cid, uids = [users[i]['uid'], users[j]['uid']], rounds = rounds, tid = tid)
+                error = play(cid = cid, uids = [users[i]['uid'], users[j]['uid']], rounds = rounds, tid = tid)
                 if not error:
                     playing = playing + 1
 
@@ -1322,11 +1322,11 @@ def play(cid, uids, rounds, tid = None):
         sub = mongodb.submissions.find_one({ 'uid': uid, 'cid': cid })
 
         if not sub:
-            return "No submission found for one of the players", 0
+            return "No submission found for one of the players"
 
         # TODO: We should use a previous submission if we can
         if sub['build_status'] != 'Success':
-            return "One of the submissions haven't built properly", 0
+            return "One of the submissions haven't built properly"
 
         subs.append(sub)
 
@@ -1349,10 +1349,10 @@ def play(cid, uids, rounds, tid = None):
             logger.warn('[%s] Exception in /run: %s' % (time.strftime('%Y-%m-%d %H:%M:%S'), e.message))
 
         if error:
-            return error, 0
+            return error
 
     #print r['mid']
-    return False, r['mid']
+    return False
 
 
 
