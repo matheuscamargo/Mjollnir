@@ -18,20 +18,21 @@ class TournamentSource {
   playMatch(matchInfo) {
 	return new Promise(function(resolve, reject) {
       // Simulating POST
-      $.ajax({
-        type: "POST",
-        url: "/tournament/1/playgame",
-        data: {
+      var data = {
           cid: matchInfo.challenge,
           ids: matchInfo.players,
           rounds: 1,
-        },
-        success: function(response) {
-          console.log(response);
-          resolve(response);
-        },
-      });
-    });
+       	};
+
+      $.ajax({
+    	type : "POST",
+    	url : "/tournament/1/playgame",
+    	data: JSON.stringify(data, null, '\t'),
+    	contentType: 'application/json;charset=UTF-8',
+    	success: function(result) {
+        	console.log(result);
+    	}
+	});
   }
 
   getMatch(matchInfo) {
