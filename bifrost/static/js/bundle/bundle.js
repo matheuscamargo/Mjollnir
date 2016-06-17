@@ -25737,10 +25737,8 @@ var TournamentStore = function () {
                 _TournamentSource2.default.getMatch(matchInfo).then(function (matchResult) {
                   if (matchResult) {
                     var result = {};
-                    result.p = Array.prototype.slice.call(playableMatch.p, 0);
-                    result.m = Array.prototype.slice.call(_underscore2.default.map(players, function (p) {
-                      return p == matchResult ? 1 : 0;
-                    }), 0);
+                    result.p = playableMatch.p;
+                    result.m = [players[0] == matchResult ? 1 : 0, players[1] == matchResult ? 1 : 0];
                     console.log("Fim do jogo: " + result.p + ": " + result.m);
                     _underscore2.default.extend(result, { id: playableMatch.id });
                     self.handlePlayMatchSuccess(result);
