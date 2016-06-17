@@ -15,6 +15,7 @@ var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 
 var production = process.env.NODE_ENV === 'production';
+var DESTINATION = "../static/js/bundle"
 
 var dependencies = [
   'react-router',
@@ -30,7 +31,7 @@ gulp.task('vendor', function() {
     'node_modules/jquery/dist/jquery.js',
   ]).pipe(concat('vendor.js'))
     .pipe(gulpif(production, uglify({ mangle: false })))
-    .pipe(gulp.dest('bundle'));
+    .pipe(gulp.dest(DESTINATION));
 
 });
 
@@ -46,7 +47,7 @@ gulp.task('browserify-vendor', function() {
     .pipe(source('vendor.bundle.js'))
     .pipe(buffer())
     .pipe(gulpif(production, uglify({ mangle: false })))
-    .pipe(gulp.dest('bundle'));
+    .pipe(gulp.dest(DESTINATION));
 });
 
 /*
@@ -64,7 +65,7 @@ gulp.task('browserify-rag', ['browserify-vendor'], function() {
     .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(gulpif(production, uglify({ mangle: false })))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('bundle'));
+    .pipe(gulp.dest(DESTINATION));
 });
 /*
  |--------------------------------------------------------------------------
@@ -91,7 +92,7 @@ gulp.task('browserify-rag-watch', ['browserify-vendor'], function() {
       .pipe(buffer())
       .pipe(sourcemaps.init({ loadMaps: true }))
       .pipe(sourcemaps.write('.'))
-      .pipe(gulp.dest('bundle'));
+      .pipe(gulp.dest(DESTINATION));
   }
 });
 
