@@ -1339,6 +1339,7 @@ def play(cid, uids, rounds, tid = None):
     if tid:
         values['tid'] = tid
 
+    r = {}
     for _ in xrange(rounds):
         error = ''
         try:
