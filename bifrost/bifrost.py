@@ -1283,7 +1283,8 @@ def apiGroup(gid):
     getting info from a group
     """
     _user = current_identity 
-
+    username = _user['username']
+    
     response = {}
     if not _user:
         return jsonify(**response)
