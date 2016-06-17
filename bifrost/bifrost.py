@@ -21,6 +21,8 @@ import time
 from os import environ
 from uuid import uuid4
 from itertools import chain
+from __future__ import print_function # In python 2.7
+import sys
 
 
 from flask import (
@@ -689,7 +691,7 @@ def tournament(tid):
 
 @app.route('/tournament/<tid>/playgame', methods=['POST'])
 def tournamentplaygame(tid):
-    print("Chamando campeonato" + ids)
+    print('Hello world!' + ids, file=sys.stderr)
     for username in request.form['ids']:
         user_in_db = mongodb.users.find_one({ 'username': username })
         users.append(user_in_db['uid'])
