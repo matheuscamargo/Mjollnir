@@ -1373,6 +1373,7 @@ def apiGroups():
     groups_dict = {'groups': []}
 
     user_in_db = current_identity
+    username = user_in_db.username
 
     if not user_in_db:
         return jsonify(**groups_dict)
