@@ -25533,24 +25533,10 @@ var TournamentSource = function () {
           ids: matchInfo.players,
           rounds: 1
         };
-
         $.ajax({
           type: "POST",
           url: "/tournament/1/playgame",
           data: JSON.stringify(data, null, '\t'),
-          contentType: 'application/json;charset=UTF-8',
-          success: function success(result) {
-            console.log(result);
-          }
-        });
-        $.ajax({
-          type: "POST",
-          url: "/tournament/1/playgame",
-          data: {
-            cid: matchInfo.challenge,
-            ids: matchInfo.players,
-            rounds: 1
-          },
           success: function success(response) {
             console.log(response);
             resolve(response);

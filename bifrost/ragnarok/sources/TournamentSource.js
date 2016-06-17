@@ -23,16 +23,16 @@ class TournamentSource {
           ids: matchInfo.players,
           rounds: 1,
        	};
-
       $.ajax({
-    	type : "POST",
-    	url : "/tournament/1/playgame",
-    	data: JSON.stringify(data, null, '\t'),
-    	contentType: 'application/json;charset=UTF-8',
-    	success: function(result) {
-        	console.log(result);
-    	}
-	});
+        type: "POST",
+        url: "/tournament/1/playgame",
+        data: JSON.stringify(data, null, '\t'),
+        success: function(response) {
+          console.log(response);
+          resolve(response);
+        },
+      });
+    });
   }
 
   getMatch(matchInfo) {
