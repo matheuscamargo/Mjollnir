@@ -9,7 +9,7 @@ var mockData = [
   {id: 5, name: 'Braile', ranking: 6},
   {id: 6, name: 'Josu', ranking: 7},
   {id: 7, name: 'Mil', ranking: 6},
-  {id: 8, name: 'lucasmullerm', ranking: 9},
+  {id: 8, name: 'victorvpascoal', ranking: 9},
 ];
 
 
