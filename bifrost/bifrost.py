@@ -1359,7 +1359,7 @@ def play(cid, uids, rounds, tid = None):
         return False, mid
 
     except: 
-        return False, 0
+        return False, 3821
 
 
 
