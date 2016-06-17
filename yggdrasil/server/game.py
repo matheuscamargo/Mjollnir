@@ -121,12 +121,16 @@ class Game():
                 'stdout': open(path.join('server', 'result'), 'w'),
                 'stderr': open(path.join('server', 'output'), 'w'),
             }
-            for idx, uid in enumerate(self.uids):
-                server_kwargs['args'].append('--player' + str(idx + 1))
-                server_kwargs['args'].append(uid)
-            for idx in range(self.num_players):
-                server_kwargs['args'].append('--port' + str(idx + 1))
-                server_kwargs['args'].append('909' + str(idx))
+            server_kwargs['args'].append('--nplayers')
+            server_kwargs['args'].append(str(len(self.uids)))
+
+            server_kwargs['args'].append('--players')
+            players_string = ",".join(str(idx + 1) for idx, uid in enumerate(self.uids))
+            server_kwargs['args'].append(players_string)
+
+            server_kwargs['args'].append('--ports')
+            ports_string = ",".join( '909' + str(idx) for idx in range(self.num_players))
+            server_kwargs['args'].append(ports_string)
 
             # Construction of client parameters
             client_kwargs = []

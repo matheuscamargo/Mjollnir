@@ -15,7 +15,7 @@
 
 //DEFINE_string(player1, "p1", "First player's id (to be logged).");
 //DEFINE_string(player2, "p2", "Second player's id (to be logged).");
-DEFINE_string(players, "Players", "Player id's.");
+DEFINE_string(players,"1,2", "Players used as clients.");
 
 namespace mjollnir { namespace vigridr {
 
@@ -52,7 +52,7 @@ GameManager::GameManager(const std::vector<int32_t> &playerIds)
 
   turn_ = 0;
   srand(time(NULL));
-  initializeGame(playerIds[0], playerIds[1]);
+  initializeGame(playerIds);
   updaterThread_ = std::thread([this]() {
     updaterTask();
     // calling game end handlers callback
@@ -89,7 +89,7 @@ void GameManager::finalizeGame() {
   GameLogger::flushLog();
 }
 
-void GameManager::initializeGame(int32_t playerId0, int32_t playerId1) {
+void GameManager::initializeGame(const std::vector<int32_t> &playerIds) {
   std::unique_lock<std::mutex> lock0(playerMutex_[0], std::defer_lock);
   std::unique_lock<std::mutex> lock1(playerMutex_[1], std::defer_lock);
   std::unique_lock<std::mutex> lock2(gameInfoMutex_, std::defer_lock);
@@ -99,12 +99,12 @@ void GameManager::initializeGame(int32_t playerId0, int32_t playerId1) {
   std::vector<std::string> players = utils::split(FLAGS_players, ',');
 
   gameInfo_.worldModel = gameLogic_.getWorldModel();
-  GameLogger::logGameDescription(gameLogic_.getGameDescription(playerId0),
+  GameLogger::logGameDescription(gameLogic_.getGameDescription(playerIds[0]),
                                  players[0],
-                                 gameLogic_.getGameDescription(playerId1),
+                                 gameLogic_.getGameDescription(playerIds[1]),
                                  players[1]);
-  playerTurnData_[0].init(playerId0);
-  playerTurnData_[1].init(playerId1);
+  playerTurnData_[0].init(playerIds[0]);
+  playerTurnData_[1].init(playerIds[1]);
   playerTurnData_[0].setIsTurn(true);
   playerTurnData_[1].setIsTurn(true);
 

@@ -922,6 +922,7 @@ def run(params):
                 try:
                     check_call([path.join(GAMESDIR, game, "bin", "server")], stdout=result_file) # This is a blocking command, therefore it must come after clients
                 except CalledProcessError as e:
+                    print str(e)
                     logger.err(str(e))
                     return 1
 

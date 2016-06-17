@@ -78,7 +78,7 @@ class GameManager {
   void updaterTask();
   void updateTime(const std::chrono::milliseconds& d);
   void nextTurn();
-  void initializeGame(int32_t playerId0, int32_t playerId1);
+  void initializeGame(const std::vector<int32_t> &playerIds);
   void finalizeGame();
 
   GameInfo gameInfo_;
