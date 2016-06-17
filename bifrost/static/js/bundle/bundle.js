@@ -25698,6 +25698,7 @@ var TournamentStore = function () {
       if (TournamentInfo.type === 'double') this.tournamentRaw = new _duel2.default(TournamentInfo.players.length, { last: _duel2.default.LB, short: true });
       if (TournamentInfo.type === 'group') this.tournamentRaw = new _groupstage2.default(TournamentInfo.players.length);
       this.tournamentInfo = TournamentInfo;
+      console.log(this.tournamentInfo);
       this.tournament = toDesiredSchema(this.tournamentInfo, this.tournamentRaw);
     }
   }, {

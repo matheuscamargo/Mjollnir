@@ -51,6 +51,7 @@ class TournamentStore{
     if(TournamentInfo.type === 'group')
       this.tournamentRaw = new GroupStage(TournamentInfo.players.length);
     this.tournamentInfo = TournamentInfo;
+    console.log(this.tournamentInfo);
     this.tournament = toDesiredSchema(this.tournamentInfo, this.tournamentRaw);
   }
 
