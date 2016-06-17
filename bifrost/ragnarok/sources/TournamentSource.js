@@ -26,7 +26,7 @@ class TournamentSource {
       // Simulating POST
       $.ajax({
         type: "POST",
-        url: "/tournament/1/",
+        url: "/tournament/1/playgame",
         data: {
           cid: matchInfo.challenge,
           ids: matchInfo.players,
