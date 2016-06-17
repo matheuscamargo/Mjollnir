@@ -69,14 +69,16 @@ class GamesManager(threading.Thread):
         if not self.is_alive() or not self.running:
             return {
                 'status': 'error',
-                'error': 'Game thread not running'
+                'error': 'Game thread not running',
+                'mid': 0
             }
 
         if cid not in self.game_names:
             self.logger.warn("[%s] cid %s doesn't exist" % (now(), cid))
             return {
                 'status': 'error',
-                'error': "cid %s doesn't exist" % (cid,)
+                'error': "cid %s doesn't exist" % (cid,),
+                'mid': 0
             }
 
         pid = self.game_names[cid]
@@ -93,7 +95,8 @@ class GamesManager(threading.Thread):
             self.logger.info('[%s] Could not enqueue %s in %s\n%s' % (now(), siids, cid, str(e)))
             return {
                 'status': 'error',
-                'error': 'Could not enqueue the requested game'
+                'error': 'Could not enqueue the requested game',
+                'mid': 0
             }
 
     def compile(self, sid, cid):
