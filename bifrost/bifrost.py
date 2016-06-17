@@ -695,7 +695,7 @@ def tournamentplaygame(tid):
         users.append(user_in_db['uid'])
     
     error, mid = play(request.json['cid'], users, request.json['rounds'], None)
-    return redirect(url_for('.matches'))
+    return render_template('about.html')
 
 @app.route('/tournament/<tid>/match/<mid>')
 def tournamentgetmatch(tid, mid):
