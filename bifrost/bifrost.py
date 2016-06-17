@@ -1355,12 +1355,13 @@ def play(cid, uids, rounds, tid = None):
             return error, 3
 
     #print r['mid']
-    try:
-        mid = r.json['mid']
-        return False, mid
 
-    except: 
-        return False, 3821
+    jr = json.loads(r)
+    mid = jr['mid']
+    return False, mid
+
+    #except: 
+    #    return False, 3821
 
 
 
