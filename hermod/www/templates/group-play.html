@@ -1,0 +1,48 @@
+<ion-view view-title="Play">
+  <ion-content>
+    <div class="list">
+
+      <label class="item item-input item-select">
+
+        <div class="input-label">
+          Challenge
+        </div>
+        <select name="challenge" id="challenge" ng-model="data.challenge">
+            <option ng-repeat="challenge in group.play.challenges" value="{{challenge.id}}">{{challenge.name}}</option>
+        </select>
+
+      </label>
+
+    
+      <label class="item item-input item-select">
+
+        <div class="input-label">
+          Opponent
+        </div>
+        <select name="opponent" id="opponent" ng-model="data.opponent">
+            <option ng-repeat="opponent in group.play.opponents" value="{{opponent.id}}">{{opponent.name}}</option>
+        </select>
+
+      </label>
+
+      <label class="item item-input item-select">
+
+        <div class="input-label">
+          Rounds
+        </div>
+        <select name="rounds" id="rounds" ng-model="data.rounds">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+
+      </label>
+
+
+      <button class="button button-block button-calm" ng-click="play()">Play</button>
+
+    </div>
+  </ion-content>
+</ion-view>

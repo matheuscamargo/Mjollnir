@@ -11,11 +11,10 @@ angular.module('hermod',
 
 .constant('API', {
   // Url used to reach the server (Bifrost)
-  url: 'http://192.168.0.27:5000'
+  url: 'http://192.168.0.132:5000'
 })
 
-.run(function($ionicPlatform) {
-
+.run(function($ionicPlatform, User) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -67,6 +66,12 @@ angular.module('hermod',
     }
   })
 
+  .state('challenge-detail', {
+    url: '/challenges/:challengeName',
+    templateUrl: 'templates/challenge-detail.html',
+    controller: 'ChallengeDetailCtrl'
+  })
+
   .state('tab.groups', {
     url: '/groups',
     views: {
@@ -77,12 +82,45 @@ angular.module('hermod',
     }
   })
 
-  .state('challenge-detail', {
-    url: '/challenges/:challengeName',
-    templateUrl: 'templates/challenge-detail.html',
-    controller: 'ChallengeDetailCtrl'
+  .state('group', {
+    url: "/group/:id",
+    abstract: true,
+    templateUrl: "templates/grouptabs.html",
+    controller: function ($scope, $stateParams) {
+      $scope.groupId = $stateParams.id;
+    }
   })
-
+  
+ .state('group.description', {
+    url: '/description',
+    views: {
+      'group-description': {
+        templateUrl: 'templates/group-description.html',
+        controller: 'GroupDescriptionCtrl'
+      }
+    },
+  })
+  
+ .state('group.play', {
+    url: '/play',
+    cache: false,
+    views: {
+      'group-play': {
+        templateUrl: 'templates/group-play.html',
+        controller: 'GroupPlayCtrl'
+      }
+    },
+  })
+  
+ .state('group.tournaments', {
+    url: '/tournaments',
+    views: {
+      'group-tournaments': {
+        templateUrl: 'templates/group-tournaments.html',
+        controller: 'GroupTournamentsCtrl'
+      }
+    },
+  })
   
   .state('login', {
     url: '/login',

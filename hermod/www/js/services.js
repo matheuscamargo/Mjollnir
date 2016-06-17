@@ -1,24 +1,57 @@
 angular.module('hermod.services', [])
 
+
+.service("User", function() {
+    
+    this.username = null;
+    this.token = null;
+
+    this.setToken = function(new_token) {
+        this.token = new_token;
+    };
+    this.getToken = function() {
+        return this.token;
+    };
+    this.setUsername = function(new_username) {
+        this.username = new_username;
+    };
+    this.getUsername = function() {
+        return this.username;
+    };
+            
+})
+
 // Service to handle the check of credentials 
 
-.service('LoginService', function($q, $http, API) {
+.service('LoginService', function($q, API, User, $http) {
     return {
         loginUser: function(username, password) {
             var deferred = $q.defer();
             var promise = deferred.promise;
 
-            // TODO: persistent login
 
-            $http.post(API.url + "/api/login",
+            User.setUsername(username);
+
+            $http.post(API.url + "/auth",
               {
                 username: username,
                 password: password
               }).
             then(function(data) {
               console.log(data);
-                if (data.data.success) {
-                  deferred.resolve('Welcome ' + name + '!');
+                if (data.data.access_token) {
+                  // Set token and headers
+                  User.setToken(data.data.access_token);
+                  var header = {
+                    "Username": User.getUsername(),
+                    "Authorization": "JWT " + User.getToken(),
+                    "Content-Type":'application/json'
+                  };
+                  //$http.defaults.headers.common.Authorization = 'Basic YmVlcDpib29w';
+                  $http.defaults.headers.common.Authorization = "JWT " + User.getToken();
+                  // $httpProvider.defaults.headers.get = header;
+                  // $httpProvider.defaults.headers.post = header;
+                  deferred.resolve("Welcome");
                 }
                 else {
                   deferred.reject('Wrong credentials.');
@@ -172,6 +205,7 @@ angular.module('hermod.services', [])
         }
     };
 });
+
 
 
 

@@ -39,8 +39,55 @@ angular.module('hermod.controllers', [])
   // $scope.rank = ChallengesMock.getRank();
 })
 
-.controller('GroupsCtrl', function($scope, $http) {
+.controller('GroupsCtrl', function($scope, $http, API, $state) {
 
+  $http.get(API.url + "/api/groups", {})
+  .success(function(data){
+    $scope.groups = data.groups;   
+  });
+
+  $scope.join = function(groupId) {
+    $http.get(API.url + "/api/join/" + groupId, {  })
+    .success(function(data){
+      for (var i = 0; i < $scope.groups.length; i++) {
+        if ($scope.groups[i].id == groupId)
+           $scope.groups[i].situation = ($scope.groups[i].situation == 'Join' ? 'Leave' : 'Join');
+         }   
+    });
+  };
+
+  $scope.enter = function(groupId) {
+     $state.go('group.description', {id: groupId});
+  };
+})
+
+.controller('GroupDescriptionCtrl', function ($scope, $rootScope, $stateParams, $http, API, $state) {
+  //console.log($state.current.name)
+  $http.get(API.url + "/api/group/" + $stateParams.id, { })
+  .success(function(data){
+    // $rootScope.group = data;
+    $scope.group = data;
+  });
+})
+
+.controller('GroupPlayCtrl', function ($scope, $stateParams, $rootScope, $http, API, $state) {
+  //console.log($state.current.name)
+  if ($state.current.name != 'group.play') {
+     $state.go('group.play', {id: $stateParams.id});
+  }
+  $http.get(API.url + "/api/group/" + $stateParams.id, { })
+  .success(function(data){
+    $scope.group = data;
+  });
+
+})
+
+.controller('GroupTournamentsCtrl', function ($scope, $stateParams, $rootScope, $http, API) {
+
+  $http.get(API.url + "/api/group/" + $stateParams.id, {})
+  .success(function(data){
+    $scope.group = data;
+  });
 
 })
 
@@ -49,7 +96,7 @@ angular.module('hermod.controllers', [])
  
     $scope.login = function() {
         // -- make sure it is not mocked --
-        LoginService.autoLogin($scope.data.username, $scope.data.password).success(function(data) {
+        LoginService.loginUser($scope.data.username, $scope.data.password).success(function(data) {
             $state.go('tab.news');
         }).error(function() {
             var alertPopup = $ionicPopup.alert({

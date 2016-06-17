@@ -1,10 +1,11 @@
 <ion-view view-title="Challenges">
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="challenge in challenges" type="item-text-wrap" href="#/challenges/{{challenge.name}}">
-        <img ng-src="{{challenge.image}}">
-        <h2>{{challenge.name}}</h2>
-        <i class="icon ion-chevron-right icon-accessory"></i>
+      <ion-item class="item item-button-right" ng-repeat="group in groups" type="item-text-wrap" ng-click="enter('{{group.id}}');">
+        {{group.name}}
+        <button class="button button-positive" ng-click="join('{{group.id}}');$event.stopPropagation();">
+          {{group.situation}}
+        </button>
       </ion-item>
     </ion-list>
   </ion-content>
