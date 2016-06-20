@@ -613,7 +613,7 @@ def newtournament(gid):
     """
     Page to visualize a tournament.
     """
-    return render_template('tournamentest.html') 
+    return render_template('newtournament.html') 
 
 
 @app.route('/tournament/<tid>')
