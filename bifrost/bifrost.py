@@ -608,6 +608,12 @@ def editgroup():
         return render_template('editgroup.html', form = form, error = "Please enter all the required information."), 400
 
 
+@app.route('/group/<gid>/tournament/new')
+def newtournament(gid):
+    """
+    Page to visualize a tournament.
+    """
+    return render_template('tournamentest.html') 
 
 
 @app.route('/tournament/<tid>')
@@ -615,9 +621,6 @@ def tournament(tid):
     """
     Page to visualize a tournament.
     """
-    if(tid == 1 or tid == '1'):
-        return render_template('tournamentest.html') 
-
     tournament = mongodb.tournaments.find_one({ 'tid': tid })
     if not tournament:
         abort(404)
