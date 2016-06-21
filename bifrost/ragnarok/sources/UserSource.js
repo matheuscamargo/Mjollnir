@@ -15,14 +15,12 @@ import _ from 'underscore';
 
 class UserSource {
   fetch() {
-    var path = window.location.pathname;
-    var findgid = /\/groups\/(.*)\/tournament\/new/;
-    var gid = path.replace(findgid, '$1');
-
+    //TODO: SE UM DIA FOR TUDO REACT, FAZER ISSO DECENTEMENTE
+    
     return new Promise(function(resolve, reject) {
       $.ajax({
         type: "GET",
-        url: "/groups/" + gid + "/users/",
+        url: "../users",
         success: function(response) {
           console.log(response);
           resolve(response);

@@ -25572,7 +25572,7 @@ var TournamentSource = function () {
 exports.default = new TournamentSource();
 
 },{"underscore":201}],203:[function(require,module,exports){
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -25580,7 +25580,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _underscore = require('underscore');
+var _underscore = require("underscore");
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -25606,16 +25606,14 @@ var UserSource = function () {
   }
 
   _createClass(UserSource, [{
-    key: 'fetch',
+    key: "fetch",
     value: function fetch() {
-      var path = window.location.pathname;
-      var findgid = /\/groups\/(.*)\/tournament\/new/;
-      var gid = path.replace(findgid, '$1');
+      //TODO: SE UM DIA FOR TUDO REACT, FAZER ISSO DECENTEMENTE
 
       return new Promise(function (resolve, reject) {
         $.ajax({
           type: "GET",
-          url: "/groups/" + gid + "/users/",
+          url: "../users",
           success: function success(response) {
             console.log(response);
             resolve(response);
