@@ -840,11 +840,14 @@ def group_users(gid):
     if not group or ( user.username not in group['admins'] and group['admin_only'] ):
         abort(404)
 
-    i = xrange(1,len(group['users']))
+    r_user = list()
+    i = 0
 
-    response_users = map(lambda u, i: {'id': i, 'name': u, 'ranking': i}, group['users'])
+    for u in group['users']:
+        r_user.append({'id': i, 'name': u, 'ranking': i})
+        i = i + 1
 
-    return jsonify(users = response_users)
+    return jsonify(users = r_user)
 
 
 @app.route('/group/<gid>', methods=['GET', 'POST'])
