@@ -840,8 +840,9 @@ def group_users(gid):
     if not group or ( user.username not in group['admins'] and group['admin_only'] ):
         abort(404)
 
+    i = 0
 
-    response_users = map(lambda u: {'name': u}, group['users'])
+    response_users = map(lambda u: {'id': i++, 'name': u, 'ranking': i}, group['users'])
 
     return jsonify(users = response_users)
 
