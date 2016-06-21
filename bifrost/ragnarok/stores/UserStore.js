@@ -48,7 +48,7 @@ class UserStore{
   }
 
   handleFetchSuccess(usersInfo) {
-    this.users = usersInfo;
+    this.users = usersInfo.users;
   }
 
   handleFetchFailed(errorMessage) {
