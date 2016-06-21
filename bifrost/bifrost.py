@@ -843,7 +843,7 @@ def group_users(gid):
 
     response_users = map(lambda u: {'name': u}, group['users'])
 
-    return jsonify(response_users)
+    return jsonify(users = response_users)
 
 
 @app.route('/group/<gid>', methods=['GET', 'POST'])
