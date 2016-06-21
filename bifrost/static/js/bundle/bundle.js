@@ -25588,7 +25588,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var mockData = [{ id: 0, name: 'Mut', ranking: 123456 }, { id: 1, name: 'victorvpascoal', ranking: 10 }, { id: 2, name: 'Mut2', ranking: 8 }, { id: 3, name: 'Mut3', ranking: 5 }, { id: 4, name: 'Bay', ranking: 3 }, { id: 5, name: 'Braile', ranking: 6 }, { id: 6, name: 'Josu', ranking: 7 }, { id: 7, name: 'lucasmullerm', ranking: 6 }, { id: 8, name: 'Routh', ranking: 9 }];
+// var mockData = [
+//   {id: 0, name: 'Mut', ranking: 123456},
+//   {id: 1, name: 'Peh', ranking: 10},
+//   {id: 2, name: 'Gafa', ranking: 8},
+//   {id: 3, name: 'Philip', ranking: 5},
+//   {id: 4, name: 'Bay', ranking: 3},
+//   {id: 5, name: 'Braile', ranking: 6},
+//   {id: 6, name: 'Josu', ranking: 7},
+//   {id: 7, name: 'Mil', ranking: 6},
+//   {id: 8, name: 'lucasmullerm', ranking: 9},
+// ];
 
 var UserSource = function () {
   function UserSource() {
@@ -25598,11 +25608,19 @@ var UserSource = function () {
   _createClass(UserSource, [{
     key: 'fetch',
     value: function fetch() {
+      var path = window.location.pathname;
+      var findgid = /\/groups\/(.*)\/tournament\/new/;
+      var gid = path.replace(findgid, '$1');
+
       return new Promise(function (resolve, reject) {
-        setTimeout(function () {
-          console.log(mockData);
-          resolve(mockData);
-        }, 250);
+        $.ajax({
+          type: "GET",
+          url: "/groups/" + gid + "/users/",
+          success: function success(response) {
+            console.log(response);
+            resolve(response);
+          }
+        });
       });
     }
   }]);
@@ -25885,7 +25903,7 @@ var UserStore = function () {
   }, {
     key: 'handleFetchSuccess',
     value: function handleFetchSuccess(usersInfo) {
-      this.users = usersInfo;
+      this.users = usersInfo.users;
     }
   }, {
     key: 'handleFetchFailed',
