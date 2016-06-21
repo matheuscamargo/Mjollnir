@@ -842,7 +842,7 @@ def group_users(gid):
 
     i = 0
 
-    response_users = map(lambda u: {'id': i++, 'name': u, 'ranking': i}, group['users'])
+    response_users = map(lambda u: {'id': i += 1, 'name': u, 'ranking': i}, group['users'])
 
     return jsonify(users = response_users)
 
