@@ -833,6 +833,14 @@ def make_ranking(matches, tournament, group, names_dict):
         return ranking
 
 
+@app.route('/group/<gid>/users')
+@login_required
+def group_users(gid):
+    group = mongodb.groups.find_one({'gid': gid})
+    if not group or ( user.username not in group['admins'] and group['admin_only'] ):
+        abort(404)
+
+    return jsonify(users = group['users'])
 
 
 @app.route('/group/<gid>', methods=['GET', 'POST'])
