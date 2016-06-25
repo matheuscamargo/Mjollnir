@@ -7,7 +7,11 @@ namespace mjollnir { namespace vigridr {
 class GameLogicTest : public ::testing::Test {
  protected:
 
-  GameLogicTest() : game1(std::vector<int32_t>{9090, 9091}) { }
+  GameLogicTest() : game1(std::vector<int32_t>{9090, 9091}) { 
+    game1.setFirstPlayer(9090);
+    game1.setHasFinished(false);
+    game1.setWinner("-1");
+  }
 
   // void CleanTable() {
   //   Coordinate coord;
@@ -21,28 +25,78 @@ class GameLogicTest : public ::testing::Test {
   //   game1.setWinner("-1");
   // }
 
+  Type getTypeOfPieceAtColumn(int column){
+    switch(column){
+      case 0:
+      case 7:
+        return Type::TOWER;
+      case 1:
+      case 6:
+        return Type::HORSE;
+      case 2:
+      case 5:
+        return Type::BISHOP;
+      case 3:
+        return Type::QUEEN;
+      case 4:
+        return Type::KING;
+      default:
+        return Type::EMPTY;
+    }
+  }
+
+  std::vector<std::vector<Piece> > constructInitialBoard(){
+    Piece newPiece;
+    
+    std::vector<std::vector<Piece> > initialBoard;
+    for (int i = 0; i < 8; i++) {
+      std::vector<Piece> line;
+      for (int j = 0; j < 8; j++) {
+        newPiece.type = Type::EMPTY;
+        line.push_back(newPiece);
+      }
+      initialBoard.push_back(line);
+    }
+
+    for (int i = 0; i < 8; i++) {
+      for(int j = 0; j < 8; j++){
+        switch(i){
+          case 0:
+            newPiece.owner = PlayerColor::BLACK;
+            newPiece.type = getTypeOfPieceAtColumn(j);
+            initialBoard[i][j] = newPiece;
+            break;
+          case 1:
+            newPiece.owner = PlayerColor::BLACK;
+            newPiece.type = Type::PAWN;
+            initialBoard[i][j] = newPiece;
+            break;
+          case 6:
+            newPiece.owner = PlayerColor::WHITE;
+            newPiece.type = Type::PAWN;
+            initialBoard[i][j] = newPiece;
+            break;
+          case 7:
+            newPiece.owner = PlayerColor::WHITE;
+            newPiece.type = getTypeOfPieceAtColumn(j);
+            initialBoard[i][j] = newPiece;
+            break;
+          default:
+            break;
+        }
+      }
+    }
+
+    return initialBoard;
+  }
+
   GameLogic game1;
 };
 
-TEST_F(GameLogicTest, TestingPlayersMarkersTypes) {
-  ASSERT_TRUE(true);
-  // Command command1; command1.coordinate.x = 1; command1.coordinate.y = 1;
-  // Command command2; command2.coordinate.x = 0; command2.coordinate.y = 2;
-  // ASSERT_TRUE(game1.update(command1, 9090));
-  // ASSERT_TRUE(game1.update(command2, 9091));
+TEST_F(GameLogicTest, TestingIntialPositionOfPieces) {
+  std::vector<std::vector<Piece> > expBoard = constructInitialBoard();
 
-  // std::vector<std::vector<Marker> > expTable;
-  // for (int i = 0; i < 9; i++) {
-  //   std::vector<Marker> line;    
-  //   for (int i = 0; i < 9; i++) {
-  //     line.push_back(Marker::UNMARKED);
-  //   }
-  //   expTable.push_back(line);
-  // }
-  // expTable[1][1] = Marker::X;
-  // expTable[0][2] = Marker::O;
-
-  // ASSERT_EQ(expTable, game1.getWorldModel().table);
+  ASSERT_EQ(expBoard, game1.getWorldModel().board);
 }
 
 // TEST_F(GameLogicTest, TestingTwoCommandsInTheSameTableEntry) {
