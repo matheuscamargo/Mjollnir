@@ -87,13 +87,30 @@ char toChar(Piece p) {
 
 void GameLogger::printWorldModel(const WorldModel& wm, const TotalWorldModel& twm) {
   std::ostringstream oss;
+
+  oss << "    ╔═══════════════╗" << std::endl;
+
   for (int i=0; i<8; i++) {
+
+    if( i == 3 )
+      oss << 'x';
+    else
+      oss << ' ';
+    oss << ' ' << i << " ║";
+
     for (int j=0; j<8; j++) {
-      oss << toChar(wm.board[i][j]) << ' ';
+      oss << toChar(wm.board[i][j]);
+      if( j != 8-1 ){
+        oss << ' ';
+      }
     }
-    oss << std::endl;
+    oss << "║" << std::endl;
   }
-  oss << std::endl;
+
+  oss << "    ╚═══════════════╝" << std::endl;
+  oss << "     0 1 2 3 4 5 6 7 " << std::endl;
+  oss << "            y        " << std::endl;
+
   std::cerr << oss.str();
 }
 
