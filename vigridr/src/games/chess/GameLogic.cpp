@@ -54,7 +54,8 @@ bool GameLogic::update(Command command, int32_t playerId) {
   bool isValidCommand = validCommand(command, playerId);
 
   if(isValidCommand) {
-    movePiece(command);
+    setRockVars(command, playerId);
+    movePiece(command, playerId);
     if (playerId == whitePlayerId_) {
       moveList_ = getAllValidMovesOfPlayer(PlayerColor::BLACK);
     }
@@ -74,7 +75,42 @@ bool GameLogic::validCommand(Command command, int32_t playerId) {
 }
 
 bool GameLogic::validRock(Command command, int32_t playerId){
+  if( playerId == whitePlayerId_ ){
+    if( command.smallRock ){
+      return  !rock_.whiteKingMoved && !rock_.whiteRightTowerMoved
+              && noHorizontalPiecesBetween(8-1, 4, 8-1)
+              && !playerInCheck(playerId) && !playerInCheckAfterCommand(command, playerId);
+    }
+    else if( command.bigRock ){
+      return  !rock_.whiteKingMoved && !rock_.whiteLeftTowerMoved
+              && noHorizontalPiecesBetween(8-1, 0, 4)
+              && !playerInCheck(playerId) && !playerInCheckAfterCommand(command, playerId);
+    }
+  }
+  else { // black player rock
+    if( command.smallRock ){
+      return  !rock_.blackKingMoved && !rock_.blackRightTowerMoved
+              && noHorizontalPiecesBetween(0, 4, 8-1)
+              && !playerInCheck(playerId) && !playerInCheckAfterCommand(command, playerId);
+    }
+    else if( command.bigRock ){
+      return  !rock_.blackKingMoved && !rock_.blackLeftTowerMoved
+              && noHorizontalPiecesBetween(0, 0, 4)
+              && !playerInCheck(playerId) && !playerInCheckAfterCommand(command, playerId);
+    }    
+  }
+
   return false;
+}
+
+// y0 < y1
+bool GameLogic::noHorizontalPiecesBetween(int32_t x0, int32_t y0, int32_t y1){
+  for( int32_t y = y0+1; y < y1; y++ ){
+    if( worldModel_.board[x0][y].type != Type::EMPTY ){
+      return false;
+    }
+  }
+  return true;
 }
 
 bool GameLogic::validFrom(Command command, int32_t playerId){
@@ -407,9 +443,7 @@ bool GameLogic::isInsideTheBoard(Coordinate coord) {
   return coord.x >= 0 && coord.x < (int) boardSize_ && coord.y >= 0 && coord.y < (int) boardSize_;
 }
 
-bool GameLogic::playerInCheckAfterCommand(Command command, int32_t playerId){
-  movePiece(command);
-
+bool GameLogic::playerInCheck(int32_t playerId){
   PlayerColor playerColor = (playerId == whitePlayerId_? PlayerColor::WHITE : PlayerColor::BLACK );
   PlayerColor enemyColor = (playerId == whitePlayerId_? PlayerColor::BLACK : PlayerColor::WHITE );
 
@@ -419,13 +453,27 @@ bool GameLogic::playerInCheckAfterCommand(Command command, int32_t playerId){
 
   for( unsigned int i = 0; i < allValidMovesOfEnemy.size(); i++ ){
     if( equalCoordinate(kingCoord, allValidMovesOfEnemy[i].coordTo) ){
-      unmovePiece(command);
       return true;
     }
   }
-
-  unmovePiece(command);
   return false;
+}
+
+// It's supossed that the move can be doed
+bool GameLogic::playerInCheckAfterCommand(Command command, int32_t playerId){
+  makeWorldModelBackup();
+  movePiece(command, playerId);
+  bool playerInCheckAfterCommand = playerInCheck(playerId);
+  restoreWorldModelFromBackup();
+  return playerInCheckAfterCommand;
+}
+
+void GameLogic::makeWorldModelBackup(){
+  worldModelBackup_ = worldModel_;
+}
+
+void GameLogic::restoreWorldModelFromBackup(){
+  worldModel_ = worldModelBackup_;
 }
 
 bool GameLogic::equalCoordinate(Coordinate c1, Coordinate c2){
@@ -453,7 +501,75 @@ GameDescription GameLogic::getGameDescription(int32_t playerId) const {
   return gameDescription;
 }
 
-void GameLogic::movePiece(Command command) {
+// It's supossed that the move can be doed
+void GameLogic::movePiece(Command command, int32_t playerId) {
+  // Rock move
+  if( playerId == whitePlayerId_ ){
+    if( command.smallRock ){
+      Command kingCommand;
+      kingCommand.coordFrom.x = 7;
+      kingCommand.coordFrom.y = 4;
+      kingCommand.coordTo.x = 7;
+      kingCommand.coordTo.y = 6;
+      movePiece(kingCommand, playerId);
+      Command towerCommand;
+      towerCommand.coordFrom.x = 7;
+      towerCommand.coordFrom.y = 7;
+      towerCommand.coordTo.x = 7;
+      towerCommand.coordTo.y = 5;
+      movePiece(towerCommand, playerId);
+      return;
+    }
+    else if( command.bigRock ){
+      Command kingCommand;
+      kingCommand.coordFrom.x = 7;
+      kingCommand.coordFrom.y = 4;
+      kingCommand.coordTo.x = 7;
+      kingCommand.coordTo.y = 2;
+      movePiece(kingCommand, playerId);
+      Command towerCommand;
+      towerCommand.coordFrom.x = 7;
+      towerCommand.coordFrom.y = 0;
+      towerCommand.coordTo.x = 7;
+      towerCommand.coordTo.y = 3;
+      movePiece(towerCommand, playerId);
+      return;
+    }
+  }
+  else { // black player move
+    if( command.smallRock ){
+      Command kingCommand;
+      kingCommand.coordFrom.x = 0;
+      kingCommand.coordFrom.y = 4;
+      kingCommand.coordTo.x = 0;
+      kingCommand.coordTo.y = 6;
+      movePiece(kingCommand, playerId);
+      Command towerCommand;
+      towerCommand.coordFrom.x = 0;
+      towerCommand.coordFrom.y = 7;
+      towerCommand.coordTo.x = 0;
+      towerCommand.coordTo.y = 5;
+      movePiece(towerCommand, playerId);
+      return;
+    }
+    else if( command.bigRock ){
+      Command kingCommand;
+      kingCommand.coordFrom.x = 0;
+      kingCommand.coordFrom.y = 4;
+      kingCommand.coordTo.x = 0;
+      kingCommand.coordTo.y = 2;
+      movePiece(kingCommand, playerId);
+      Command towerCommand;
+      towerCommand.coordFrom.x = 0;
+      towerCommand.coordFrom.y = 0;
+      towerCommand.coordTo.x = 0;
+      towerCommand.coordTo.y = 3;
+      movePiece(towerCommand, playerId);
+      return;
+    }    
+  }
+
+  // Normal move
   Piece emptyPiece;
   emptyPiece.type = Type::EMPTY;
   worldModel_.board[command.coordTo.x][command.coordTo.y] =
@@ -462,13 +578,58 @@ void GameLogic::movePiece(Command command) {
     emptyPiece;
 }
 
-void GameLogic::unmovePiece(Command command) {
-  Piece emptyPiece;
-  emptyPiece.type = Type::EMPTY;
-  worldModel_.board[command.coordFrom.x][command.coordFrom.y] =
-    worldModel_.board[command.coordTo.x][command.coordTo.y];
-  worldModel_.board[command.coordTo.x][command.coordTo.y] =
-    emptyPiece;
+void GameLogic::setRockVars(Command command, int32_t playerId){
+  if( playerId == whitePlayerId_ ){
+    if( command.smallRock ){
+      rock_.whiteKingMoved = true;
+      rock_.whiteRightTowerMoved = true;
+      return;
+    } 
+    else if( command.bigRock ){
+      rock_.whiteKingMoved = true;
+      rock_.whiteLeftTowerMoved = true;
+      return;
+    } 
+  } 
+  else { // black player command
+    if( command.smallRock ){
+      rock_.blackKingMoved = true;
+      rock_.blackRightTowerMoved = true;
+      return;
+    } 
+    else if( command.bigRock ){
+      rock_.blackKingMoved = true;
+      rock_.blackLeftTowerMoved = true;
+      return;
+    } 
+  }
+
+  if( worldModel_.board[command.coordFrom.x][command.coordFrom.y].type == Type::KING ){
+    if( worldModel_.board[command.coordFrom.x][command.coordFrom.y].owner == PlayerColor::BLACK ){
+      rock_.blackKingMoved = true;
+    }
+    else {
+      rock_.whiteKingMoved = true;
+    }
+  }
+  else if( worldModel_.board[command.coordFrom.x][command.coordFrom.y].type == Type::TOWER ){
+    if( worldModel_.board[command.coordFrom.x][command.coordFrom.y].owner == PlayerColor::BLACK ){
+      if( !rock_.blackLeftTowerMoved && command.coordFrom.x == 0 && command.coordFrom.y == 0 ){
+        rock_.blackLeftTowerMoved = true;
+      }
+      else if( !rock_.blackRightTowerMoved && command.coordFrom.x == 0 && command.coordFrom.y == 8-1 ){
+        rock_.blackRightTowerMoved = true;
+      }
+    }
+    else {
+      if( !rock_.whiteLeftTowerMoved && command.coordFrom.x == 8-1 && command.coordFrom.y == 0 ){
+        rock_.whiteLeftTowerMoved = true;
+      }
+      else if( !rock_.whiteRightTowerMoved && command.coordFrom.x == 8-1 && command.coordFrom.y == 8-1 ){
+        rock_.whiteRightTowerMoved = true;
+      }
+    }
+  }
 }
 
 WorldModel GameLogic::getWorldModel() const {

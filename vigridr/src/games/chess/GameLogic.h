@@ -11,6 +11,15 @@ namespace mjollnir { namespace vigridr {
 
 struct TotalWorldModel {};
 
+struct Rock{
+  bool blackKingMoved = false;
+  bool blackLeftTowerMoved = false; // In relation to the board
+  bool blackRightTowerMoved = false; // In relation to the board
+  bool whiteKingMoved = false;
+  bool whiteLeftTowerMoved = false; // In relation to the board
+  bool whiteRightTowerMoved = false; // In relation to the board
+};
+  
 class GameLogic {
  public:
   bool shouldPrintWorldModel(int32_t playerId);
@@ -44,7 +53,7 @@ class GameLogic {
   GameResult createGameResult(std::string result, int32_t id);
 
  private:
-  void movePiece(Command command);
+  void movePiece(Command command, int32_t playerId);
   void setTableCoordinate_(const Coordinate& coordinate, Piece piece);
   Piece createPiece(Type type, PlayerColor owner);
   bool validCommand(Command command, int32_t playerId);
@@ -62,14 +71,20 @@ class GameLogic {
   bool equalCommand(Command c1, Command c2);
   bool equalCoordinate(Coordinate c1, Coordinate c2);
   std::vector<Command> getAllValidMovesOfPlayer(PlayerColor color);
-  void unmovePiece(Command command);
   Coordinate getKingCoordinateOfPlayer(PlayerColor color);
+  void setRockVars(Command command, int32_t playerId);
+  bool noHorizontalPiecesBetween(int32_t x0, int32_t y0, int32_t y1);
+  bool playerInCheck(int32_t playerId);
+  void makeWorldModelBackup();
+  void restoreWorldModelFromBackup();
   WorldModel worldModel_;
+  WorldModel worldModelBackup_;
   std::vector<Command> moveList_;
   TotalWorldModel twm_;
   int32_t player1_, player2_, whitePlayerId_;
   std::string winner_;
   bool hasFinished_;
+  Rock rock_;
   const size_t boardSize_ = 8;
   const size_t numberOfPlayers_ = 2;
 };

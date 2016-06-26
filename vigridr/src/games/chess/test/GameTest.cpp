@@ -47,7 +47,7 @@ class GameLogicTest : public ::testing::Test {
 
   std::vector<std::vector<Piece> > constructInitialBoard(){
     Piece newPiece;
-    
+
     std::vector<std::vector<Piece> > initialBoard;
     for (int i = 0; i < 8; i++) {
       std::vector<Piece> line;
@@ -90,11 +90,281 @@ class GameLogicTest : public ::testing::Test {
     return initialBoard;
   }
 
+  std::vector<std::vector<Piece> > constructEmptyBoard(){
+    Piece newPiece;
+
+    std::vector<std::vector<Piece> > emptyBoard;
+    for (int i = 0; i < 8; i++) {
+      std::vector<Piece> line;
+      for (int j = 0; j < 8; j++) {
+        newPiece.type = Type::EMPTY;
+        line.push_back(newPiece);
+      }
+      emptyBoard.push_back(line);
+    }
+
+    return emptyBoard;
+  }
+
+  Command createCommand(int32_t x0, int32_t y0, int32_t x1, int32_t y1){
+    Command c;
+    c.coordFrom.x = x0;
+    c.coordFrom.y = y0;
+    c.coordTo.x = x1;
+    c.coordTo.y = y1;
+    return c;
+  }
+
+  Command createSmallRockCommand(){
+    Command c;
+    c.smallRock = true;
+    return c;
+  }
+
+  Command createBigRockCommand(){
+    Command c;
+    c.bigRock = true;
+    return c;
+  }
+
+  Piece createEmptyPiece(){
+    Piece emptyPiece;
+    emptyPiece.type = Type::EMPTY;
+    return emptyPiece;
+  }
+
+  Piece createPiece(Type type, PlayerColor color){
+    Piece newPiece;
+    newPiece.type = type;
+    newPiece.owner = color;
+    return newPiece;
+  }
+
   GameLogic game1;
 };
 
 TEST_F(GameLogicTest, TestingIntialPositionOfPieces) {
   std::vector<std::vector<Piece> > expBoard = constructInitialBoard();
+
+  ASSERT_EQ(expBoard, game1.getWorldModel().board);
+}
+
+TEST_F(GameLogicTest, TestingWhiteSmallRock) {
+  std::vector<std::vector<Piece> > expBoard = constructInitialBoard();
+
+  expBoard[1][0] = createEmptyPiece();
+  expBoard[1][1] = createEmptyPiece();
+  expBoard[1][2] = createEmptyPiece();
+  expBoard[1][3] = createEmptyPiece();
+  expBoard[2][0] = createPiece(Type::PAWN, PlayerColor::BLACK);
+  expBoard[2][1] = createPiece(Type::PAWN, PlayerColor::BLACK);
+  expBoard[2][2] = createPiece(Type::PAWN, PlayerColor::BLACK);
+  expBoard[2][3] = createPiece(Type::PAWN, PlayerColor::BLACK);
+
+  expBoard[7][4] = createEmptyPiece();
+  expBoard[7][5] = createPiece(Type::TOWER, PlayerColor::WHITE);
+  expBoard[7][6] = createPiece(Type::KING, PlayerColor::WHITE);
+  expBoard[7][7] = createEmptyPiece();
+  expBoard[6][6] = createEmptyPiece();
+  expBoard[5][5] = createPiece(Type::HORSE, PlayerColor::WHITE);
+  expBoard[5][6] = createPiece(Type::PAWN, PlayerColor::WHITE);
+  expBoard[5][7] = createPiece(Type::BISHOP, PlayerColor::WHITE);
+
+  EXPECT_TRUE(game1.update(createCommand(6, 6, 5, 6), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 0, 2, 0), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 6, 5, 5), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 1, 2, 1), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 5, 5, 7), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 2, 2, 2), 9091));
+  EXPECT_TRUE(game1.update(createSmallRockCommand(), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 3, 2, 3), 9091));
+
+  ASSERT_EQ(expBoard, game1.getWorldModel().board);
+}
+
+TEST_F(GameLogicTest, TestingWhiteSmallRockFailWhenPieceBetweenKingAndTower) {
+  EXPECT_TRUE(game1.update(createCommand(6, 6, 5, 6), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 0, 2, 0), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 6, 5, 5), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 1, 2, 1), 9091));
+  EXPECT_FALSE(game1.update(createSmallRockCommand(), 9090));
+}
+
+TEST_F(GameLogicTest, TestingWhiteSmallRockFailWhenKingAlreadyMoved) {
+  EXPECT_TRUE(game1.update(createCommand(6, 6, 5, 6), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 0, 2, 0), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 6, 5, 5), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 1, 2, 1), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 5, 5, 7), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 2, 2, 2), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 4, 7, 5), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 3, 2, 3), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 5, 7, 4), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 4, 2, 4), 9091));
+  EXPECT_FALSE(game1.update(createSmallRockCommand(), 9090));
+}
+
+TEST_F(GameLogicTest, TestingWhiteSmallRockFailWhenTowerAlreadyMoved) {
+  EXPECT_TRUE(game1.update(createCommand(6, 6, 5, 6), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 0, 2, 0), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 6, 5, 5), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 1, 2, 1), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 5, 5, 7), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 2, 2, 2), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 7, 7, 6), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 3, 2, 3), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 6, 7, 7), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 4, 2, 4), 9091));
+  EXPECT_FALSE(game1.update(createSmallRockCommand(), 9090));
+}
+
+TEST_F(GameLogicTest, TestingWhiteSmallRockFailWhenKingOnCheck) {
+  EXPECT_TRUE(game1.update(createCommand(6, 5, 5, 5), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 4, 2, 4), 9091));
+  EXPECT_TRUE(game1.update(createCommand(6, 4, 5, 4), 9090));
+  EXPECT_TRUE(game1.update(createCommand(0, 5, 1, 4), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 5, 5, 3), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 0, 2, 0), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 6, 5, 7), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 4, 4, 7), 9091));
+  EXPECT_FALSE(game1.update(createSmallRockCommand(), 9090));
+}
+
+TEST_F(GameLogicTest, TestingWhiteSmallRockFailWhenKingOnCheckAfterRock) {
+  EXPECT_TRUE(game1.update(createCommand(6, 6, 4, 6), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 7, 3, 7), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(4, 6, 3, 7), 9090));
+  EXPECT_TRUE(game1.update(createCommand(0, 7, 3, 7), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(7, 6, 5, 5), 9090));
+  EXPECT_TRUE(game1.update(createCommand(3, 7, 3, 6), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(7, 5, 5, 7), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 0, 2, 0), 9091));
+
+  EXPECT_FALSE(game1.update(createSmallRockCommand(), 9090));
+}
+
+TEST_F(GameLogicTest, TestingWhiteBigRock) {
+  std::vector<std::vector<Piece> > expBoard = constructInitialBoard();
+
+  expBoard[1][0] = createEmptyPiece();
+  expBoard[1][1] = createEmptyPiece();
+  expBoard[1][2] = createEmptyPiece();
+  expBoard[1][3] = createEmptyPiece();
+  expBoard[1][4] = createEmptyPiece();
+  expBoard[2][0] = createPiece(Type::PAWN, PlayerColor::BLACK);
+  expBoard[2][1] = createPiece(Type::PAWN, PlayerColor::BLACK);
+  expBoard[2][2] = createPiece(Type::PAWN, PlayerColor::BLACK);
+  expBoard[2][3] = createPiece(Type::PAWN, PlayerColor::BLACK);
+  expBoard[2][4] = createPiece(Type::PAWN, PlayerColor::BLACK);
+
+  expBoard[7][0] = createEmptyPiece();
+  expBoard[7][1] = createEmptyPiece();
+  expBoard[7][2] = createPiece(Type::KING, PlayerColor::WHITE);
+  expBoard[7][3] = createPiece(Type::TOWER, PlayerColor::WHITE);
+  expBoard[7][4] = createEmptyPiece();
+  expBoard[6][3] = createEmptyPiece();
+  expBoard[5][0] = createPiece(Type::HORSE, PlayerColor::WHITE);
+  expBoard[5][3] = createPiece(Type::QUEEN, PlayerColor::WHITE);
+  expBoard[5][4] = createPiece(Type::BISHOP, PlayerColor::WHITE);
+  expBoard[4][3] = createPiece(Type::PAWN, PlayerColor::WHITE);
+
+  EXPECT_TRUE(game1.update(createCommand(6, 3, 4, 3), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 0, 2, 0), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 1, 5, 0), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 1, 2, 1), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 2, 5, 4), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 2, 2, 2), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 3, 5, 3), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 3, 2, 3), 9091));
+  EXPECT_TRUE(game1.update(createBigRockCommand(), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 4, 2, 4), 9091));
+
+  ASSERT_EQ(expBoard, game1.getWorldModel().board);
+}
+
+TEST_F(GameLogicTest, TestingBlackSmallRock) {
+  std::vector<std::vector<Piece> > expBoard = constructInitialBoard();
+
+  expBoard[0][4] = createEmptyPiece();
+  expBoard[0][5] = createPiece(Type::TOWER, PlayerColor::BLACK);
+  expBoard[0][6] = createPiece(Type::KING, PlayerColor::BLACK);
+  expBoard[0][7] = createEmptyPiece();
+  expBoard[1][6] = createEmptyPiece();
+  expBoard[2][5] = createPiece(Type::HORSE, PlayerColor::BLACK);
+  expBoard[2][6] = createPiece(Type::PAWN, PlayerColor::BLACK);
+  expBoard[2][7] = createPiece(Type::BISHOP, PlayerColor::BLACK);
+
+  expBoard[6][0] = createEmptyPiece();
+  expBoard[6][1] = createEmptyPiece();
+  expBoard[6][2] = createEmptyPiece();
+  expBoard[6][3] = createEmptyPiece();
+  expBoard[6][4] = createEmptyPiece();
+  expBoard[5][0] = createPiece(Type::PAWN, PlayerColor::WHITE);
+  expBoard[5][1] = createPiece(Type::PAWN, PlayerColor::WHITE);
+  expBoard[5][2] = createPiece(Type::PAWN, PlayerColor::WHITE);
+  expBoard[5][3] = createPiece(Type::PAWN, PlayerColor::WHITE);
+  expBoard[5][4] = createPiece(Type::PAWN, PlayerColor::WHITE);
+
+
+  EXPECT_TRUE(game1.update(createCommand(6, 0, 5, 0), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 6, 2, 6), 9091));
+  EXPECT_TRUE(game1.update(createCommand(6, 1, 5, 1), 9090));
+  EXPECT_TRUE(game1.update(createCommand(0, 5, 2, 7), 9091));
+  EXPECT_TRUE(game1.update(createCommand(6, 2, 5, 2), 9090));
+  EXPECT_TRUE(game1.update(createCommand(0, 6, 2, 5), 9091));
+  EXPECT_TRUE(game1.update(createCommand(6, 3, 5, 3), 9090));
+  EXPECT_TRUE(game1.update(createSmallRockCommand(), 9091));
+  EXPECT_TRUE(game1.update(createCommand(6, 4, 5, 4), 9090));
+
+  ASSERT_EQ(expBoard, game1.getWorldModel().board);
+}
+
+TEST_F(GameLogicTest, TestingBlackBigRock) {
+  std::vector<std::vector<Piece> > expBoard = constructInitialBoard();
+
+  expBoard[0][0] = createEmptyPiece();
+  expBoard[0][1] = createEmptyPiece();
+  expBoard[0][2] = createPiece(Type::KING, PlayerColor::BLACK);
+  expBoard[0][3] = createPiece(Type::TOWER, PlayerColor::BLACK);
+  expBoard[0][4] = createEmptyPiece();
+  expBoard[1][3] = createEmptyPiece();
+  expBoard[2][2] = createPiece(Type::HORSE, PlayerColor::BLACK);
+  expBoard[2][3] = createPiece(Type::QUEEN, PlayerColor::BLACK);
+  expBoard[2][4] = createPiece(Type::BISHOP, PlayerColor::BLACK);
+  expBoard[3][3] = createPiece(Type::PAWN, PlayerColor::BLACK);
+
+  expBoard[6][0] = createEmptyPiece();
+  expBoard[6][1] = createEmptyPiece();
+  expBoard[6][2] = createEmptyPiece();
+  expBoard[6][3] = createEmptyPiece();
+  expBoard[6][4] = createEmptyPiece();
+  expBoard[6][5] = createEmptyPiece();
+  expBoard[5][0] = createPiece(Type::PAWN, PlayerColor::WHITE);
+  expBoard[5][1] = createPiece(Type::PAWN, PlayerColor::WHITE);
+  expBoard[5][2] = createPiece(Type::PAWN, PlayerColor::WHITE);
+  expBoard[5][3] = createPiece(Type::PAWN, PlayerColor::WHITE);
+  expBoard[5][4] = createPiece(Type::PAWN, PlayerColor::WHITE);
+  expBoard[5][5] = createPiece(Type::PAWN, PlayerColor::WHITE);
+
+  EXPECT_TRUE(game1.update(createCommand(6, 0, 5, 0), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 3, 3, 3), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 1, 5, 1), 9090));
+  EXPECT_TRUE(game1.update(createCommand(0, 2, 2, 4), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 2, 5, 2), 9090));
+  EXPECT_TRUE(game1.update(createCommand(0, 3, 2, 3), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 3, 5, 3), 9090));
+  EXPECT_TRUE(game1.update(createCommand(0, 1, 2, 2), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 4, 5, 4), 9090));
+  EXPECT_TRUE(game1.update(createBigRockCommand(), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 5, 5, 5), 9090));
 
   ASSERT_EQ(expBoard, game1.getWorldModel().board);
 }
