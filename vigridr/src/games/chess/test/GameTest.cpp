@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include "../server/GameLogic.h"
 #include "gtest/gtest.h"
 
@@ -139,6 +141,60 @@ class GameLogicTest : public ::testing::Test {
     newPiece.owner = color;
     return newPiece;
   }
+
+  char toChar(Piece p) {
+    if (p.owner == PlayerColor::BLACK) {
+      switch(p.type) {
+        case Type::PAWN: return 'P';
+        case Type::TOWER: return 'T';
+        case Type::HORSE: return 'H';
+        case Type::BISHOP: return 'B';
+        case Type::QUEEN: return 'Q';
+        case Type::KING: return 'K';
+        default: return '-';
+      }
+    }
+    else {    
+      switch(p.type) {
+        case Type::PAWN: return 'p';
+        case Type::TOWER: return 't';
+        case Type::HORSE: return 'h';
+        case Type::BISHOP: return 'b';
+        case Type::QUEEN: return 'q';
+        case Type::KING: return 'k';
+        default: return '-';
+      }
+    }
+  }
+
+  void printBoard(const std::vector<std::vector<Piece> >& board) {
+  std::ostringstream oss;
+
+  oss << "    ╔═══════════════╗" << std::endl;
+
+  for (int i=0; i<8; i++) {
+
+    if( i == 3 )
+      oss << 'x';
+    else
+      oss << ' ';
+    oss << ' ' << i << " ║";
+
+    for (int j=0; j<8; j++) {
+      oss << toChar(board[i][j]);
+      if( j != 8-1 ){
+        oss << ' ';
+      }
+    }
+    oss << "║" << std::endl;
+  }
+
+  oss << "    ╚═══════════════╝" << std::endl;
+  oss << "     0 1 2 3 4 5 6 7 " << std::endl;
+  oss << "            y        " << std::endl;
+
+  std::cout << oss.str();
+}
 
   GameLogic game1;
 };
@@ -365,6 +421,143 @@ TEST_F(GameLogicTest, TestingBlackBigRock) {
   EXPECT_TRUE(game1.update(createBigRockCommand(), 9091));
 
   EXPECT_TRUE(game1.update(createCommand(6, 5, 5, 5), 9090));
+
+  ASSERT_EQ(expBoard, game1.getWorldModel().board);
+}
+
+// The game is between Adolf Anderssen vs Lionel Adalbert Bagration Felix Kieseritzky (1851)
+// It's available at: <http://www.chessgames.com/perl/chessgame?gid=1018910>
+TEST_F(GameLogicTest, TestingFullGame) { 
+  std::vector<std::vector<Piece> > expBoard = constructEmptyBoard();
+
+  expBoard[0][0] = createPiece(Type::TOWER, PlayerColor::BLACK);
+  expBoard[0][2] = createPiece(Type::BISHOP, PlayerColor::BLACK);
+  expBoard[0][3] = createPiece(Type::KING, PlayerColor::BLACK);
+  expBoard[0][7] = createPiece(Type::TOWER, PlayerColor::BLACK);
+
+  expBoard[1][0] = createPiece(Type::PAWN, PlayerColor::BLACK);
+  expBoard[1][3] = createPiece(Type::PAWN, PlayerColor::BLACK);
+  expBoard[1][5] = createPiece(Type::PAWN, PlayerColor::BLACK);
+  expBoard[1][7] = createPiece(Type::PAWN, PlayerColor::BLACK);
+
+  expBoard[2][0] = createPiece(Type::HORSE, PlayerColor::BLACK);
+  expBoard[2][5] = createPiece(Type::HORSE, PlayerColor::BLACK);
+
+  expBoard[3][1] = createPiece(Type::PAWN, PlayerColor::BLACK);
+
+  expBoard[7][0] = createPiece(Type::QUEEN, PlayerColor::BLACK);
+  expBoard[7][6] = createPiece(Type::BISHOP, PlayerColor::BLACK);
+
+  expBoard[1][4] = createPiece(Type::BISHOP, PlayerColor::WHITE);
+  expBoard[1][6] = createPiece(Type::HORSE, PlayerColor::WHITE);
+
+  expBoard[3][3] = createPiece(Type::HORSE, PlayerColor::WHITE);
+  expBoard[3][4] = createPiece(Type::PAWN, PlayerColor::WHITE);
+  expBoard[3][7] = createPiece(Type::PAWN, PlayerColor::WHITE);
+
+  expBoard[4][6] = createPiece(Type::PAWN, PlayerColor::WHITE);
+
+  expBoard[5][3] = createPiece(Type::PAWN, PlayerColor::WHITE);
+
+  expBoard[6][0] = createPiece(Type::PAWN, PlayerColor::WHITE);
+  expBoard[6][2] = createPiece(Type::PAWN, PlayerColor::WHITE);
+  expBoard[6][4] = createPiece(Type::KING, PlayerColor::WHITE);
+
+  //1
+  EXPECT_TRUE(game1.update(createCommand(6, 4, 4, 4), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 4, 3, 4), 9091));
+
+  //2
+  EXPECT_TRUE(game1.update(createCommand(6, 5, 4, 5), 9090));
+  EXPECT_TRUE(game1.update(createCommand(3, 4, 4, 5), 9091));
+
+  //3
+  EXPECT_TRUE(game1.update(createCommand(7, 5, 4, 2), 9090));
+  EXPECT_TRUE(game1.update(createCommand(0, 3, 4, 7), 9091));
+
+  //4
+  EXPECT_TRUE(game1.update(createCommand(7, 4, 7, 5), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 1, 3, 1), 9091));
+
+  //5
+  EXPECT_TRUE(game1.update(createCommand(4, 2, 3, 1), 9090));
+  EXPECT_TRUE(game1.update(createCommand(0, 6, 2, 5), 9091));
+
+  //6
+  EXPECT_TRUE(game1.update(createCommand(7, 6, 5, 5), 9090));
+  EXPECT_TRUE(game1.update(createCommand(4, 7, 2, 7), 9091));
+
+  //7
+  EXPECT_TRUE(game1.update(createCommand(6, 3, 5, 3), 9090));
+  EXPECT_TRUE(game1.update(createCommand(2, 5, 3, 7), 9091));
+
+  //8
+  EXPECT_TRUE(game1.update(createCommand(5, 5, 4, 7), 9090));
+  EXPECT_TRUE(game1.update(createCommand(2, 7, 3, 6), 9091));
+
+  //9
+  EXPECT_TRUE(game1.update(createCommand(4, 7, 3, 5), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 2, 2, 2), 9091));
+
+  //10
+  EXPECT_TRUE(game1.update(createCommand(6, 6, 4, 6), 9090));
+  EXPECT_TRUE(game1.update(createCommand(3, 7, 2, 5), 9091));
+
+  //11
+  EXPECT_TRUE(game1.update(createCommand(7, 7, 7, 6), 9090));
+  EXPECT_TRUE(game1.update(createCommand(2, 2, 3, 1), 9091));
+
+  //12
+  EXPECT_TRUE(game1.update(createCommand(6, 7, 4, 7), 9090));
+  EXPECT_TRUE(game1.update(createCommand(3, 6, 2, 6), 9091));
+
+  //13
+  EXPECT_TRUE(game1.update(createCommand(4, 7, 3, 7), 9090));
+  EXPECT_TRUE(game1.update(createCommand(2, 6, 3, 6), 9091));
+
+  //14
+  EXPECT_TRUE(game1.update(createCommand(7, 3, 5, 5), 9090));
+  EXPECT_TRUE(game1.update(createCommand(2, 5, 0, 6), 9091));
+
+  //15
+  EXPECT_TRUE(game1.update(createCommand(7, 2, 4, 5), 9090));
+  EXPECT_TRUE(game1.update(createCommand(3, 6, 2, 5), 9091));
+
+  //16
+  EXPECT_TRUE(game1.update(createCommand(7, 1, 5, 2), 9090));
+  EXPECT_TRUE(game1.update(createCommand(0, 5, 3, 2), 9091));
+
+  //17
+  EXPECT_TRUE(game1.update(createCommand(5, 2, 3, 3), 9090));
+  EXPECT_TRUE(game1.update(createCommand(2, 5, 6, 1), 9091));
+
+  //18
+  EXPECT_TRUE(game1.update(createCommand(4, 5, 2, 3), 9090));
+  EXPECT_TRUE(game1.update(createCommand(3, 2, 7, 6), 9091));
+
+  //19
+  EXPECT_TRUE(game1.update(createCommand(4, 4, 3, 4), 9090));
+  EXPECT_TRUE(game1.update(createCommand(6, 1, 7, 0), 9091));
+
+  //20
+  EXPECT_TRUE(game1.update(createCommand(7, 5, 6, 4), 9090));
+  EXPECT_TRUE(game1.update(createCommand(0, 1, 2, 0), 9091));
+
+  //21
+  EXPECT_TRUE(game1.update(createCommand(3, 5, 1, 6), 9090));
+  EXPECT_TRUE(game1.update(createCommand(0, 4, 0, 3), 9091));
+
+  //22
+  EXPECT_TRUE(game1.update(createCommand(5, 5, 2, 5), 9090));
+  EXPECT_TRUE(game1.update(createCommand(0, 6, 2, 5), 9091));
+
+  //23
+  EXPECT_TRUE(game1.update(createCommand(2, 3, 1, 4), 9090));
+
+  // TODO: Check if the game was finished
+
+  // printBoard(expBoard);
+  // printBoard(game1.getWorldModel().board);
 
   ASSERT_EQ(expBoard, game1.getWorldModel().board);
 }
