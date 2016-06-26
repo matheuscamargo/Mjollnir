@@ -111,85 +111,22 @@ void init(const GameInit& gameInit) {
  */
 Command playTurn(const WorldModel& wm,
   const std::vector<Command>& moveList, int32_t turn) {
-    // //const int32_t BEAR_OFF = g_Command_constants.BEAR_OFF;
-    // const int32_t FROM_BAR = g_Command_constants.FROM_BAR;
 
-    // // If repeated turn index, return the command that we already calculated
-    // if (turn == lastTurn) {
-    //     return lastCommand;
-    // }
+    std::cout << turn;
+    std::cout << ": ";
+    std::cout << wm.dice;
+    std::cout << " ";
 
-    // WorldModel mwm = wm;
+    Command command;
 
-    // lastTurn = turn;
-    // std::cout << turn;
-    // std::cout << ": ";
-    // std::cout << mwm.dice;
-    // std::cout << " ";
+    size_t index = rand()%moveList.size();
+    command = moveList[index];
 
-    // // Calculate the several dice combinations
-    // std::vector<std::vector<int32_t>> diceCombinations;
-    // if (mwm.dice[0] == mwm.dice[1]) {
-    //     mwm.dice.push_back(mwm.dice[0]);
-    //     mwm.dice.push_back(mwm.dice[0]);
-    //     diceCombinations.push_back(mwm.dice);
-    // }
-    // else {
-    //   diceCombinations.push_back(mwm.dice);
-    //   diceCombinations.push_back({ mwm.dice[1], mwm.dice[0] });
-    // }
 
-    // Command command;
-    // for (const std::vector<int32_t> dice : diceCombinations) {
-    //     for (int32_t die : dice) {
-    //         // If I have a checkers in the bar, I must move it
-    //         if (mwm.bar[me] > 0) {
-    //             int32_t src = FROM_BAR;
-    //             int32_t dst = start - direction + die * direction;
-    //             if (mwm.board[dst][other] <= 1) {
-    //                 command.moves.push_back(make_move(src, dst));
-    //                 mwm.bar[me]--;
-    //                 mwm.board[dst][me]++;
-    //                 // If I hit an opponent
-    //                 if (mwm.board[dst][other] == 1) {
-    //                     mwm.board[dst][other]--;
-    //                     mwm.bar[other]++;
-    //                 }
-    //                 continue;
-    //             }
-    //             else {
-    //                 break;
-    //             }
-    //          }
-
-    //         // In order, try to move a piece
-    //         for (int32_t src = start; src != end + direction; src += direction) {
-    //             int32_t dst = src + die * direction;
-    //             if (0 <= dst && dst <= 23 && mwm.board[src][me] > 0 && mwm.board[dst][other] <= 1) {
-    //                 command.moves.push_back(make_move(src, dst));
-    //                 mwm.board[src][me]--;
-    //                 mwm.board[dst][me]++;
-    //                 // If I hit an opponent
-    //                 if (mwm.board[dst][other] == 1) {
-    //                     mwm.board[dst][other]--;
-    //                     mwm.bar[other]++;
-    //                 }
-    //                 break;
-    //             }
-    //         }
-    //     }
-    //     if (command.moves.size() == mwm.dice.size()) {
-    //         break;
-    //     }
-    // }
-    // // Finally send command
-    // std::cout << "Command: " << command << std::endl;
-    // lastCommand = command;
-      Command command;
-
-      size_t index = rand()%moveList.size();
-      command = moveList[index];
+    lastCommand = command;
       
+    // Finally send command
+    std::cout << " Command: " << command << std::endl;
     return command;
 }
 

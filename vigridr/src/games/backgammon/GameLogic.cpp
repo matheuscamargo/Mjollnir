@@ -87,6 +87,49 @@ GameLogic::GameLogic(const std::vector<int32_t> &playerIds) {
   worldModel_.bar = {0, 0};
   worldModel_.borne_off = {0, 0};
   rollDice_();
+
+  std::vector<Command> moveList;
+  moveList_.push_back(moveList);
+  moveList_.push_back(moveList);
+
+  PlayerColor color;
+  vector<Command> possible_commands;
+
+  color = color_(player1_);
+
+  // Calculate all possible commands
+  if (worldModel_.dice[0] == worldModel_.dice[1]) {
+    worldModel_.dice.push_back(worldModel_.dice[0]);
+    worldModel_.dice.push_back(worldModel_.dice[0]);
+    possible_commands = calculate_possibilities_(worldModel_, Command(), color);
+    worldModel_.dice.pop_back();
+    worldModel_.dice.pop_back();
+  } else {
+    possible_commands = calculate_possibilities_(worldModel_, Command(), color);
+    worldModel_.dice = { worldModel_.dice[1], worldModel_.dice[0] };
+    auto possible_commands2 = calculate_possibilities_(worldModel_, Command(), color);
+    possible_commands.insert(possible_commands.end(), possible_commands2.begin(), possible_commands2.end());
+  }
+
+  moveList_[0] = filter_commands_(possible_commands, color);
+
+  color = color_(player2_);
+
+  // Calculate all possible commands
+  if (worldModel_.dice[0] == worldModel_.dice[1]) {
+    worldModel_.dice.push_back(worldModel_.dice[0]);
+    worldModel_.dice.push_back(worldModel_.dice[0]);
+    possible_commands = calculate_possibilities_(worldModel_, Command(), color);
+    worldModel_.dice.pop_back();
+    worldModel_.dice.pop_back();
+  } else {
+    possible_commands = calculate_possibilities_(worldModel_, Command(), color);
+    worldModel_.dice = { worldModel_.dice[1], worldModel_.dice[0] };
+    auto possible_commands2 = calculate_possibilities_(worldModel_, Command(), color);
+    possible_commands.insert(possible_commands.end(), possible_commands2.begin(), possible_commands2.end());
+  }
+
+  moveList_[1] = filter_commands_(possible_commands, color);
 }
 
 bool GameLogic::all_checkers_in_home_board_(WorldModel wm, PlayerColor color) {
@@ -320,6 +363,8 @@ bool GameLogic::update(Command command, int32_t playerId) {
     worldModel_.dice.push_back(worldModel_.dice[0]);
     worldModel_.dice.push_back(worldModel_.dice[0]);
     possible_commands = calculate_possibilities_(worldModel_, Command(), color);
+    worldModel_.dice.pop_back();
+    worldModel_.dice.pop_back();
   } else {
     possible_commands = calculate_possibilities_(worldModel_, Command(), color);
     worldModel_.dice = { worldModel_.dice[1], worldModel_.dice[0] };
@@ -353,11 +398,15 @@ bool GameLogic::update(Command command, int32_t playerId) {
 
   rollDice_();
 
+  color = color_(player1_);
+
   // Calculate all possible commands
   if (worldModel_.dice[0] == worldModel_.dice[1]) {
     worldModel_.dice.push_back(worldModel_.dice[0]);
     worldModel_.dice.push_back(worldModel_.dice[0]);
     possible_commands = calculate_possibilities_(worldModel_, Command(), color);
+    worldModel_.dice.pop_back();
+    worldModel_.dice.pop_back();
   } else {
     possible_commands = calculate_possibilities_(worldModel_, Command(), color);
     worldModel_.dice = { worldModel_.dice[1], worldModel_.dice[0] };
@@ -365,7 +414,25 @@ bool GameLogic::update(Command command, int32_t playerId) {
     possible_commands.insert(possible_commands.end(), possible_commands2.begin(), possible_commands2.end());
   }
 
-  moveList_ = filter_commands_(possible_commands, color);
+  moveList_[0] = filter_commands_(possible_commands, color);
+
+  color = color_(player2_);
+
+  // Calculate all possible commands
+  if (worldModel_.dice[0] == worldModel_.dice[1]) {
+    worldModel_.dice.push_back(worldModel_.dice[0]);
+    worldModel_.dice.push_back(worldModel_.dice[0]);
+    possible_commands = calculate_possibilities_(worldModel_, Command(), color);
+    worldModel_.dice.pop_back();
+    worldModel_.dice.pop_back();
+  } else {
+    possible_commands = calculate_possibilities_(worldModel_, Command(), color);
+    worldModel_.dice = { worldModel_.dice[1], worldModel_.dice[0] };
+    auto possible_commands2 = calculate_possibilities_(worldModel_, Command(), color);
+    possible_commands.insert(possible_commands.end(), possible_commands2.begin(), possible_commands2.end());
+  }
+
+  moveList_[1] = filter_commands_(possible_commands, color);
 
   return success;
 }
@@ -405,7 +472,14 @@ WorldModel GameLogic::getWorldModel() const {
 }
 
 std::vector<Command>& GameLogic::getMoveList(int32_t playerId) {
-  return moveList_;
+  size_t idx = 0;
+  if(playerId == player1_){
+    idx = 0;
+  }
+  else if(playerId == player2_){
+    idx = 1;
+  }
+  return moveList_[idx];
 }
 
 TotalWorldModel GameLogic::getTotalWorldModel() const {

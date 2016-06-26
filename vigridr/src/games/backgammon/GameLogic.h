@@ -61,7 +61,7 @@ class GameLogic {
   void setDice_forTest(const std::vector<int32_t>& dice);
 
   WorldModel worldModel_;
-  std::vector<Command> moveList_;
+  std::vector<std::vector<Command>> moveList_;
   TotalWorldModel twm_;
   int32_t player1_, player2_;
   std::string winner_;
