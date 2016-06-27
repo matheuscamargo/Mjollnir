@@ -3,6 +3,7 @@ from Command.ttypes import Command
 from GameModel.ttypes import GameStatus
 
 from random import randint
+import random
 
 class Solution:
     def __init__(self, gameInit):
@@ -15,7 +16,7 @@ class Solution:
         """
         print "Python Client"
 
-    def play_turn(self, wm, turn):
+    def play_turn(self, wm, moveList, turn):
         """
         This method is called once for every turn.
         This specific example solution returns a random action.
@@ -30,18 +31,10 @@ class Solution:
                                  action must be one of the Action attributes: FORWARD, TURNRIGHT, TURNLEFT, STAY, SHOOT, GRAB and CLIMB.
         """
         command = Command()
-        move = randint(0, 2)
 
-        print str(turn) + ":",
-        if move == 0:
-            print "FORWARD"
-            command.action = Action.FORWARD
-        elif move == 1:
-            print "TURNRIGHT"
-            command.action = Action.TURNRIGHT
-        else:
-            print "TURNLEFT"
-            command.action = Action.TURNLEFT
+        if moveList:
+            command = random.choice(moveList)
+            print str(turn) + ": " + str(command.action)
 
         return command
 

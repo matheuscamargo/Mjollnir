@@ -32,20 +32,16 @@ public class ClientLogic {
      *     A Command instance - a Command contains an attribute called coordinate of class coordinate.
      *                          A Coordinate contains two attributes of type int, x and y.
      */
-    public Command playTurn(WorldModel wm, int turn) {
-        Command command = new Command(new Coordinate());
+    public Command playTurn(WorldModel wm, List<Command> moveList, int turn) {
 
-        Marker[][] table = toMatrix(wm.table);
+        int size = moveList.size();
+        Command command = new Command();
+        command.coordinate = new Coordinate();
 
-        while(true) {
-            int x = random.nextInt(3);
-            int y = random.nextInt(3);
-            if (Marker.UNMARKED.equals(table[x][y])) {
-                command.coordinate.x = x;
-                command.coordinate.y = y;
-                break;
-            }
-        }
+        if (size > 0) {
+            int index = random.nextInt(size);
+            command = moveList.get(index); 
+        }  
 
         System.out.println(turn + ": " + command.coordinate.toString());
         return command;

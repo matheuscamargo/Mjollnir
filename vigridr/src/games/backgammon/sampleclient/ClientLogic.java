@@ -1,8 +1,10 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class ClientLogic {
+    public Random random;
     private int me;
     private int other;
     private int lastTurn;
@@ -20,6 +22,7 @@ public class ClientLogic {
      *                MyColor is of type PlayerColor, which is an enum. PlayerColor has two fields: RED and WHITE.
      */
     public ClientLogic(GameInit gameInit) {
+        random = new Random();
         System.out.println("Java Backgammon Client");
 
         PlayerColor color = gameInit.gameDescription.myColor;
@@ -66,77 +69,18 @@ public class ClientLogic {
      *                          src and dst must be in the interval [0, 24).
      *                          Additionally, src can be CommandConstants.FROM_BAR and dst can be CommandConstants.BEAR_OFF.
      */
-    public Command playTurn(WorldModel wm, int turn) {
-        // If repeated turn index, return the command that we already calculated
-        if (turn == this.lastTurn) {
-            return this.lastCommand;
-        }
+    public Command playTurn(WorldModel wm, List<Command> moveList, int turn) {
 
-        this.lastTurn = turn;
         System.out.print(turn + ": " + Extensions.Representation(wm.dice) + " ");
 
-        // Conversions so it is easier to use
-        int[] wm_bar = new int[] { wm.bar.get(0), wm.bar.get(1) };
-        int[][] wm_board = toMatrix(wm.board);
+        int size = moveList.size();
+        Command command = new Command();
+        command.moves = new ArrayList<Move>();
 
-        // Calculate the several dice combinations
-        List<int[]> diceCombinations = new ArrayList<>();
-        if (wm.dice.get(0) == wm.dice.get(1)) {
-            int[] wm_dice = new int[4];
-            Arrays.fill(wm_dice, wm.dice.get(0));
-            diceCombinations.add(wm_dice);
-        }
-        else {
-            int[] wm_dice = new int[] { wm.dice.get(1), wm.dice.get(0) };
-            diceCombinations.add(wm_dice);
-
-            wm_dice = new int[] { wm_dice[1], wm_dice[0] };
-            diceCombinations.add(wm_dice);
-        }
-
-        Command command = new Command(new ArrayList<Move>());
-        for (int[] dice : diceCombinations) {
-            for (int die : dice) {
-                // If I have a checkers in the bar, I must move it
-                if (wm_bar[this.me] > 0) {
-                    int src = CommandConstants.FROM_BAR;
-                    int dst = this.start - this.direction + die * this.direction;
-                    if (wm_board[dst][this.other] <= 1) {
-                        command.moves.add(new Move(src, dst));
-                        wm_bar[this.me]--;
-                        wm_board[dst][this.me]++;
-                        // If I hit an opponent
-                        if (wm_board[dst][this.other] == 1) {
-                            wm_board[dst][this.other]--;
-                            wm_bar[this.other]++;
-                        }
-                        continue;
-                    }
-                    else {
-                        break;
-                    }
-                 }
-
-                // In order, try to move a piece
-                for (int src = this.start; src != this.end + this.direction; src += this.direction) {
-                    int dst = src + die * this.direction;
-                    if (0 <= dst && dst <= 23 && wm_board[src][this.me] > 0 && wm_board[dst][this.other] <= 1) {
-                        command.moves.add(new Move(src, dst));
-                        wm_board[src][this.me]--;
-                        wm_board[dst][this.me]++;
-                        // If I hit an opponent
-                        if (wm_board[dst][this.other] == 1) {
-                            wm_board[dst][this.other]--;
-                            wm_bar[this.other]++;
-                        }
-                        break;
-                    }
-                }
-            }
-            if (command.moves.size() == wm.dice.size()) {
-                break;
-            }
-        }
+        if (size > 0) {
+            int index = random.nextInt(size);
+            command = moveList.get(index); 
+        }  
         // Finally send command
         System.out.println("Command: " + Extensions.Representation(command));
         this.lastCommand = command;

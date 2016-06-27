@@ -1,10 +1,11 @@
-from WorldModel.ttypes import Marker
+from WorldModel.ttypes import PlayerColor
 from Command.ttypes import Command
 from Command.ttypes import Coordinate
 from GameModel.ttypes import GameStatus
 from GameResult.ttypes import GameResult
 
 from random import randint
+from random import choice
 
 class Solution:
     def __init__(self, gameInit):
@@ -17,9 +18,9 @@ class Solution:
                        myType is of type int, and can have one of the Marker values: UNMARKED, X and O.
         """
         print "Python Client"
-        print "PlayerType: " + Marker._VALUES_TO_NAMES[gameInit.gameDescription.myType]
+        print "PlayerColor: " + PlayerColor._VALUES_TO_NAMES[gameInit.gameDescription.myColor]
 
-    def play_turn(self, wm, turn):
+    def play_turn(self, wm, moveList, turn):
         """
         This method is called once for every turn.
         This specific example solution returns a random valid position.
@@ -34,15 +35,11 @@ class Solution:
             A Command instance - a Command contains a field called coordinate of class coordinate.
                                  A Coordinate contains two fields of type int, x and y.
         """
-        command = Command(Coordinate())
-        while True:
-            x = randint(0,8)
-            y = randint(0,8)
-            if wm.table[x][y] == Marker.UNMARKED:
-                command.coordinate.x = x
-                command.coordinate.y = y
-                break
-        print "%d: %s" % (turn, repr(command.coordinate))
+        command = Command()
+
+        if moveList:
+            command = choice(moveList)
+            print "%d: %s to %s" % (turn, repr(command.coordFrom), repr(command.coordTo))
 
         return command
 

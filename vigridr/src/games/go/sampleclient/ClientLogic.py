@@ -5,6 +5,7 @@ from GameModel.ttypes import GameStatus
 from GameResult.ttypes import GameResult
 
 from random import randint
+from random import choice
 
 class Solution:
     def __init__(self, gameInit):
@@ -23,7 +24,7 @@ class Solution:
         else:
             print "PlayerType: O (WHITE)" 
 
-    def play_turn(self, wm, turn):
+    def play_turn(self, wm, moveList, turn):
         """
         This method is called once for every turn.
         This specific example solution returns a random valid position.
@@ -39,14 +40,11 @@ class Solution:
                                  A Coordinate contains two fields of type int, x and y.
         """
         command = Command(Coordinate())
-        while True:
-            x = randint(0,8)
-            y = randint(0,8)
-            if wm.table[x][y] == Marker.UNMARKED:
-                command.coordinate.x = x
-                command.coordinate.y = y
-                break
-        print "%d: %s" % (turn, repr(command.coordinate))
+
+        if moveList:
+            command = choice(moveList)
+            print "%d: %s" % (turn, repr(command.coordinate))        
+        
 
         return command
 

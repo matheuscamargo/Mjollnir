@@ -16,7 +16,7 @@ public class ClientLogic {
         random = new Random();
 
         System.out.println("Java Client");
-        System.out.println("PlayerType: " + gameInit.gameDescription.myType);
+        System.out.println("PlayerType: " + gameInit.gameDescription.myColor);
     }
 
     /*
@@ -32,22 +32,21 @@ public class ClientLogic {
      *     A Command instance - a Command contains an attribute called coordinate of class coordinate.
      *                          A Coordinate contains two attributes of type int, x and y.
      */
-    public Command playTurn(WorldModel wm, int turn) {
-        Command command = new Command(new Coordinate());
+    public Command playTurn(WorldModel wm, List<Command> moveList, int turn) {
 
-        Marker[][] table = toMatrix(wm.table);
+        int size = moveList.size();
+        Command command = new Command();
+        command.coordFrom = new Coordinate();
+        command.coordTo = new Coordinate();
 
-        while(true) {
-            int x = random.nextInt(9);
-            int y = random.nextInt(9);
-            if (Marker.UNMARKED.equals(table[x][y])) {
-                command.coordinate.x = x;
-                command.coordinate.y = y;
-                break;
-            }
-        }
+        if (size > 0) {
+            int index = random.nextInt(size);
+            command = moveList.get(index); 
+        }  
 
-        System.out.println(turn + ": " + command.coordinate.toString());
+        System.out.println(turn + ": Coordinate (" + 
+            command.coordFrom.x + ", " + command.coordFrom.y + ") to (" +
+            command.coordTo.x + ", " + command.coordTo.y + ")");
         return command;
     }
 
@@ -61,21 +60,5 @@ public class ClientLogic {
         System.out.println("End of game - " + result.toString());
     }
 
-    /*
-     * Helper function to conver a List of List of Markers to an array of arrays of Markers
-     * (aka matrix of Markers).
-     */
-    private Marker[][] toMatrix(List<List<Marker>> table) {
-        Marker[][] matrix = new Marker[9][];
-
-        int i = 0;
-        for (List<Marker> row : table) {
-            matrix[i] = new Marker[9];
-            row.toArray(matrix[i]);
-            i++;
-        }
-
-        return matrix;
-    }
 }
 

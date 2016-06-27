@@ -5,6 +5,7 @@ from GameModel.ttypes import GameStatus
 from GameResult.ttypes import GameResult
 
 from random import randint, shuffle
+from random import choice
 
 dx = [1, 0 , -1, 0]
 dy = [0, 1, 0, -1]
@@ -31,7 +32,7 @@ class Solution:
 
         self.me = gameInit.gameDescription.myIndex
 
-    def play_turn(self, wm, turn):
+    def play_turn(self, wm, moveList, turn):
         """
         This method is called once for every turn.
         This specific example solution stores a matrix with the snakes bodies (as 0 or 1, with -1 as empty cell)
@@ -49,38 +50,12 @@ class Solution:
             A Command instance - a Command contains a field called direction of type int,
                                  which can be one of the Direction values: RIGHT, UP, LEFT, DOWN.
         """
-        print len(self.table)
-
-        # Updating positions
-        for i, player in enumerate(wm.players):
-            for pos in player.body:
-                self.table[pos.x][pos.y] = i
-
-        # Print the board
-        print "Turn", turn
-        for i in range(self.width):
-            for j in range(self.height):
-                if self.table[i][j] == self.me:
-                    print 'M',
-                elif self.table[i][j] == 1 - self.me:
-                    print 'O',
-                else:
-                    print '.',
-            print
-        print
-
         command = Command()
-        command.direction = Direction.DOWN
+        command.direction = Direction.UP
 
-        # Randomly choose a direction
-        indexes = range(4)
-        shuffle(indexes)
-        for i in indexes:
-            newx = wm.players[self.me].body[-1].x + dx[i]
-            newy = wm.players[self.me].body[-1].y + dy[i]
-            if self.isValid(newx, newy) and self.table[newx][newy] == -1:
-                command.direction = dirs[i]
-                break
+        if moveList:
+            command = choice(moveList)
+            print str(turn) + ": " + str(command.direction)
 
         return command
 

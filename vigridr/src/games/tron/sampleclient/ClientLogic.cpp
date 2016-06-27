@@ -38,9 +38,15 @@ void init(const GameInit& gameInit) {
 Command playTurn(const WorldModel& wm,
   const std::vector<Command>& moveList, int32_t turn) {
   Command command;
+  command.direction = Direction::UP;
 
-  size_t index = rand()%moveList.size();
-  command = moveList[index];
+  size_t index;
+  if (moveList.size() > 0) {
+  	index = rand()%moveList.size();
+  	command = moveList[index];
+  } 
+
+  std::cout << turn << ": " << command.direction << std::endl;
   
   return command;
 }

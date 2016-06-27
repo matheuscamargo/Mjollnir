@@ -1,45 +1,60 @@
+import java.util.List;
+import java.util.Random;
+
 public class ClientLogic {
+    public Random random;
+
     /*
      * Constructor: called at the beginning of the game.
      * You may do initialization here.
      *
      * Parameter:
-     *     gameInit - contains an attribute named gameDescription, which itself contains attributes myIndex and field.
-     *                myIndex is an int and represents the index of the world model table of your snake.
-     *                field is an instance of the class Field, and contains the attributes width and height, of type int.
-     *                It also contains an attribute called gameInfo with another attribute, worldModel, of type WorldModel, described below.
+     *     gameInit - not used for Wumpus
      */
     public ClientLogic(GameInit gameInit) {
+        random = new Random();
+
         System.out.println("Java Client");
     }
 
     /*
      * This method is called once for every turn.
-     * It returns an empty command. For a more interesting example, see the python sample solution.
+     * This specific example solution returns a random action.
      *
      * Parameters:
-     *     wm   - an instance of the WorldModel class that contains an attribute called players which is a List of Players.
-     *            A Player has an attribute named body which is a List of Coordinates,
-     *            and which represent the coordinates of the body parts of the snake, in order.
-     *            A Coordinate has two attributes, x and y, of type int.
+     *     wm   - an instance of the WorldModel class that contains a field called sensors of class Sensors.
+     *            Sensors contains the boolean fields: breeze, stench, glitter, bump and scream.
      *     turn - the index of the turn.
      *            If you receive twice the same number, don't worry, just ignore it.
      *
      * Returns:
-     *     A Command instance - a Command contains an attribute called direction of type enum Direction.
-     *                          Direction values: RIGHT, UP, LEFT, DOWN.
+     *     A Command instance - a Command contains a field called action of enum Action.
+     *                          Action fields: FORWARD, TURNRIGHT, TURNLEFT, STAY, SHOOT, GRAB and CLIMB.
      */
-    public Command playTurn(WorldModel wm, int turn) {
-       return null;
+    public Command playTurn(WorldModel wm, List<Command> moveList, int turn) {
+
+        int size = moveList.size();
+        Command command = new Command();
+        command.direction = Direction.UP;
+
+        if (size > 0) {
+            int index = random.nextInt(size);
+            command = moveList.get(index); 
+        }      
+
+        System.out.println(turn + ": " + command.direction); 
+
+        return command;
     }
 
     /*
      * This method is called at the end of the game.
      *
      * Parameters:
-     *     result - an instance of the GameResult enum, which can be GameResult.WON, GameResult.TIED or GameResult.LOST.
+     *     result - an instance of the GameResult class, that has only one int attribute, score.
      */
     public void endOfGame(GameResult result) {
         System.out.println("End of game - " + result.toString());
     }
 }
+

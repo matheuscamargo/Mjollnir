@@ -6,6 +6,8 @@ from GameResult.ttypes import GameResult
 
 RED, WHITE, _VALUES_TO_NAMES = PlayerColor.RED, PlayerColor.WHITE, PlayerColor._VALUES_TO_NAMES
 
+from random import choice
+
 class Solution:
     def __init__(self, gameInit):
         """
@@ -33,7 +35,7 @@ class Solution:
             self.start = 23
             self.end = 0
 
-    def play_turn(self, wm, turn):
+    def play_turn(self, wm, moveList, turn):
         """
         This method is called once for every turn.
         This specific example solution tries to move the checkers at the highest points.
@@ -58,59 +60,12 @@ class Solution:
                                  Additionally, src can be FROM_BAR and dst can be BEAR_OFF.
         """
 
-        # If repeated turn index, return the command that we already calculated
-        if turn == self.last_turn:
-            return self.last_command
+        command = Command()
 
-        self.last_turn = turn
-        print turn, repr(wm.dice),
+        if moveList:
+            command = choice(moveList)
+            print str(turn) + ": " + str(command.moves)
 
-        # Calculate the several dice combinations
-        dice_combinations = []
-        if wm.dice[0] == wm.dice[1]:
-            wm.dice.extend(wm.dice)
-            dice_combinations.append(wm.dice)
-        else:
-            dice_combinations.append(wm.dice)
-            dice_combinations.append(wm.dice[::-1])
-
-        command = Command([])
-        for dice in dice_combinations:
-            for die in dice:
-                # If I have a checkers in the bar, I must move it
-                if wm.bar[self.color] > 0:
-                    src = FROM_BAR
-                    dst = self.start - self.direction + die * self.direction
-                    if wm.board[dst][self.other] <= 1:
-                        command.moves.append(Move(src, dst))
-                        wm.bar[self.color] -= 1
-                        wm.board[dst][self.color] += 1
-                        # If I hit an opponent
-                        if wm.board[dst][self.other] == 1:
-                            wm.board[dst][self.other] -= 1
-                            wm.bar[self.other] += 1
-                        continue
-                    else:
-                        break
-
-                # In order, try to move a piece
-                for src in xrange(self.start, self.end + self.direction, self.direction):
-                    dst = src + die * self.direction
-                    if 0 <= dst <= 23 and wm.board[src][self.color] > 0 and wm.board[dst][self.other] <= 1:
-                        command.moves.append(Move(src, dst))
-                        wm.board[src][self.color] -= 1
-                        wm.board[dst][self.color] += 1
-                        # If I hit an opponent
-                        if wm.board[dst][self.other] == 1:
-                            wm.board[dst][self.other] -= 1
-                            wm.bar[self.other] += 1
-                        break
-            if len(command.moves) == len(wm.dice):
-                break
-
-        # Finally send command
-        print "Command:", command
-        self.last_command = command
         return command
 
     def end_of_game(self, result):

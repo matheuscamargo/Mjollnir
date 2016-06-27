@@ -31,21 +31,11 @@ public class ClientLogic {
      *     A Command instance - a Command contains a field called action of enum Action.
      *                          Action fields: FORWARD, TURNRIGHT, TURNLEFT, STAY, SHOOT, GRAB and CLIMB.
      */
-    public Command playTurn(WorldModel wm, int turn) {
-        Command command = new Command();
-        int move = random.nextInt(3);
+    public Command playTurn(WorldModel wm, List<Command> moveList, int turn) {
+        int index = random.nextInt(moveList.size());
+        Command command = moveList.get(index);  
 
-        System.out.print(turn + ": ");
-        if(move == 0){
-            System.out.println("FORWARD");
-            command.action = Action.FORWARD;
-        } else if(move == 1) {
-            System.out.println("TURNRIGHT");
-            command.action = Action.TURNRIGHT;
-        } else {
-            System.out.println("TURNLEFT");
-            command.action = Action.TURNRIGHT;
-        }
+        System.out.println("Command: " + command.action);
 
         return command;
     }

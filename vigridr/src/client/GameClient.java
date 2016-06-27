@@ -19,7 +19,7 @@ public class GameClient
                 break;
             }
             if (gameInfo.isIsMyTurn()) {
-                Command command = solution.playTurn(gameInfo.worldModel, gameInfo.cycle);
+                Command command = solution.playTurn(gameInfo.worldModel, gameInfo.moveList, gameInfo.cycle);
                 client.sendCommand(command);
             }
         }

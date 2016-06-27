@@ -38,7 +38,7 @@ def play_game(client):
             solution.end_of_game(gameInfo.gameResult);
             break
         if gameInfo.isMyTurn:
-            command = solution.play_turn(gameInfo.worldModel, gameInfo.cycle)
+            command = solution.play_turn(gameInfo.worldModel, gameInfo.moveList, gameInfo.cycle)
             client.sendCommand(command)
         
 

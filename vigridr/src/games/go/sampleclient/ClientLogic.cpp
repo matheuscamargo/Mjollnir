@@ -56,8 +56,6 @@ Command playTurn(const WorldModel& wm,
   const std::vector<Command>& moveList, int32_t turn) {
   Command command;
 
-  std::cout << "size=" << moveList.size() << std::endl;
-
   size_t index = rand()%moveList.size();
   command = moveList[index];
 

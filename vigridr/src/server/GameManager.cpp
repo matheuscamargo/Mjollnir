@@ -88,6 +88,8 @@ void GameManager::finalizeGame() {
     condTurn_.notify_all();
   }
   
+  std::chrono::seconds sleepTime(2);
+  std::this_thread::sleep_for(sleepTime);
   GameLogger::printWorldModel(gameInfo_.worldModel, gameLogic_.getTotalWorldModel());
   GameLogger::logWorldModel(gameInfo_.worldModel, gameLogic_.getTotalWorldModel());
   GameLogger::flushLog();
