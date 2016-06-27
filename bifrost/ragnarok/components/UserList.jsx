@@ -27,7 +27,7 @@ export default class MyComponent extends React.Component {
       this._handleTypeChange = this._handleTypeChange.bind(this);
       this._handleChallengeChange = this._handleChallengeChange.bind(this);
 
-      this.state = {typeSelected: _.keys(tournamentOptions.types)[0], challengeSelected: _.keys(tournamentOptions.challenges)[0]};
+      this.state = {typeSelected: _.values(tournamentOptions.types)[0], challengeSelected: _.values(tournamentOptions.challenges)[0]};
   }
 
   render() {
@@ -116,7 +116,7 @@ export default class MyComponent extends React.Component {
           <div>
             Tournament Type:
             <select className='form-control'
-                    value={tournamentOptions.types[this.state.typeSelected]}
+                    value={this.state.typeSelected}
                     onChange={this._handleTypeChange}>
                 {typeOptions}
             </select>
@@ -124,7 +124,7 @@ export default class MyComponent extends React.Component {
           <div>
             Tournament Game:
             <select className='form-control'
-                    value={tournamentOptions.challenges[this.state.challengeSelected]}
+                    value={this.state.challengeSelected}
                     onChange={this._handleChallengeChange}>
                 {challengeOptions}
             </select>
@@ -145,10 +145,10 @@ export default class MyComponent extends React.Component {
   }
 
   _handleTypeChange(e) {
-    this.setState({typeSelected: e.target.value});
+    this.setState({typeSelected: tournamentOptions.types[e.target.value]});
   }
 
   _handleChallengeChange(e) {
-    this.setState({challengeSelected: e.target.value});
+    this.setState({challengeSelected: tournamentOptions.challenges[e.target.value]});
   }
 }

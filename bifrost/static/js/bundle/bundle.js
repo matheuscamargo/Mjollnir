@@ -809,7 +809,7 @@ var MyComponent = function (_React$Component) {
     _this._handleTypeChange = _this._handleTypeChange.bind(_this);
     _this._handleChallengeChange = _this._handleChallengeChange.bind(_this);
 
-    _this.state = { typeSelected: _underscore2.default.keys(tournamentOptions.types)[0], challengeSelected: _underscore2.default.keys(tournamentOptions.challenges)[0] };
+    _this.state = { typeSelected: _underscore2.default.values(tournamentOptions.types)[0], challengeSelected: _underscore2.default.values(tournamentOptions.challenges)[0] };
     return _this;
   }
 
@@ -958,7 +958,7 @@ var MyComponent = function (_React$Component) {
             _react2.default.createElement(
               'select',
               { className: 'form-control',
-                value: tournamentOptions.types[this.state.typeSelected],
+                value: this.state.typeSelected,
                 onChange: this._handleTypeChange },
               typeOptions
             )
@@ -970,7 +970,7 @@ var MyComponent = function (_React$Component) {
             _react2.default.createElement(
               'select',
               { className: 'form-control',
-                value: tournamentOptions.challenges[this.state.challengeSelected],
+                value: this.state.challengeSelected,
                 onChange: this._handleChallengeChange },
               challengeOptions
             )
@@ -997,12 +997,12 @@ var MyComponent = function (_React$Component) {
   }, {
     key: '_handleTypeChange',
     value: function _handleTypeChange(e) {
-      this.setState({ typeSelected: e.target.value });
+      this.setState({ typeSelected: tournamentOptions.types[e.target.value] });
     }
   }, {
     key: '_handleChallengeChange',
     value: function _handleChallengeChange(e) {
-      this.setState({ challengeSelected: e.target.value });
+      this.setState({ challengeSelected: tournamentOptions.challenges[e.target.value] });
     }
   }]);
 
