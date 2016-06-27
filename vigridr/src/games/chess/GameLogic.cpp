@@ -55,6 +55,7 @@ bool GameLogic::update(Command command, int32_t playerId) {
 
   if(isValidCommand) {
     setRockVars(command, playerId);
+    setEnPassantVars(command, playerId);
     movePiece(command, playerId);
     if (playerId == whitePlayerId_) {
       moveList_ = getAllValidMovesOfPlayer(PlayerColor::BLACK);
@@ -67,40 +68,98 @@ bool GameLogic::update(Command command, int32_t playerId) {
   return false;
 }
 
+void GameLogic::setEnPassantVars(Command command, int32_t playerId){
+  if( worldModel_.board[command.coordFrom.x][command.coordFrom.y].type == Type::PAWN ){
+    if( whitePlayerId_ == playerId ){
+      if( command.coordFrom.x == 6 && command.coordTo.x == 4 ){
+        enPassant_.playerColor = PlayerColor::WHITE;
+        enPassant_.lastMoveWasAPawnDoubleForward = true;
+        enPassant_.pawnX = command.coordTo.x;
+        enPassant_.pawnY = command.coordTo.y;
+        return;
+      }
+      else {
+      }
+    } 
+    else { // black player move
+      if( command.coordFrom.x == 1 && command.coordTo.x == 3 ){
+        enPassant_.playerColor = PlayerColor::BLACK;
+        enPassant_.lastMoveWasAPawnDoubleForward = true;
+        enPassant_.pawnX = command.coordTo.x;
+        enPassant_.pawnY = command.coordTo.y;
+        return;
+      }
+    }
+  }
+  enPassant_.lastMoveWasAPawnDoubleForward = false;
+}
+
 bool GameLogic::validCommand(Command command, int32_t playerId) {
-  return  validRock(command, playerId)
-          || ( validFrom(command, playerId)
-          && validMove(command, playerId)
-          && !playerInCheckAfterCommand(command, playerId) );
+  bool rockTried = false;
+  if(command.smallRock || command.bigRock){
+    rockTried = true;
+  }
+
+  validEnPassant_ = validEnPassant(command, playerId);
+
+  if( rockTried ){
+    return validRock(command, playerId);
+  }
+  else{
+    return  validEnPassant_
+            || (  validFrom(command, playerId)
+                  && validMove(command, playerId)
+                  && !playerInCheckAfterCommand(command, playerId) );
+  }
+}
+
+bool GameLogic::validEnPassant(Command command, int32_t playerId){
+  if( !validFrom(command, playerId) )
+    return false;
+
+  if( playerId == whitePlayerId_ ){
+    return  enPassant_.lastMoveWasAPawnDoubleForward
+            && command.coordFrom.x == enPassant_.pawnX
+            && (command.coordFrom.y == enPassant_.pawnY+1 || command.coordFrom.y == enPassant_.pawnY-1 )
+            && command.coordTo.x == 2 && command.coordTo.y == enPassant_.pawnY; 
+  }
+  else { // black player move
+    return  enPassant_.lastMoveWasAPawnDoubleForward
+            && command.coordFrom.x == enPassant_.pawnX
+            && (command.coordFrom.y == enPassant_.pawnY+1 || command.coordFrom.y == enPassant_.pawnY-1 )
+            && command.coordTo.x == 5 && command.coordTo.y == enPassant_.pawnY;
+  }
 }
 
 bool GameLogic::validRock(Command command, int32_t playerId){
+  bool validRock = false;
+
   if( playerId == whitePlayerId_ ){
     if( command.smallRock ){
-      return  !rock_.whiteKingMoved && !rock_.whiteRightTowerMoved
-              && noHorizontalPiecesBetween(8-1, 4, 8-1)
-              && !playerInCheck(playerId) && !playerInCheckAfterCommand(command, playerId);
+      validRock = !rock_.whiteKingMoved && !rock_.whiteRightTowerMoved
+                  && noHorizontalPiecesBetween(8-1, 4, 8-1)
+                  && !playerInCheck(playerId) && !playerInCheckAfterCommand(command, playerId);
     }
     else if( command.bigRock ){
-      return  !rock_.whiteKingMoved && !rock_.whiteLeftTowerMoved
-              && noHorizontalPiecesBetween(8-1, 0, 4)
-              && !playerInCheck(playerId) && !playerInCheckAfterCommand(command, playerId);
+      validRock = !rock_.whiteKingMoved && !rock_.whiteLeftTowerMoved
+                  && noHorizontalPiecesBetween(8-1, 0, 4)
+                  && !playerInCheck(playerId) && !playerInCheckAfterCommand(command, playerId);
     }
   }
   else { // black player rock
     if( command.smallRock ){
-      return  !rock_.blackKingMoved && !rock_.blackRightTowerMoved
-              && noHorizontalPiecesBetween(0, 4, 8-1)
-              && !playerInCheck(playerId) && !playerInCheckAfterCommand(command, playerId);
+      validRock = !rock_.blackKingMoved && !rock_.blackRightTowerMoved
+                  && noHorizontalPiecesBetween(0, 4, 8-1)
+                  && !playerInCheck(playerId) && !playerInCheckAfterCommand(command, playerId);
     }
     else if( command.bigRock ){
-      return  !rock_.blackKingMoved && !rock_.blackLeftTowerMoved
-              && noHorizontalPiecesBetween(0, 0, 4)
-              && !playerInCheck(playerId) && !playerInCheckAfterCommand(command, playerId);
+      validRock = !rock_.blackKingMoved && !rock_.blackLeftTowerMoved
+                  && noHorizontalPiecesBetween(0, 0, 4)
+                  && !playerInCheck(playerId) && !playerInCheckAfterCommand(command, playerId);
     }    
   }
 
-  return false;
+  return validRock;
 }
 
 // y0 < y1
@@ -114,6 +173,11 @@ bool GameLogic::noHorizontalPiecesBetween(int32_t x0, int32_t y0, int32_t y1){
 }
 
 bool GameLogic::validFrom(Command command, int32_t playerId){
+  if( command.coordFrom.x < 0 || command.coordFrom.x > 7 )
+    return false;
+  if( command.coordFrom.y < 0 || command.coordFrom.y > 7 )
+    return false;
+
   if( playerId == whitePlayerId_ ){
     return  worldModel_.board[command.coordFrom.x][command.coordFrom.y].type != Type::EMPTY
             && worldModel_.board[command.coordFrom.x][command.coordFrom.y].owner == PlayerColor::WHITE;
@@ -535,6 +599,11 @@ void GameLogic::movePiece(Command command, int32_t playerId) {
       movePiece(towerCommand, playerId);
       return;
     }
+    else if( validEnPassant_ ){
+      Piece emptyPiece;
+      emptyPiece.type = Type::EMPTY;
+      worldModel_.board[enPassant_.pawnX][enPassant_.pawnY] = emptyPiece;
+    }
   }
   else { // black player move
     if( command.smallRock ){
@@ -566,7 +635,12 @@ void GameLogic::movePiece(Command command, int32_t playerId) {
       towerCommand.coordTo.y = 3;
       movePiece(towerCommand, playerId);
       return;
-    }    
+    }
+    else if( validEnPassant_ ){
+      Piece emptyPiece;
+      emptyPiece.type = Type::EMPTY;
+      worldModel_.board[enPassant_.pawnX][enPassant_.pawnY] = emptyPiece;
+    }
   }
 
   // Normal move

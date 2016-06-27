@@ -19,6 +19,13 @@ struct Rock{
   bool whiteLeftTowerMoved = false; // In relation to the board
   bool whiteRightTowerMoved = false; // In relation to the board
 };
+
+struct EnPassant{
+  PlayerColor playerColor;
+  bool lastMoveWasAPawnDoubleForward = false;
+  int32_t pawnX;
+  int32_t pawnY;
+};
   
 class GameLogic {
  public:
@@ -77,6 +84,8 @@ class GameLogic {
   bool playerInCheck(int32_t playerId);
   void makeWorldModelBackup();
   void restoreWorldModelFromBackup();
+  bool validEnPassant(Command command, int32_t playerId);
+  void setEnPassantVars(Command command, int32_t playerId);
   WorldModel worldModel_;
   WorldModel worldModelBackup_;
   std::vector<Command> moveList_;
@@ -84,7 +93,9 @@ class GameLogic {
   int32_t player1_, player2_, whitePlayerId_;
   std::string winner_;
   bool hasFinished_;
+  bool validEnPassant_;
   Rock rock_;
+  EnPassant enPassant_;
   const size_t boardSize_ = 8;
   const size_t numberOfPlayers_ = 2;
 };

@@ -562,6 +562,84 @@ TEST_F(GameLogicTest, TestingFullGame) {
   ASSERT_EQ(expBoard, game1.getWorldModel().board);
 }
 
+TEST_F(GameLogicTest, TestingWhiteMakingEnPassant) {
+  std::vector<std::vector<Piece> > expBoard = constructInitialBoard();
+
+  expBoard[1][4] = createEmptyPiece();
+  expBoard[1][7] = createEmptyPiece();
+  expBoard[2][7] = createPiece(Type::PAWN, PlayerColor::BLACK);
+
+  expBoard[6][3] = createEmptyPiece();
+  expBoard[2][4] = createPiece(Type::PAWN, PlayerColor::WHITE);
+
+  EXPECT_TRUE(game1.update(createCommand(6, 3, 4, 3), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 7, 2, 7), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(4, 3, 3, 3), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 4, 3, 4), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(3, 3, 2, 4), 9090));
+
+  // printBoard(expBoard);
+  // printBoard(game1.getWorldModel().board);
+
+  ASSERT_EQ(expBoard, game1.getWorldModel().board);
+}
+
+TEST_F(GameLogicTest, TestingWhiteFailingEnPassant) {
+  EXPECT_TRUE(game1.update(createCommand(6, 3, 4, 3), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 7, 2, 7), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(4, 3, 3, 3), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 4, 3, 4), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 0, 5, 0), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 0, 2, 0), 9091));
+
+  EXPECT_FALSE(game1.update(createCommand(3, 3, 2, 4), 9090));
+}
+
+TEST_F(GameLogicTest, TestingBlackMakingEnPassant) {
+  std::vector<std::vector<Piece> > expBoard = constructInitialBoard();
+
+  expBoard[1][3] = createEmptyPiece();
+  expBoard[5][2] = createPiece(Type::PAWN, PlayerColor::BLACK);
+
+  expBoard[6][0] = createEmptyPiece();
+  expBoard[6][1] = createEmptyPiece();
+  expBoard[6][2] = createEmptyPiece();
+  expBoard[5][0] = createPiece(Type::PAWN, PlayerColor::WHITE);
+  expBoard[5][1] = createPiece(Type::PAWN, PlayerColor::WHITE);
+
+  EXPECT_TRUE(game1.update(createCommand(6, 0, 5, 0), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 3, 3, 3), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 1, 5, 1), 9090));
+  EXPECT_TRUE(game1.update(createCommand(3, 3, 4, 3), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 2, 4, 2), 9090));
+  EXPECT_TRUE(game1.update(createCommand(4, 3, 5, 2), 9091));
+
+  // printBoard(expBoard);
+  // printBoard(game1.getWorldModel().board);
+
+  ASSERT_EQ(expBoard, game1.getWorldModel().board);
+}
+
+TEST_F(GameLogicTest, TestingBlackFailingEnPassant) {
+  EXPECT_TRUE(game1.update(createCommand(6, 0, 5, 0), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 3, 3, 3), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 1, 5, 1), 9090));
+  EXPECT_TRUE(game1.update(createCommand(3, 3, 4, 3), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 2, 4, 2), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 0, 2, 0), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 7, 5, 7), 9090));
+  EXPECT_FALSE(game1.update(createCommand(4, 3, 5, 2), 9091));
+}
+
 // TEST_F(GameLogicTest, TestingTwoCommandsInTheSameTableEntry) {
 //   Command command1; command1.coordinate.x = 1; command1.coordinate.y = 1;
 //   Command command2; command2.coordinate.x = 0; command2.coordinate.y = 2;
