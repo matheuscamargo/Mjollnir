@@ -5,9 +5,19 @@ import TournamentActions from '../actions/TournamentActions';
 import UserActions from '../actions/UserActions';
 import UserAction from './UserAction.jsx';
 
+
+// TODO Get a dictonary from server for each of the possible games.
 var tournamentOptions = {
-  types: ['single', 'double', 'group'],
-  challenges: ['61dd3230-2ea1-4cc1-b521-457f91b03a9e'],
+  types: {
+    "single": "Single Elimination",
+    "double": "Double Elimination",
+    "group":  "Group Tournament"
+  },
+  challenges: {
+    "4f50c959-700b-4570-ae58-54592b4d316c":  "Snake Fight",
+    "61dd3230-2ea1-4cc1-b521-457f91b03a9e":  "Tic-Tac-Toe",
+    "c7587b14-6ed4-4c4f-9155-47f869137916":  "Backgammon",
+  },
 };
 
 export default class MyComponent extends React.Component {
@@ -17,19 +27,19 @@ export default class MyComponent extends React.Component {
       this._handleTypeChange = this._handleTypeChange.bind(this);
       this._handleChallengeChange = this._handleChallengeChange.bind(this);
 
-      this.state = {typeSelected: 'single', challengeSelected: tournamentOptions.challenges[0]};
+      this.state = {typeSelected: _.keys(tournamentOptions.types)[0], challengeSelected: _.keys(tournamentOptions.challenges)[0]};
   }
 
   render() {
     var selectedUsers = _.filter(this.props.users, function(u) {return u.selected;});
     var typeOptions = tournamentOptions.types.map(function(option) {
             return (
-                <option key={option} value={option}>{option}</option>
+                <option key={option.value} value={option.key}>{option.value}</option>
             );
         });
     var challengeOptions = tournamentOptions.challenges.map(function(option) {
             return (
-                <option key={option} value={option}>{option}</option>
+                <option key={option.value} value={option.key}>{option.value}</option>
             );
         });
 
@@ -106,7 +116,7 @@ export default class MyComponent extends React.Component {
           <div>
             Tournament Type:
             <select className='form-control'
-                    value={this.state.typeSelected}
+                    value={tournamentOptions.types[this.state.typeSelected]}
                     onChange={this._handleTypeChange}>
                 {typeOptions}
             </select>
@@ -114,7 +124,7 @@ export default class MyComponent extends React.Component {
           <div>
             Tournament Type:
             <select className='form-control'
-                    value={this.state.challengeSelected}
+                    value={tournamentOptions.challenges[this.state.challengeSelected]}
                     onChange={this._handleChallengeChange}>
                 {challengeOptions}
             </select>

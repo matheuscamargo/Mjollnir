@@ -783,9 +783,18 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+// TODO Get a dictonary from server for each of the possible games.
 var tournamentOptions = {
-  types: ['single', 'double', 'group'],
-  challenges: ['61dd3230-2ea1-4cc1-b521-457f91b03a9e']
+  types: {
+    "single": "Single Elimination",
+    "double": "Double Elimination",
+    "group": "Group Tournament"
+  },
+  challenges: {
+    "4f50c959-700b-4570-ae58-54592b4d316c": "Snake Fight",
+    "61dd3230-2ea1-4cc1-b521-457f91b03a9e": "Tic-Tac-Toe",
+    "c7587b14-6ed4-4c4f-9155-47f869137916": "Backgammon"
+  }
 };
 
 var MyComponent = function (_React$Component) {
@@ -800,7 +809,7 @@ var MyComponent = function (_React$Component) {
     _this._handleTypeChange = _this._handleTypeChange.bind(_this);
     _this._handleChallengeChange = _this._handleChallengeChange.bind(_this);
 
-    _this.state = { typeSelected: 'single', challengeSelected: tournamentOptions.challenges[0] };
+    _this.state = { typeSelected: _underscore2.default.keys(tournamentOptions.types)[0], challengeSelected: _underscore2.default.keys(tournamentOptions.challenges)[0] };
     return _this;
   }
 
@@ -813,15 +822,15 @@ var MyComponent = function (_React$Component) {
       var typeOptions = tournamentOptions.types.map(function (option) {
         return _react2.default.createElement(
           'option',
-          { key: option, value: option },
-          option
+          { key: option.value, value: option.key },
+          option.value
         );
       });
       var challengeOptions = tournamentOptions.challenges.map(function (option) {
         return _react2.default.createElement(
           'option',
-          { key: option, value: option },
-          option
+          { key: option.value, value: option.key },
+          option.value
         );
       });
 
@@ -949,7 +958,7 @@ var MyComponent = function (_React$Component) {
             _react2.default.createElement(
               'select',
               { className: 'form-control',
-                value: this.state.typeSelected,
+                value: tournamentOptions.types[this.state.typeSelected],
                 onChange: this._handleTypeChange },
               typeOptions
             )
@@ -961,7 +970,7 @@ var MyComponent = function (_React$Component) {
             _react2.default.createElement(
               'select',
               { className: 'form-control',
-                value: this.state.challengeSelected,
+                value: tournamentOptions.challenges[this.state.challengeSelected],
                 onChange: this._handleChallengeChange },
               challengeOptions
             )
