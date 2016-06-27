@@ -702,6 +702,8 @@ def tournamentplaygame(tid):
     
     return jsonify(mid = mid, users = users)
 
+
+#TODO: Manage TID when integrated with DB
 @app.route('/tournament/<tid>/match/<mid>')
 def tournamentgetmatch(tid, mid):
     match = mongodb.matches.find_one({ 'mid': mid })
@@ -833,6 +835,8 @@ def make_ranking(matches, tournament, group, names_dict):
         return ranking
 
 
+#TODO: GET MORE DATA FROM SERVERS (SUBMISSIONS, ID, RANKING)
+
 @app.route('/group/<gid>/users')
 @login_required
 def group_users(gid):
@@ -842,9 +846,27 @@ def group_users(gid):
 
     r_user = list()
     i = 0
+    cids = ["4f50c959-700b-4570-ae58-54592b4d316c", "61dd3230-2ea1-4cc1-b521-457f91b03a9e", "4306319a-e240-4dd6-9b53-992aa0ee6ccb", "c7587b14-6ed4-4c4f-9155-47f869137916"]
+
 
     for u in group['users']:
-        r_user.append({'id': i, 'name': u, 'ranking': i})
+        subs = list()
+
+        user_in_db = mongodb.users.find_one({ 'username': u })
+
+        for cid in cids:
+            sub = mongodb.submissions.find_one({ 'uid': user_in_db['uid'], 'cid': cid })
+
+            if not sub:
+                return "No submission found for one of the players", 1
+
+            # TODO: We should use a previous submission if we can
+            if sub['build_status'] != 'Success':
+                return "One of the submissions haven't built properly", 2
+
+            subs.append(cid)
+
+        r_user.append({'id': i, 'name': u, 'ranking': i, 'subs': subs})
         i = i + 1
 
     return jsonify(users = r_user)

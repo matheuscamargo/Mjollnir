@@ -25523,6 +25523,9 @@ var TournamentSource = function () {
         }, 250);
       });
     }
+
+    //TODO: Manage TID when integrated with DB
+
   }, {
     key: 'playMatch',
     value: function playMatch(matchInfo) {

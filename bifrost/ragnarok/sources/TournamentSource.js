@@ -15,6 +15,7 @@ class TournamentSource {
     });
   }
 
+//TODO: Manage TID when integrated with DB
   playMatch(matchInfo) {
 	return new Promise(function(resolve, reject) {
       // Simulating POST
