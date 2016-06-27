@@ -63,6 +63,12 @@ bool GameLogic::update(Command command, int32_t playerId) {
     else {      
       moveList_ = getAllValidMovesOfPlayer(PlayerColor::WHITE);
     }
+    
+    // Check Mate!
+    if(moveList_.size() == 0) {
+      winner_ = playerId;
+      hasFinished_ = true;
+    }
     return true;
   }
   return false;
