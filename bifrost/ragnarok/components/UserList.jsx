@@ -32,18 +32,16 @@ export default class MyComponent extends React.Component {
 
   render() {
     var selectedUsers = _.filter(this.props.users, function(u) {return u.selected;});
-    var typeOptions = _.mapObject(tournamentOptions.types, function(value, key) {
+    var typeOptions = _.values(_.mapObject(tournamentOptions.types, function(value, key) {
               return (
                   <option key={key} value={key}>{value}</option>
               );
-          }
-        );
-    var challengeOptions = _.mapObject(tournamentOptions.challenges, function(value, key) {
+          }));
+    var challengeOptions = _.values(_.mapObject(tournamentOptions.challenges, function(value, key) {
               return (
                   <option key={key} value={key}>{value}</option>
               );
-          }
-        );
+          }));
 
         //TODO: Break into better looking components?
     return (

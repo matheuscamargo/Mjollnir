@@ -819,20 +819,20 @@ var MyComponent = function (_React$Component) {
       var selectedUsers = _underscore2.default.filter(this.props.users, function (u) {
         return u.selected;
       });
-      var typeOptions = _underscore2.default.mapObject(tournamentOptions.types, function (value, key) {
+      var typeOptions = _underscore2.default.values(_underscore2.default.mapObject(tournamentOptions.types, function (value, key) {
         return _react2.default.createElement(
           'option',
           { key: key, value: key },
           value
         );
-      });
-      var challengeOptions = _underscore2.default.mapObject(tournamentOptions.challenges, function (value, key) {
+      }));
+      var challengeOptions = _underscore2.default.values(_underscore2.default.mapObject(tournamentOptions.challenges, function (value, key) {
         return _react2.default.createElement(
           'option',
           { key: key, value: key },
           value
         );
-      });
+      }));
 
       //TODO: Break into better looking components?
       return _react2.default.createElement(
