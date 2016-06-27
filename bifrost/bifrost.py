@@ -860,6 +860,7 @@ def group_users(gid):
             if sub and sub['build_status'] != 'Success':
                 subs.append(cid)
 
+            subs.append(cid + "is not a valid sub")
         r_user.append({'id': i, 'name': u, 'ranking': i, 'subs': subs})
         i = i + 1
 
