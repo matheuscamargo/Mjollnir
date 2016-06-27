@@ -88,6 +88,7 @@ class GameLogic {
   void setEnPassantVars(Command command, int32_t playerId);
   Type promoTypeToType(PromoType promoType);
   void clearMovedPieces();
+  bool noVerticalPiecesBetween(int32_t y0, int32_t x0, int32_t x1);
   WorldModel worldModel_;
   WorldModel worldModelBackup_;
   std::vector<Command> moveList_;

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <fstream>
+#include <string>
 
 namespace mjollnir { namespace vigridr {
 
@@ -51,6 +52,12 @@ void GameLogic::setFirstPlayer(int32_t playerId) {
 }
 
 bool GameLogic::update(Command command, int32_t playerId) {
+  if(hasFinished_){
+    if( winner_ == std::to_string(playerId) )
+      return true;
+    return false;
+  }
+
   bool isValidCommand = validCommand(command, playerId);
 
   if(isValidCommand) {
@@ -58,6 +65,7 @@ bool GameLogic::update(Command command, int32_t playerId) {
     setEnPassantVars(command, playerId);
     clearMovedPieces();
     movePiece(command, playerId);
+
     if (playerId == whitePlayerId_) {
       moveList_ = getAllValidMovesOfPlayer(PlayerColor::BLACK);
     }
@@ -65,10 +73,16 @@ bool GameLogic::update(Command command, int32_t playerId) {
       moveList_ = getAllValidMovesOfPlayer(PlayerColor::WHITE);
     }
 
-    // Check Mate!
+    // End of game
     if(moveList_.size() == 0) {
-      winner_ = playerId;
-      hasFinished_ = true;
+      // Check Mate!!!
+      if( playerInCheck( (playerId == player1_ ? player2_ : player1_) ) ){
+        winner_ = std::to_string(playerId);
+        hasFinished_ = true;
+      }
+      else { // Tie!!!
+        hasFinished_ = true;
+      }
     }
     return true;
   }
@@ -187,6 +201,16 @@ bool GameLogic::noHorizontalPiecesBetween(int32_t x0, int32_t y0, int32_t y1){
   return true;
 }
 
+// x0 < x1
+bool GameLogic::noVerticalPiecesBetween(int32_t y0, int32_t x0, int32_t x1){
+  for( int32_t x = x0+1; x < x1; x++ ){
+    if( worldModel_.board[x][y0].type != Type::EMPTY ){
+      return false;
+    }
+  }
+  return true;
+}
+
 bool GameLogic::validFrom(Command command, int32_t playerId){
   if( command.coordFrom.x < 0 || command.coordFrom.x > 7 )
     return false;
@@ -221,6 +245,14 @@ bool GameLogic::equalCommand(Command c1, Command c2){
 }
 
 std::vector<Command> GameLogic::getAllValidMovesOfPlayer(PlayerColor color){
+  int32_t playerId;
+  if(color == PlayerColor::WHITE){
+    playerId = whitePlayerId_;
+  }
+  else{
+    playerId = (whitePlayerId_ == player1_ ? player2_ : player1_ );
+  }
+
   std::vector<Command> v;
   Coordinate coord;
   for( size_t i = 0; i < boardSize_; i++ ){
@@ -230,7 +262,9 @@ std::vector<Command> GameLogic::getAllValidMovesOfPlayer(PlayerColor color){
         coord.y = j;
         std::vector<Command> validMoves = getValidMoves(coord);
         for( unsigned int k = 0; k < validMoves.size(); k++ ){
-          v.push_back(validMoves[k]);
+          if(validCommand(validMoves[k], playerId)){
+            v.push_back(validMoves[k]);
+          }
         }
       }
     }
@@ -256,7 +290,7 @@ std::vector<Command> GameLogic::getValidMoves(Coordinate coord){
         // Go forward 2 squares
         command.coordTo.x = command.coordFrom.x-2;
         command.coordTo.y = command.coordFrom.y;
-        if( isInsideTheBoard(command.coordTo) && isEmpty(command.coordTo) && coord.x == 6)
+        if( isInsideTheBoard(command.coordTo) && noVerticalPiecesBetween(command.coordFrom.y, 3, 6) && coord.x == 6)
           v.push_back(command);
 
         // Go to right-diagonal square removing enemy piece
@@ -285,7 +319,7 @@ std::vector<Command> GameLogic::getValidMoves(Coordinate coord){
         // Go forward 2 squares
         command.coordTo.x = command.coordFrom.x+2;
         command.coordTo.y = command.coordFrom.y;
-        if( isInsideTheBoard(command.coordTo) && isEmpty(command.coordTo) && coord.x == 1)
+        if( isInsideTheBoard(command.coordTo) && noVerticalPiecesBetween(command.coordFrom.y, 1, 4) && coord.x == 1)
           v.push_back(command);
 
         // Go to left-diagonal square removing enemy piece
@@ -526,15 +560,285 @@ bool GameLogic::playerInCheck(int32_t playerId){
   PlayerColor playerColor = (playerId == whitePlayerId_? PlayerColor::WHITE : PlayerColor::BLACK );
   PlayerColor enemyColor = (playerId == whitePlayerId_? PlayerColor::BLACK : PlayerColor::WHITE );
 
-  std::vector<Command> allValidMovesOfEnemy = getAllValidMovesOfPlayer(enemyColor);
+  // std::vector<Command> allValidMovesOfEnemy = getAllValidMovesOfPlayer(enemyColor);
 
   Coordinate kingCoord = getKingCoordinateOfPlayer(playerColor);
+  Coordinate c;
 
-  for( unsigned int i = 0; i < allValidMovesOfEnemy.size(); i++ ){
-    if( equalCoordinate(kingCoord, allValidMovesOfEnemy[i].coordTo) ){
+  // for( unsigned int i = 0; i < allValidMovesOfEnemy.size(); i++ ){
+  //   if( equalCoordinate(kingCoord, allValidMovesOfEnemy[i].coordTo) ){
+  //     return true;
+  //   }
+  // }
+  // return false;
+
+  // Checking PAWN threat
+  if( playerColor == PlayerColor::WHITE ){
+    c.x = kingCoord.x-1;
+
+    c.y = kingCoord.y-1;
+    if( isInsideTheBoard(c) 
+        && worldModel_.board[c.x][c.y].type == Type::PAWN 
+        && worldModel_.board[c.x][c.y].owner == enemyColor )
       return true;
-    }
+
+    c.y = kingCoord.y+1;
+    if( isInsideTheBoard(c) 
+        && worldModel_.board[c.x][c.y].type == Type::PAWN 
+        && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
   }
+  else { // playerColor is black
+    c.x = kingCoord.x+1;
+
+    c.y = kingCoord.y-1;
+    if( isInsideTheBoard(c) 
+        && worldModel_.board[c.x][c.y].type == Type::PAWN 
+        && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+
+    c.y = kingCoord.y+1;
+    if( isInsideTheBoard(c) 
+        && worldModel_.board[c.x][c.y].type == Type::PAWN 
+        && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+  }
+
+  // Checking horizontal threats (TOWER, QUEEN, KING)
+  c.x = kingCoord.x+1;
+  c.y = kingCoord.y;
+  for(;isInsideTheBoard(c); c.x++){
+    if( worldModel_.board[c.x][c.y].type != Type::EMPTY
+        && worldModel_.board[c.x][c.y].owner == playerColor )
+      break;
+
+    if( c.x == kingCoord.x+1
+        && worldModel_.board[c.x][c.y].type == Type::KING
+        && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+    else if(  worldModel_.board[c.x][c.y].type == Type::TOWER
+              && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+    else if(  worldModel_.board[c.x][c.y].type == Type::QUEEN
+              && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+
+    if( worldModel_.board[c.x][c.y].type != Type::EMPTY )
+      break;
+  }
+
+  c.x = kingCoord.x-1;
+  c.y = kingCoord.y;
+  for(;isInsideTheBoard(c); c.x--){
+    if( worldModel_.board[c.x][c.y].type != Type::EMPTY
+        && worldModel_.board[c.x][c.y].owner == playerColor )
+      break;
+
+    if( c.x == kingCoord.x-1
+        && worldModel_.board[c.x][c.y].type == Type::KING
+        && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+    else if(  worldModel_.board[c.x][c.y].type == Type::TOWER
+              && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+    else if(  worldModel_.board[c.x][c.y].type == Type::QUEEN
+              && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+
+    if( worldModel_.board[c.x][c.y].type != Type::EMPTY )
+      break;
+  }
+
+  c.x = kingCoord.x;
+  c.y = kingCoord.y+1;
+  for(;isInsideTheBoard(c); c.y++){
+    if( worldModel_.board[c.x][c.y].type != Type::EMPTY
+        && worldModel_.board[c.x][c.y].owner == playerColor )
+      break;
+
+    if( c.y == kingCoord.y+1
+        && worldModel_.board[c.x][c.y].type == Type::KING
+        && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+    else if(  worldModel_.board[c.x][c.y].type == Type::TOWER
+              && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+    else if(  worldModel_.board[c.x][c.y].type == Type::QUEEN
+              && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+
+    if( worldModel_.board[c.x][c.y].type != Type::EMPTY )
+      break;
+  }
+
+  c.x = kingCoord.x;
+  c.y = kingCoord.y-1;
+  for(;isInsideTheBoard(c); c.y--){
+    if( worldModel_.board[c.x][c.y].type != Type::EMPTY
+        && worldModel_.board[c.x][c.y].owner == playerColor )
+      break;
+
+    if( c.y == kingCoord.y-1
+        && worldModel_.board[c.x][c.y].type == Type::KING
+        && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+    else if(  worldModel_.board[c.x][c.y].type == Type::TOWER
+              && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+    else if(  worldModel_.board[c.x][c.y].type == Type::QUEEN
+              && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+
+    if( worldModel_.board[c.x][c.y].type != Type::EMPTY )
+      break;
+  }
+
+  // Checking diagonal threats (BISHOP, QUEEN, KING)
+  c.x = kingCoord.x+1;
+  c.y = kingCoord.y+1;
+  for(;isInsideTheBoard(c); c.x++, c.y++){
+    if( worldModel_.board[c.x][c.y].type != Type::EMPTY
+        && worldModel_.board[c.x][c.y].owner == playerColor )
+      break;
+
+    if( c.x == kingCoord.x+1 && c.y == kingCoord.y+1
+        && worldModel_.board[c.x][c.y].type == Type::KING
+        && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+    else if(  worldModel_.board[c.x][c.y].type == Type::BISHOP
+              && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+    else if(  worldModel_.board[c.x][c.y].type == Type::QUEEN
+              && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+
+    if( worldModel_.board[c.x][c.y].type != Type::EMPTY )
+      break;
+  }
+
+  c.x = kingCoord.x-1;
+  c.y = kingCoord.y+1;
+  for(;isInsideTheBoard(c); c.x--, c.y++){
+    if( worldModel_.board[c.x][c.y].type != Type::EMPTY
+        && worldModel_.board[c.x][c.y].owner == playerColor )
+      break;
+
+    if( c.x == kingCoord.x-1 && c.y == kingCoord.y+1
+        && worldModel_.board[c.x][c.y].type == Type::KING
+        && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+    else if(  worldModel_.board[c.x][c.y].type == Type::BISHOP
+              && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+    else if(  worldModel_.board[c.x][c.y].type == Type::QUEEN
+              && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+
+    if( worldModel_.board[c.x][c.y].type != Type::EMPTY )
+      break;
+  }
+
+  c.x = kingCoord.x+1;
+  c.y = kingCoord.y-1;
+  for(;isInsideTheBoard(c); c.x++, c.y--){
+    if( worldModel_.board[c.x][c.y].type != Type::EMPTY
+        && worldModel_.board[c.x][c.y].owner == playerColor )
+      break;
+
+    if( c.x == kingCoord.x+1 && c.y == kingCoord.y-1
+        && worldModel_.board[c.x][c.y].type == Type::KING
+        && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+    else if(  worldModel_.board[c.x][c.y].type == Type::BISHOP
+              && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+    else if(  worldModel_.board[c.x][c.y].type == Type::QUEEN
+              && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+
+    if( worldModel_.board[c.x][c.y].type != Type::EMPTY )
+      break;
+  }
+
+  c.x = kingCoord.x-1;
+  c.y = kingCoord.y-1;
+  for(;isInsideTheBoard(c); c.x--, c.y--){
+    if( worldModel_.board[c.x][c.y].type != Type::EMPTY
+        && worldModel_.board[c.x][c.y].owner == playerColor )
+      break;
+
+    if( c.x == kingCoord.x-1 && c.y == kingCoord.y-1
+        && worldModel_.board[c.x][c.y].type == Type::KING
+        && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+    else if(  worldModel_.board[c.x][c.y].type == Type::BISHOP
+              && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+    else if(  worldModel_.board[c.x][c.y].type == Type::QUEEN
+              && worldModel_.board[c.x][c.y].owner == enemyColor )
+      return true;
+
+    if( worldModel_.board[c.x][c.y].type != Type::EMPTY )
+      break;
+  }
+
+  // Checking HORSE threat
+  c.x = kingCoord.x+1;
+  c.y = kingCoord.y+2;
+  if( isInsideTheBoard(c) 
+      && worldModel_.board[c.x][c.y].type == Type::HORSE
+      && worldModel_.board[c.x][c.y].owner == enemyColor )
+    return true;
+
+  c.x = kingCoord.x-1;
+  c.y = kingCoord.y+2;
+  if( isInsideTheBoard(c) 
+      && worldModel_.board[c.x][c.y].type == Type::HORSE
+      && worldModel_.board[c.x][c.y].owner == enemyColor )
+    return true;
+
+  c.x = kingCoord.x+1;
+  c.y = kingCoord.y-2;
+  if( isInsideTheBoard(c) 
+      && worldModel_.board[c.x][c.y].type == Type::HORSE
+      && worldModel_.board[c.x][c.y].owner == enemyColor )
+    return true;
+
+  c.x = kingCoord.x-1;
+  c.y = kingCoord.y-2;
+  if( isInsideTheBoard(c) 
+      && worldModel_.board[c.x][c.y].type == Type::HORSE
+      && worldModel_.board[c.x][c.y].owner == enemyColor )
+    return true;
+
+c.x = kingCoord.x+2;
+  c.y = kingCoord.y+1;
+  if( isInsideTheBoard(c) 
+      && worldModel_.board[c.x][c.y].type == Type::HORSE
+      && worldModel_.board[c.x][c.y].owner == enemyColor )
+    return true;
+
+  c.x = kingCoord.x-2;
+  c.y = kingCoord.y+1;
+  if( isInsideTheBoard(c) 
+      && worldModel_.board[c.x][c.y].type == Type::HORSE
+      && worldModel_.board[c.x][c.y].owner == enemyColor )
+    return true;
+
+  c.x = kingCoord.x+2;
+  c.y = kingCoord.y-1;
+  if( isInsideTheBoard(c) 
+      && worldModel_.board[c.x][c.y].type == Type::HORSE
+      && worldModel_.board[c.x][c.y].owner == enemyColor )
+    return true;
+
+  c.x = kingCoord.x-2;
+  c.y = kingCoord.y-1;
+  if( isInsideTheBoard(c) 
+      && worldModel_.board[c.x][c.y].type == Type::HORSE
+      && worldModel_.board[c.x][c.y].owner == enemyColor )
+    return true;
+
   return false;
 }
 
