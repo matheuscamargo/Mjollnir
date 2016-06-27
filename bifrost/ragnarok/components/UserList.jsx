@@ -36,13 +36,13 @@ export default class MyComponent extends React.Component {
               return (
                   <option key={option.value} value={option.key}>{option.value}</option>
               );
-          });
+          }
         );
     var challengeOptions = _.map(tournamentOptions.challenges, function(option) {
               return (
                   <option key={option.value} value={option.key}>{option.value}</option>
               );
-          });
+          }
         );
 
         //TODO: Break into better looking components?

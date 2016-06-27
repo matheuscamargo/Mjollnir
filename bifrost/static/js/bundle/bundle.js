@@ -819,14 +819,14 @@ var MyComponent = function (_React$Component) {
       var selectedUsers = _underscore2.default.filter(this.props.users, function (u) {
         return u.selected;
       });
-      var typeOptions = tournamentOptions.types.map(function (option) {
+      var typeOptions = _underscore2.default.map(tournamentOptions.types, function (option) {
         return _react2.default.createElement(
           'option',
           { key: option.value, value: option.key },
           option.value
         );
       });
-      var challengeOptions = tournamentOptions.challenges.map(function (option) {
+      var challengeOptions = _underscore2.default.map(tournamentOptions.challenges, function (option) {
         return _react2.default.createElement(
           'option',
           { key: option.value, value: option.key },
