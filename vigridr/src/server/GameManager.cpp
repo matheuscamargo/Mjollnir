@@ -8,14 +8,12 @@
 
 #include "../utils/Log.h"
 #include "../utils/MapUtils.h"
-#include "../utils/StringUtils.h"
 #include "GameType.h"
 #include "GameConfig.h"
 #include "GameLogger.h"
 
-//DEFINE_string(player1, "p1", "First player's id (to be logged).");
-//DEFINE_string(player2, "p2", "Second player's id (to be logged).");
-DEFINE_string(players,"1,2", "Players used as clients.");
+DEFINE_string(player1, "p1", "First player's id (to be logged).");
+DEFINE_string(player2, "p2", "Second player's id (to be logged).");
 
 namespace mjollnir { namespace vigridr {
 
@@ -102,16 +100,14 @@ void GameManager::initializeGame(const std::vector<int32_t> &playerIds) {
   std::unique_lock<std::mutex> lockUpdateFlag(updateFlagMutex_, std::defer_lock);
   std::lock(lock0, lock1, lock2, lockUpdateFlag);
 
-  std::vector<std::string> players = utils::split(FLAGS_players, ',');
-
   gameInfo_.worldModel = gameLogic_.getWorldModel();
   for (size_t i = 0; i < kMaxPlayers; ++i) {
       playerTurnData_[i].setMoveList(gameLogic_.getMoveList(playerTurnData_[i].getId()));
   }
   GameLogger::logGameDescription(gameLogic_.getGameDescription(playerIds[0]),
-                                 players[0],
+                                 FLAGS_player1,
                                  gameLogic_.getGameDescription(playerIds[1]),
-                                 players[1]);
+                                 FLAGS_player2);
   playerTurnData_[0].init(playerIds[0]);
   playerTurnData_[1].init(playerIds[1]);
   playerTurnData_[0].setIsTurn(true);
