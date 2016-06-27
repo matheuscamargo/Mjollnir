@@ -125,12 +125,8 @@ void GameManager::initializeGame(const std::vector<int32_t> &playerIds) {
     // If firstPlayer == 0, then playerTurnData_[0] = false and playerTurnData_[1] = true
     // Since nextTurn() invert the player turn and nextTurn() is called on the begining 
     // of updateTask(), in the case that firstPlayer == 0, the first move goes to playerId0
-    gameLogic_.setFirstPlayer(firstPlayer == 0 ? playerId0 : playerId1 );
+    gameLogic_.setFirstPlayer(firstPlayer == 0 ? playerIds[0] : playerIds[1] );
   }
-  GameLogger::logGameDescription(gameLogic_.getGameDescription(playerId0),
-                                 players[0],
-                                 gameLogic_.getGameDescription(playerId1),
-                                 players[1]);
   gameInfo_.cycle = 0;
   gameInfo_.gameStatus = GameStatus::WAITING;
   timer_.startInitializationCycle();
