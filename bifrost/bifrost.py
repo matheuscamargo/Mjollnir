@@ -857,10 +857,9 @@ def group_users(gid):
         for cid in cids:
             sub = mongodb.submissions.find_one({ 'uid': user_in_db['uid'], 'cid': cid })
 
-            if sub and sub['build_status'] != 'Success':
+            if sub and sub['build_status'] == 'Success':
                 subs.append(cid)
 
-            subs.append(cid + "is not a valid sub")
         r_user.append({'id': i, 'name': u, 'ranking': i, 'subs': subs})
         i = i + 1
 
