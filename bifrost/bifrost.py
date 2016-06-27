@@ -857,14 +857,8 @@ def group_users(gid):
         for cid in cids:
             sub = mongodb.submissions.find_one({ 'uid': user_in_db['uid'], 'cid': cid })
 
-            if not sub:
-                return "No submission found for one of the players", 1
-
-            # TODO: We should use a previous submission if we can
-            if sub['build_status'] != 'Success':
-                return "One of the submissions haven't built properly", 2
-
-            subs.append(cid)
+            if sub and sub['build_status'] != 'Success':
+                subs.append(cid)
 
         r_user.append({'id': i, 'name': u, 'ranking': i, 'subs': subs})
         i = i + 1
