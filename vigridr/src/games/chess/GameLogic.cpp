@@ -56,6 +56,7 @@ bool GameLogic::update(Command command, int32_t playerId) {
   if(isValidCommand) {
     setRockVars(command, playerId);
     setEnPassantVars(command, playerId);
+    clearMovedPieces();
     movePiece(command, playerId);
     if (playerId == whitePlayerId_) {
       moveList_ = getAllValidMovesOfPlayer(PlayerColor::BLACK);
@@ -63,7 +64,7 @@ bool GameLogic::update(Command command, int32_t playerId) {
     else {      
       moveList_ = getAllValidMovesOfPlayer(PlayerColor::WHITE);
     }
-    
+
     // Check Mate!
     if(moveList_.size() == 0) {
       winner_ = playerId;
@@ -72,6 +73,14 @@ bool GameLogic::update(Command command, int32_t playerId) {
     return true;
   }
   return false;
+}
+
+void GameLogic::clearMovedPieces(){
+  for (size_t i = 0; i < boardSize_; i++) {
+    for (size_t j = 0; j < boardSize_; j++) {
+      worldModel_.board[i][j].moved = false;
+    }
+  }
 }
 
 void GameLogic::setEnPassantVars(Command command, int32_t playerId){
@@ -656,6 +665,9 @@ void GameLogic::movePiece(Command command, int32_t playerId) {
     worldModel_.board[command.coordFrom.x][command.coordFrom.y];
   worldModel_.board[command.coordFrom.x][command.coordFrom.y] =
     emptyPiece;
+
+  // Set piece as moved
+  worldModel_.board[command.coordTo.x][command.coordTo.y].moved = true;
 
   // Pawn promotion
   if( playerId == whitePlayerId_ ){

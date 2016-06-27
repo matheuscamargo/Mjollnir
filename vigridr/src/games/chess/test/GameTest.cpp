@@ -234,6 +234,7 @@ TEST_F(GameLogicTest, TestingWhiteSmallRock) {
   EXPECT_TRUE(game1.update(createCommand(1, 2, 2, 2), 9091));
   EXPECT_TRUE(game1.update(createSmallRockCommand(), 9090));
   EXPECT_TRUE(game1.update(createCommand(1, 3, 2, 3), 9091));
+  expBoard[2][3].moved = true;
 
   ASSERT_EQ(expBoard, game1.getWorldModel().board);
 }
@@ -337,6 +338,7 @@ TEST_F(GameLogicTest, TestingWhiteBigRock) {
   EXPECT_TRUE(game1.update(createCommand(1, 3, 2, 3), 9091));
   EXPECT_TRUE(game1.update(createBigRockCommand(), 9090));
   EXPECT_TRUE(game1.update(createCommand(1, 4, 2, 4), 9091));
+  expBoard[2][4].moved = true;
 
   ASSERT_EQ(expBoard, game1.getWorldModel().board);
 }
@@ -374,6 +376,7 @@ TEST_F(GameLogicTest, TestingBlackSmallRock) {
   EXPECT_TRUE(game1.update(createCommand(6, 3, 5, 3), 9090));
   EXPECT_TRUE(game1.update(createSmallRockCommand(), 9091));
   EXPECT_TRUE(game1.update(createCommand(6, 4, 5, 4), 9090));
+  expBoard[5][4].moved = true;
 
   ASSERT_EQ(expBoard, game1.getWorldModel().board);
 }
@@ -421,6 +424,7 @@ TEST_F(GameLogicTest, TestingBlackBigRock) {
   EXPECT_TRUE(game1.update(createBigRockCommand(), 9091));
 
   EXPECT_TRUE(game1.update(createCommand(6, 5, 5, 5), 9090));
+  expBoard[5][5].moved = true;
 
   ASSERT_EQ(expBoard, game1.getWorldModel().board);
 }
@@ -553,6 +557,7 @@ TEST_F(GameLogicTest, TestingFullGame) {
 
   //23
   EXPECT_TRUE(game1.update(createCommand(2, 3, 1, 4), 9090));
+  expBoard[1][4].moved = true;
 
   // TODO: Check if the game was finished
 
@@ -579,6 +584,7 @@ TEST_F(GameLogicTest, TestingWhiteMakingEnPassant) {
   EXPECT_TRUE(game1.update(createCommand(1, 4, 3, 4), 9091));
 
   EXPECT_TRUE(game1.update(createCommand(3, 3, 2, 4), 9090));
+  expBoard[2][4].moved = true;
 
   // printBoard(expBoard);
   // printBoard(game1.getWorldModel().board);
@@ -619,6 +625,7 @@ TEST_F(GameLogicTest, TestingBlackMakingEnPassant) {
 
   EXPECT_TRUE(game1.update(createCommand(6, 2, 4, 2), 9090));
   EXPECT_TRUE(game1.update(createCommand(4, 3, 5, 2), 9091));
+  expBoard[5][2].moved = true;
 
   // printBoard(expBoard);
   // printBoard(game1.getWorldModel().board);
@@ -671,6 +678,7 @@ TEST_F(GameLogicTest, TestingWhiteMakingPawnPromotion) {
   Command c = createCommand(1, 2, 0, 1);
   c.promoteTo = PromoType::PROMOTE_TO_HORSE;
   EXPECT_TRUE(game1.update(c, 9090));
+  expBoard[0][1].moved = true;
 
   // printBoard(expBoard);
   // printBoard(game1.getWorldModel().board);

@@ -17,7 +17,8 @@ enum PlayerColor {
 
 struct Piece {
 	1: required Type type,
-	2: required PlayerColor owner
+	2: required PlayerColor owner,
+	3: optional bool moved = false
 }
 
 struct WorldModel {
