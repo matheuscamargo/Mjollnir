@@ -650,6 +650,33 @@ void GameLogic::movePiece(Command command, int32_t playerId) {
     worldModel_.board[command.coordFrom.x][command.coordFrom.y];
   worldModel_.board[command.coordFrom.x][command.coordFrom.y] =
     emptyPiece;
+
+  // Pawn promotion
+  if( playerId == whitePlayerId_ ){
+    if( worldModel_.board[command.coordTo.x][command.coordTo.y].type == Type::PAWN
+        && command.coordTo.x == 0 ) {
+      worldModel_.board[command.coordTo.x][command.coordTo.y].type = promoTypeToType(command.promoteTo);
+    }
+  }
+  else { // black player move
+    if( worldModel_.board[command.coordTo.x][command.coordTo.y].type == Type::PAWN
+        && command.coordTo.x == 7 ) {
+      worldModel_.board[command.coordTo.x][command.coordTo.y].type = promoTypeToType(command.promoteTo);
+    }
+  }
+}
+
+Type GameLogic::promoTypeToType(PromoType promoType){
+  switch(promoType){
+    case PromoType::PROMOTE_TO_TOWER:
+      return Type::TOWER;
+    case PromoType::PROMOTE_TO_HORSE:
+      return Type::HORSE;
+    case PromoType::PROMOTE_TO_BISHOP:
+      return Type::BISHOP;
+    default:
+      return Type::QUEEN;
+  }
 }
 
 void GameLogic::setRockVars(Command command, int32_t playerId){

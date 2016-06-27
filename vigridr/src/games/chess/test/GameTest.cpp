@@ -640,6 +640,45 @@ TEST_F(GameLogicTest, TestingBlackFailingEnPassant) {
   EXPECT_FALSE(game1.update(createCommand(4, 3, 5, 2), 9091));
 }
 
+TEST_F(GameLogicTest, TestingWhiteMakingPawnPromotion) {
+  std::vector<std::vector<Piece> > expBoard = constructInitialBoard();
+
+  expBoard[1][2] = createEmptyPiece();
+  expBoard[1][5] = createEmptyPiece();
+  expBoard[1][6] = createEmptyPiece();
+  expBoard[1][7] = createEmptyPiece();
+
+  expBoard[2][5] = createPiece(Type::PAWN, PlayerColor::BLACK);
+  expBoard[2][6] = createPiece(Type::PAWN, PlayerColor::BLACK);
+  expBoard[2][7] = createPiece(Type::PAWN, PlayerColor::BLACK);
+
+  expBoard[6][3] = createEmptyPiece();
+
+  expBoard[0][1] = createPiece(Type::HORSE, PlayerColor::WHITE);
+
+  EXPECT_TRUE(game1.update(createCommand(6, 3, 4, 3), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 7, 2, 7), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(4, 3, 3, 3), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 2, 3, 2), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(3, 3, 2, 2), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 6, 2, 6), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(2, 2, 1, 2), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 5, 2, 5), 9091));
+
+  Command c = createCommand(1, 2, 0, 1);
+  c.promoteTo = PromoType::PROMOTE_TO_HORSE;
+  EXPECT_TRUE(game1.update(c, 9090));
+
+  // printBoard(expBoard);
+  // printBoard(game1.getWorldModel().board);
+
+  ASSERT_EQ(expBoard, game1.getWorldModel().board);
+}
+
+
 // TEST_F(GameLogicTest, TestingTwoCommandsInTheSameTableEntry) {
 //   Command command1; command1.coordinate.x = 1; command1.coordinate.y = 1;
 //   Command command2; command2.coordinate.x = 0; command2.coordinate.y = 2;

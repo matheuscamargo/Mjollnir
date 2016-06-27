@@ -86,6 +86,7 @@ class GameLogic {
   void restoreWorldModelFromBackup();
   bool validEnPassant(Command command, int32_t playerId);
   void setEnPassantVars(Command command, int32_t playerId);
+  Type promoTypeToType(PromoType promoType);
   WorldModel worldModel_;
   WorldModel worldModelBackup_;
   std::vector<Command> moveList_;
