@@ -819,18 +819,18 @@ var MyComponent = function (_React$Component) {
       var selectedUsers = _underscore2.default.filter(this.props.users, function (u) {
         return u.selected;
       });
-      var typeOptions = _underscore2.default.map(tournamentOptions.types, function (option) {
+      var typeOptions = _underscore2.default.mapObject(tournamentOptions.types, function (value, key) {
         return _react2.default.createElement(
           'option',
-          { key: option.value, value: option.key },
-          option.value
+          { key: key, value: key },
+          value
         );
       });
-      var challengeOptions = _underscore2.default.map(tournamentOptions.challenges, function (option) {
+      var challengeOptions = _underscore2.default.mapObject(tournamentOptions.challenges, function (value, key) {
         return _react2.default.createElement(
           'option',
-          { key: option.value, value: option.key },
-          option.value
+          { key: key, value: key },
+          value
         );
       });
 
@@ -966,7 +966,7 @@ var MyComponent = function (_React$Component) {
           _react2.default.createElement(
             'div',
             null,
-            'Tournament Type:',
+            'Tournament Game:',
             _react2.default.createElement(
               'select',
               { className: 'form-control',

@@ -32,15 +32,15 @@ export default class MyComponent extends React.Component {
 
   render() {
     var selectedUsers = _.filter(this.props.users, function(u) {return u.selected;});
-    var typeOptions = _.map(tournamentOptions.types, function(option) {
+    var typeOptions = _.mapObject(tournamentOptions.types, function(value, key) {
               return (
-                  <option key={option.value} value={option.key}>{option.value}</option>
+                  <option key={key} value={key}>{value}</option>
               );
           }
         );
-    var challengeOptions = _.map(tournamentOptions.challenges, function(option) {
+    var challengeOptions = _.mapObject(tournamentOptions.challenges, function(value, key) {
               return (
-                  <option key={option.value} value={option.key}>{option.value}</option>
+                  <option key={key} value={key}>{value}</option>
               );
           }
         );
@@ -124,7 +124,7 @@ export default class MyComponent extends React.Component {
             </select>
           </div>
           <div>
-            Tournament Type:
+            Tournament Game:
             <select className='form-control'
                     value={tournamentOptions.challenges[this.state.challengeSelected]}
                     onChange={this._handleChallengeChange}>
