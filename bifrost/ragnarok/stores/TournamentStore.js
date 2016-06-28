@@ -115,6 +115,7 @@ class TournamentStore{
         console.log("After run all matches.");
         self.results = self.tournamentRaw.results();
         console.log(self.results);
+        self.emitChange();
         return;
       }
       var nextStep = Promise.all(GetMatchesPromises(tournament, tournamentInfo));
