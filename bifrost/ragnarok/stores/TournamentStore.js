@@ -121,14 +121,10 @@ class TournamentStore{
     }
 
     RunAllMatches(this.tournamentRaw, this.tournamentInfo);
-    handleFetchResult();
-  }
-
-  handleFetchResult(){
+    //Populating results
     this.results = this.tournament.results();
     console.log(this.results);
   }
-
 
   handlePlayMatch(matchInfo){
     //console.log(matchInfo);

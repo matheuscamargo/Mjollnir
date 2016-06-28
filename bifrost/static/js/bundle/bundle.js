@@ -25832,11 +25832,7 @@ var TournamentStore = function () {
       }
 
       RunAllMatches(this.tournamentRaw, this.tournamentInfo);
-      handleFetchResult();
-    }
-  }, {
-    key: 'handleFetchResult',
-    value: function handleFetchResult() {
+      //Populating results
       this.results = this.tournament.results();
       console.log(this.results);
     }
