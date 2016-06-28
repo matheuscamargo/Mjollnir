@@ -530,7 +530,7 @@ var MyComponent = function (_React$Component) {
           'div',
           null,
           this.props.id,
-          _react2.default.createElement('input', { className: 'btn btn-primary', 'margin-right': '0px', type: 'button', value: 'Play', onClick: function onClick(e) {
+          _react2.default.createElement('input', { className: 'btn btn-primary pull-right', type: 'button', value: 'Play', onClick: function onClick(e) {
               _TournamentActions2.default.playAll();
             } }),
           _react2.default.createElement(

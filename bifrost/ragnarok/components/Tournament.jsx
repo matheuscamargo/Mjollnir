@@ -19,7 +19,7 @@ export default class MyComponent extends React.Component {
       <div>
         <div>
           {this.props.id}
-          <input className="btn btn-primary" margin-right="0px" type="button" value="Play" onClick={(e) => {TournamentActions.playAll();}}/>
+          <input className="btn btn-primary pull-right" type="button" value="Play" onClick={(e) => {TournamentActions.playAll();}}/>
           <table className="table">
             <tbody>
               {_.map(this.props.sections, function(section) {
