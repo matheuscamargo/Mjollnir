@@ -26,10 +26,10 @@ export default class Tournament extends React.Component {
     if(this.state.seeResults) {
       return (
         <div>
-          <input className="btn btn-default" type="button" hidden={_.isEmpty(this.props.results)} value="Back to Brackets!" onClick={this._handleClickBrackets}/>
           <Results  players={this.props.players} 
                     results={this.props.results}> 
           </Results>
+          <input className="btn btn-default" type="button" hidden={_.isEmpty(this.props.results)} value="Back to Brackets!" onClick={this._handleClickBrackets}/>
         </div>
       );
     }
@@ -38,9 +38,6 @@ export default class Tournament extends React.Component {
       <div>
         <div>
           <h2> {this.props.id} </h2>  
-          <div hidden={_.isEmpty(this.props.results)}>        
-            <input className="btn btn-default" type="button" value="Go to Results!" onClick={this._handleClickResults}/>
-          </div>
           <table className="table">
             <tbody>
               {_.map(this.props.sections, function(section) {
@@ -57,6 +54,9 @@ export default class Tournament extends React.Component {
             </tbody>
           </table>
           <input className="btn btn-default" type="button" value="Back" onClick={(e) => {TournamentActions.end();}}/>
+          <div hidden={_.isEmpty(this.props.results)}>        
+            <input className="btn btn-default pull-right" type="button" value="Go to Results!" onClick={this._handleClickResults}/>
+          </div>
         </div>
       </div>);
   }

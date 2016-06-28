@@ -638,9 +638,9 @@ var Tournament = function (_React$Component) {
         return _react2.default.createElement(
           'div',
           null,
-          _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', hidden: _underscore2.default.isEmpty(this.props.results), value: 'Back to Brackets!', onClick: this._handleClickBrackets }),
           _react2.default.createElement(_Results2.default, { players: this.props.players,
-            results: this.props.results })
+            results: this.props.results }),
+          _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', hidden: _underscore2.default.isEmpty(this.props.results), value: 'Back to Brackets!', onClick: this._handleClickBrackets })
         );
       }
 
@@ -656,11 +656,6 @@ var Tournament = function (_React$Component) {
             ' ',
             this.props.id,
             ' '
-          ),
-          _react2.default.createElement(
-            'div',
-            { hidden: _underscore2.default.isEmpty(this.props.results) },
-            _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', value: 'Go to Results!', onClick: this._handleClickResults })
           ),
           _react2.default.createElement(
             'table',
@@ -684,7 +679,12 @@ var Tournament = function (_React$Component) {
           ),
           _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', value: 'Back', onClick: function onClick(e) {
               _TournamentActions2.default.end();
-            } })
+            } }),
+          _react2.default.createElement(
+            'div',
+            { hidden: _underscore2.default.isEmpty(this.props.results) },
+            _react2.default.createElement('input', { className: 'btn btn-default pull-right', type: 'button', value: 'Go to Results!', onClick: this._handleClickResults })
+          )
         )
       );
     }
