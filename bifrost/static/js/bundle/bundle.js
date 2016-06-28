@@ -25827,12 +25827,12 @@ var TournamentStore = function () {
         var nextStep = Promise.all(GetMatchesPromises(tournament, tournamentInfo));
         nextStep.then(function (values) {
           RunAllMatches(tournament, tournamentInfo);
-          console.log("After run all matches.");
         });
       }
 
       RunAllMatches(this.tournamentRaw, this.tournamentInfo);
       //Populating results
+      console.log("After run all matches.");
       this.results = this.tournamentRaw.results();
       console.log(this.results);
     }
