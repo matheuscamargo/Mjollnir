@@ -529,7 +529,13 @@ var MyComponent = function (_React$Component) {
         _react2.default.createElement(
           'div',
           null,
-          this.props.id,
+          _react2.default.createElement(
+            'h2',
+            null,
+            ' ',
+            this.props.id,
+            ' '
+          ),
           _react2.default.createElement(
             'div',
             null,
