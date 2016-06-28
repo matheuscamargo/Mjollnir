@@ -530,7 +530,7 @@ var MyComponent = function (_React$Component) {
           'div',
           null,
           this.props.id,
-          _react2.default.createElement('input', { className: 'btn btn-success', type: 'button', value: 'Play', onClick: function onClick(e) {
+          _react2.default.createElement('input', { className: 'btn btn-primary', style: 'float: right;', type: 'button', value: 'Play', onClick: function onClick(e) {
               _TournamentActions2.default.playAll();
             } }),
           _react2.default.createElement(
@@ -553,7 +553,7 @@ var MyComponent = function (_React$Component) {
               })
             )
           ),
-          _react2.default.createElement('input', { className: 'btn btn-danger', type: 'button', value: 'End', onClick: function onClick(e) {
+          _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', value: 'End', onClick: function onClick(e) {
               _TournamentActions2.default.end();
             } })
         )
@@ -910,13 +910,7 @@ var MyComponent = function (_React$Component) {
                         null,
                         'Name'
                       ),
-                      _react2.default.createElement(
-                        'th',
-                        null,
-                        _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', value: 'Remove all', disabled: _underscore2.default.isEmpty(selectedUsers), onClick: function onClick(u) {
-                            _UserActions2.default.deselectAll();
-                          } })
-                      )
+                      _react2.default.createElement('th', null)
                     )
                   ),
                   _react2.default.createElement(

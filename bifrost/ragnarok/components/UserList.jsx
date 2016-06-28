@@ -91,7 +91,6 @@ export default class MyComponent extends React.Component {
                           Name
                       </th>
                       <th>
-                        <input className="btn btn-default" type="button" value="Remove all" disabled={_.isEmpty(selectedUsers)} onClick={(u) => {UserActions.deselectAll();}}/>
                       </th>
                     </tr>
                   </thead>
