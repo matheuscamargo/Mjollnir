@@ -634,6 +634,12 @@ def editgroup():
         return render_template('editgroup.html', form = form, error = "Please enter all the required information."), 400
 
 
+@app.route('/group/<gid>/tournament/new')
+def newtournament(gid):
+    """
+    Page to visualize a tournament.
+    """
+    return render_template('newtournament.html') 
 
 
 @app.route('/tournament/<tid>')
@@ -711,7 +717,73 @@ def tournament(tid):
     return render_template('tournament.html', tournament = tournament, matches = matches, names_type = group['users_name_type'])
 
 
+@app.route('/tournament/<tid>/playgame', methods=['POST'])
+def tournamentplaygame(tid):
+    users = []
+    for username in request.json['ids']:        
+        user_in_db = mongodb.users.find_one({ 'username': username })
+        users.append(user_in_db['uid'])
+    
+    error, mid = play(cid = request.json['cid'], uids = users, rounds = request.json['rounds'])
+    
+    return jsonify(mid = mid, users = users)
 
+
+#TODO: Manage TID when integrated with DB
+@app.route('/tournament/<tid>/match/<mid>')
+def tournamentgetmatch(tid, mid):
+    match = mongodb.matches.find_one({ 'mid': mid })
+    if not match:
+        abort(404)
+
+    challenge = mongodb.challenges.find_one({ 'cid': match['cid'] })
+
+    if not challenge:
+        raise Exception("Couldn't find a challenge with cid " + match['cid'])
+
+    users = list(mongodb.users.find({'uid': {'$in': [user['uid'] for user in match['users']]}}))
+    users_dict = {user['uid']: user for user in users}
+
+    time_delta = datetime.datetime.utcnow() - match['datetime']
+    match['time_since'] = time_since_from_seconds(time_delta.total_seconds())
+    match['challenge_name'] = challenge['name']
+    match['visualizer'] = challenge['visualizer']
+    match['usernames'] = [users_dict[user['uid']]['username'] for user in match['users']]
+
+    #If draw => First user wins (higher seed)
+
+    if match['challenge_name'] == 'Wumpus':
+        match['winner'] = 'Score: ' + str(match['users'][0]['rank'])
+    else:
+        if match['users'][0]['rank'] == 1 and match['users'][1]['rank'] == 2:
+            match['winner'] = match['usernames'][0]
+        elif match['users'][0]['rank'] == 2 and match['users'][1]['rank'] == 1:
+            match['winner'] = match['usernames'][1]
+        else: 
+            match['users'][0]['uid']
+            match['winner'] = match['usernames'][0]
+
+    match['users'] = users
+
+    # Checking for errors
+    if 'errors' in match:
+        errors = match['errors']
+        culprits = []
+        if 'server' in errors:
+            culprits.append('on the server')
+            errors.remove('server')
+        culprits.extend([('on the %s solution' % users_dict[uid]['username']) for uid in errors])
+        if len(culprits) > 1:
+            s = ', '.join(culprits[:-1]) + ' and ' + culprits[-1]
+        else:
+            s = culprits[0]
+        match['error_message'] = 'There was an error %s during this match.' % s
+    else:
+        match['error_message'] = None
+
+    custom_title = ' vs '.join(match['usernames']) + ' on ' + match['challenge_name']
+
+    return match['winner']
 
 def make_ranking(matches, tournament, group, names_dict):
 
@@ -792,6 +864,35 @@ def make_ranking(matches, tournament, group, names_dict):
         return ranking
 
 
+#TODO: GET MORE DATA FROM SERVERS (SUBMISSIONS, ID, RANKING)
+
+@app.route('/group/<gid>/users')
+@login_required
+def group_users(gid):
+    group = mongodb.groups.find_one({'gid': gid})
+    if not group or ( user.username not in group['admins'] and group['admin_only'] ):
+        abort(404)
+
+    r_user = list()
+    i = 0
+    cids = ["4f50c959-700b-4570-ae58-54592b4d316c", "61dd3230-2ea1-4cc1-b521-457f91b03a9e", "4306319a-e240-4dd6-9b53-992aa0ee6ccb", "c7587b14-6ed4-4c4f-9155-47f869137916"]
+
+
+    for u in group['users']:
+        subs = list()
+
+        user_in_db = mongodb.users.find_one({ 'username': u })
+
+        for cid in cids:
+            sub = mongodb.submissions.find_one({ 'uid': user_in_db['uid'], 'cid': cid })
+
+            if sub and sub['build_status'] == 'Success':
+                subs.append(cid)
+
+        r_user.append({'id': i, 'name': u, 'ranking': i, 'subs': subs})
+        i = i + 1
+
+    return jsonify(users = r_user)
 
 
 @app.route('/group/<gid>', methods=['GET', 'POST'])
@@ -859,9 +960,9 @@ def group(gid):
             challenge = mongodb.challenges.find_one({'cid': cid})
 
             if challenge['name'] == 'Wumpus':
-                error = play(cid = cid, uids = [user_id], rounds = rounds)
+                error, mid = play(cid = cid, uids = [user_id], rounds = rounds)
             else:
-                error = play(cid = cid, uids = [user_id, opponent], rounds = rounds)
+                error, mid = play(cid = cid, uids = [user_id, opponent], rounds = rounds)
 
             if error:
                 return render_template('group.html', group = group, playForm = playForm, tournamentForm = tournamentForm, error = error)
@@ -892,9 +993,9 @@ def group(gid):
                 return redirect(url_for('.matches'))
 
             if challenge['name'] == 'Wumpus':
-                error = play(cid = cid, uids = [player1], rounds = rounds)
+                error, mid = play(cid = cid, uids = [player1], rounds = rounds)
             else:
-                error = play(cid = cid, uids = [player1, player2], rounds = rounds)
+                error, mid = play(cid = cid, uids = [player1, player2], rounds = rounds)
 
             if error:
                 return render_template('group.html', group = group, playForm = playForm, tournamentForm = tournamentForm, error = error)
@@ -1252,14 +1353,14 @@ def allPlay(cid, rounds, group, challenge_name):
 
     if challenge_name == 'Wumpus':
         for user in users:
-            error = play(cid = cid, uids = [user['uid']], rounds = rounds, tid = tid) 
+            error, mid = play(cid = cid, uids = [user['uid']], rounds = rounds, tid = tid) 
             if not error:
                 playing = playing + 1
 
     else:
         for i in xrange(len(users) - 1):
             for j in xrange(i + 1, len(users)):
-                error = play(cid = cid, uids = [users[i]['uid'], users[j]['uid']], rounds = rounds, tid = tid)
+                error, mid = play(cid = cid, uids = [users[i]['uid'], users[j]['uid']], rounds = rounds, tid = tid)
                 if not error:
                     playing = playing + 1
 
@@ -1284,11 +1385,11 @@ def play(cid, uids, rounds, tid = None):
         sub = mongodb.submissions.find_one({ 'uid': uid, 'cid': cid })
 
         if not sub:
-            return "No submission found for one of the players"
+            return "No submission found for one of the players", 1
 
         # TODO: We should use a previous submission if we can
         if sub['build_status'] != 'Success':
-            return "One of the submissions haven't built properly"
+            return "One of the submissions haven't built properly", 2
 
         subs.append(sub)
 
@@ -1299,6 +1400,7 @@ def play(cid, uids, rounds, tid = None):
     if tid:
         values['tid'] = tid
 
+    r = {}
     for _ in xrange(rounds):
         error = ''
         try:
@@ -1311,9 +1413,15 @@ def play(cid, uids, rounds, tid = None):
             logger.warn('[%s] Exception in /run: %s' % (time.strftime('%Y-%m-%d %H:%M:%S'), e.message))
 
         if error:
-            return error
+            return error, 3
 
-    return False
+    #print r['mid']
+    jr = r.json()
+    mid = jr['mid']
+    return False, mid
+
+    #except: 
+    #    return False, 3821
 
 
 

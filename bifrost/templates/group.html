@@ -74,7 +74,13 @@
             </div>
 
             <div class="tab-pane fade" id="tournaments">
-              {% if tournaments %}
+              
+              <form action="{{ url_for('.newtournament', gid = group.gid) }}" method="get">
+                <input type="submit" value="New Tournament" class="btn btn-primary" />
+              </form>
+              
+            <!-- TODO: Recolocar lista de campeonatos quando integrado com banco de dados -->
+              <!-- {% if tournaments %}
                 <table class="table table-submissions">
                 <thead>
                   <tr>
@@ -94,7 +100,7 @@
               {% else %}
                 No tournaments to show ;(
               {% endif %}
-            </div>
+ -->            </div>
 
             <div class="tab-pane fade" id="organize">
               <form method="post" action="#organize">
