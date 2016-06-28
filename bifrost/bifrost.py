@@ -251,7 +251,6 @@ def authenticate(username, password):
 def identity(payload):
     username = payload['identity']
     _user = mongodb.users.find_one({ 'username': username })
-    logger.info("USER:" + _user['username'])
     return _user
 
 jwt = JWT(app, authenticate, identity)
@@ -1499,7 +1498,8 @@ def apiGroup(gid):
     cid = data['cid']
     opponent = data['opponent']
     challenge = data['challenge']
-    error = {'error': play(cid = cid, uids = [user_id, opponent], rounds = rounds)}
+    err = play(cid = cid, uids = [user_id], rounds = rounds)
+    error = {'error': err}
     return jsonify(**error)
 
 @app.route('/api/news')
