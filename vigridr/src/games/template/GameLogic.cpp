@@ -40,6 +40,10 @@ TotalWorldModel GameLogic::getTotalWorldModel() const {
   return twm_;
 }
 
+std::vector<Command>& GameLogic::getMoveList(int32_t playerId) {
+  return moveList_;
+}
+
 bool GameLogic::shouldPrintWorldModel(int32_t playerId){
   return true;
 }

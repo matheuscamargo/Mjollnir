@@ -76,6 +76,11 @@ class GameLogic {
   GameDescription getGameDescription(int32_t playerId) const;
 
   /**
+   * Returns vector with all valid Commands from player
+   */
+  std::vector<Command>& getMoveList(int32_t playerId);
+
+  /**
    * Returns the number of players for the game
    */
   size_t getNumberOfPlayers() const;
@@ -93,6 +98,7 @@ class GameLogic {
  private:
   WorldModel worldModel_;
   TotalWorldModel twm_;
+  std::vector<Command> moveList_;
   int32_t player1_;
   int32_t player2_;
   std::string winner_;
