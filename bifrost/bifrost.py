@@ -241,12 +241,16 @@ stormpath_manager = StormpathManager(app)
 stormpath_manager.login_view = '.login'
 
 def authenticate(username, password):
-    _user = User.from_login(
+    try:
+        _user = User.from_login(
             username,
             password
         )
 
+    except StormpathError, err:
+        return None
     return _user
+    
 
 def identity(payload):
     username = payload['identity']
@@ -1587,14 +1591,14 @@ def apiGroup(gid):
     if request.method == 'GET':
         response = {}
         response['description'] = group['description']
-        play = {}
-        play['challenges'] = []
+        plays = {}
+        plays['challenges'] = []
         for challenge in challenges:
-            play['challenges'].append({'id':challenge['cid'], 'name':challenge['name']})
-        play['opponents'] = []
+            plays['challenges'].append({'id':challenge['cid'], 'name':challenge['name']})
+        plays['opponents'] = []
         for opponent in group_users:
-            play['opponents'].append({'id':opponent[0], 'name':opponent[1]})
-        response['play'] = play
+            plays['opponents'].append({'id':opponent[0], 'name':opponent[1]})
+        response['play'] = plays
         response['tournaments'] = []
         for tournament in tournaments:
             response['tournaments'].append({'id':tournament['tid'], 'name':tournament['challenge_name'], 'date':tournament['time_since']})
@@ -1606,8 +1610,7 @@ def apiGroup(gid):
     cid = data['cid']
     opponent = data['opponent']
     challenge = data['challenge']
-    global play
-    err = play(cid = cid, uids = [user_id], rounds = rounds)
+    err = play(cid = cid, uids = [user_id], rounds = int(rounds))
     error = {'error': err}
     return jsonify(**error)
 
