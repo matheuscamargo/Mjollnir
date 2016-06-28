@@ -25772,7 +25772,7 @@ var TournamentStore = function () {
       console.log(this.tournamentInfo);
       this.tournament = toDesiredSchema(this.tournamentInfo, this.tournamentRaw);
       //Play all games
-      handlePlayAll();
+      this.handlePlayAll();
     }
   }, {
     key: 'handleFetch',
