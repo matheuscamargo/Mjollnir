@@ -380,6 +380,11 @@ var Results = function (_React$Component) {
         'div',
         null,
         _react2.default.createElement(
+          'h1',
+          null,
+          ' Tournament Results '
+        ),
+        _react2.default.createElement(
           'table',
           { className: 'table' },
           _react2.default.createElement(
@@ -606,10 +611,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Tournament = function (_React$Component) {
   _inherits(Tournament, _React$Component);
 
-  function Tournament() {
+  function Tournament(props) {
     _classCallCheck(this, Tournament);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Tournament).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Tournament).call(this, props));
+
+    _this._handleClickBrackets = _this._handleClickBrackets.bind(_this);
+    _this._handleClickResults = _this._handleClickResults.bind(_this);
+
+    _this.state = { seeResults: false };
+    return _this;
   }
 
   _createClass(Tournament, [{
@@ -623,9 +634,14 @@ var Tournament = function (_React$Component) {
         );
       }
 
-      if (!_underscore2.default.isEmpty(this.props.results)) {
-        return _react2.default.createElement(_Results2.default, { players: this.props.players,
-          results: this.props.results });
+      if (this.state.seeResults) {
+        return _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', hidden: _underscore2.default.isEmpty(this.props.results), value: 'Back to Brackets!', onClick: this._handleClickBrackets }),
+          _react2.default.createElement(_Results2.default, { players: this.props.players,
+            results: this.props.results })
+        );
       }
 
       return _react2.default.createElement(
@@ -641,6 +657,7 @@ var Tournament = function (_React$Component) {
             this.props.id,
             ' '
           ),
+          _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', hidden: _underscore2.default.isEmpty(this.props.results), value: 'Go to Results!', onClick: this._handleClickResults }),
           _react2.default.createElement(
             'table',
             { className: 'table' },
@@ -666,6 +683,16 @@ var Tournament = function (_React$Component) {
             } })
         )
       );
+    }
+  }, {
+    key: '_handleClickResults',
+    value: function _handleClickResults(e) {
+      this.setState({ seeResults: true });
+    }
+  }, {
+    key: '_handleClickBrackets',
+    value: function _handleClickBrackets(e) {
+      this.setState({ seeResults: false });
     }
   }]);
 
