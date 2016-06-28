@@ -947,7 +947,7 @@ var MyComponent = function (_React$Component) {
                 null,
                 _react2.default.createElement(
                   'div',
-                  { color: 'red', hidden: selectableUsers.lenght > 0 },
+                  { className: 'alert alert-danger', hidden: selectableUsers.lenght > 0 },
                   'There are no users with submissions for the selected game.'
                 )
               ),
@@ -995,7 +995,7 @@ var MyComponent = function (_React$Component) {
             ),
             _react2.default.createElement(
               'span',
-              { color: 'red', hidden: !(selectedUsers.length < MIN_USERS) },
+              { className: 'alert alert-danger', hidden: !(selectedUsers.length < MIN_USERS) },
               'The minimum number of participants is ',
               MIN_USERS,
               '.'
