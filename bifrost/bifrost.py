@@ -1238,12 +1238,90 @@ def matches():
     matches = latest_matches(limit = 10)
     return render_template('matches.html', matches = matches)
 
+    
+def allPlay(cid, rounds, group, challenge_name):
+    """
+    Make all players play
+    Currently working with games for one and two players
+    """
+
+    tid = str( uuid4() )
+
+    playing = 0
+
+    users = [mongodb.users.find_one({ 'username': username }) for username in group['users']]
+
+    if challenge_name == 'Wumpus':
+        for user in users:
+            error = play(cid = cid, uids = [user['uid']], rounds = rounds, tid = tid) 
+            if not error:
+                playing = playing + 1
+
+    else:
+        for i in xrange(len(users) - 1):
+            for j in xrange(i + 1, len(users)):
+                error = play(cid = cid, uids = [users[i]['uid'], users[j]['uid']], rounds = rounds, tid = tid)
+                if not error:
+                    playing = playing + 1
+
+
+    total_matches = rounds * playing    
+    document = {
+        'tid': tid,
+        'cid': cid,
+        'challenge_name': challenge_name,
+        'gid': group['gid'],
+        'total_matches': total_matches,
+        'datetime_started': datetime.datetime.utcnow(),
+    }
+    mongodb.tournaments.insert(document)
+
+
+
+def play(cid, uids, rounds, tid = None):
+    subs = list()
+
+    for uid in uids:
+        sub = mongodb.submissions.find_one({ 'uid': uid, 'cid': cid })
+
+        if not sub:
+            return "No submission found for one of the players"
+
+        # TODO: We should use a previous submission if we can
+        if sub['build_status'] != 'Success':
+            return "One of the submissions haven't built properly"
+
+        subs.append(sub)
+
+    values = {  'cid': cid,
+                'siids': json.dumps([sub['siid'] for sub in subs]),
+                'uids': json.dumps(uids),
+                'password': app.config['YGG_PASSWORD'] }
+    if tid:
+        values['tid'] = tid
+
+    for _ in xrange(rounds):
+        error = ''
+        try:
+            r = requests.post('http://' + app.config['YGG_URL'] + '/run', data=values)
+            if r.status_code != 200:
+                error = 'Could not send match request. Please notify system administrators.'
+                logger.warn('[%s] Error %d in /run: %s' % (time.strftime('%Y-%m-%d %H:%M:%S'), r.status_code, r.text))
+        except requests.exceptions.ConnectionError as e:
+            error = 'Connection refused. Yggdrasil may be down. Please notify system administrators.'
+            logger.warn('[%s] Exception in /run: %s' % (time.strftime('%Y-%m-%d %H:%M:%S'), e.message))
+
+        if error:
+            return error
+
+    return False
+
 
 
 # REST API
 
 @app.route('/api/tournament/<tid>')
-# @jwt_required()
+@jwt_required()
 def apiTournament(tid):
     """
     Page to visualize a tournament.
@@ -1527,86 +1605,6 @@ def apiRegister():
 
     response_dict = {'success' : success, 'error': error}
     return jsonify(**response_dict)
-    
-def allPlay(cid, rounds, group, challenge_name):
-    """
-    Make all players play
-    Currently working with games for one and two players
-    """
-
-    tid = str( uuid4() )
-
-    playing = 0
-
-    users = [mongodb.users.find_one({ 'username': username }) for username in group['users']]
-
-    if challenge_name == 'Wumpus':
-        for user in users:
-            error = play(cid = cid, uids = [user['uid']], rounds = rounds, tid = tid) 
-            if not error:
-                playing = playing + 1
-
-    else:
-        for i in xrange(len(users) - 1):
-            for j in xrange(i + 1, len(users)):
-                error = play(cid = cid, uids = [users[i]['uid'], users[j]['uid']], rounds = rounds, tid = tid)
-                if not error:
-                    playing = playing + 1
-
-
-    total_matches = rounds * playing    
-    document = {
-        'tid': tid,
-        'cid': cid,
-        'challenge_name': challenge_name,
-        'gid': group['gid'],
-        'total_matches': total_matches,
-        'datetime_started': datetime.datetime.utcnow(),
-    }
-    mongodb.tournaments.insert(document)
-
-
-
-def play(cid, uids, rounds, tid = None):
-    subs = list()
-
-    for uid in uids:
-        sub = mongodb.submissions.find_one({ 'uid': uid, 'cid': cid })
-
-        if not sub:
-            return "No submission found for one of the players"
-
-        # TODO: We should use a previous submission if we can
-        if sub['build_status'] != 'Success':
-            return "One of the submissions haven't built properly"
-
-        subs.append(sub)
-
-    values = {  'cid': cid,
-                'siids': json.dumps([sub['siid'] for sub in subs]),
-                'uids': json.dumps(uids),
-                'password': app.config['YGG_PASSWORD'] }
-    if tid:
-        values['tid'] = tid
-
-    for _ in xrange(rounds):
-        error = ''
-        try:
-            r = requests.post('http://' + app.config['YGG_URL'] + '/run', data=values)
-            if r.status_code != 200:
-                error = 'Could not send match request. Please notify system administrators.'
-                logger.warn('[%s] Error %d in /run: %s' % (time.strftime('%Y-%m-%d %H:%M:%S'), r.status_code, r.text))
-        except requests.exceptions.ConnectionError as e:
-            error = 'Connection refused. Yggdrasil may be down. Please notify system administrators.'
-            logger.warn('[%s] Exception in /run: %s' % (time.strftime('%Y-%m-%d %H:%M:%S'), e.message))
-
-        if error:
-            return error
-
-    return False
-
-
-
 
 @app.route('/pleaseMakeCoffee', methods=['BREW', 'POST', 'GET'])
 def teapot():
