@@ -25820,12 +25820,13 @@ var TournamentStore = function () {
         });
       }
 
+      var self = this;
       function RunAllMatches(tournament, tournamentInfo) {
         if (tournament.isDone()) {
           //Populating results
           console.log("After run all matches.");
-          this.results = this.tournamentRaw.results();
-          console.log(this.results);
+          self.results = self.tournamentRaw.results();
+          console.log(self.results);
           return;
         }
         var nextStep = Promise.all(GetMatchesPromises(tournament, tournamentInfo));
