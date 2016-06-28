@@ -19,7 +19,7 @@ export default class MyComponent extends React.Component {
       <div>
         <div>
           {this.props.id}
-          <input className="btn btn-primary pull-right" type="button" value="Play" onClick={(e) => {TournamentActions.playAll();}}/>
+          <input className="btn btn-primary pull-right" type="button" value="Play Tournament" onClick={(e) => {TournamentActions.playAll();}}/>
           <table className="table">
             <tbody>
               {_.map(this.props.sections, function(section) {
@@ -35,7 +35,7 @@ export default class MyComponent extends React.Component {
               })}
             </tbody>
           </table>
-          <input className="btn btn-default" type="button" value="End" onClick={(e) => {TournamentActions.end();}}/>
+          <input className="btn btn-default" type="button" value="Back" onClick={(e) => {TournamentActions.end();}}/>
         </div>
       </div>);
   }

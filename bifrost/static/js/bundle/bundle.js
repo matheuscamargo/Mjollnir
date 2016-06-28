@@ -530,7 +530,7 @@ var MyComponent = function (_React$Component) {
           'div',
           null,
           this.props.id,
-          _react2.default.createElement('input', { className: 'btn btn-primary pull-right', type: 'button', value: 'Play', onClick: function onClick(e) {
+          _react2.default.createElement('input', { className: 'btn btn-primary pull-right', type: 'button', value: 'Play Tournament', onClick: function onClick(e) {
               _TournamentActions2.default.playAll();
             } }),
           _react2.default.createElement(
@@ -553,7 +553,7 @@ var MyComponent = function (_React$Component) {
               })
             )
           ),
-          _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', value: 'End', onClick: function onClick(e) {
+          _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', value: 'Back', onClick: function onClick(e) {
               _TournamentActions2.default.end();
             } })
         )
@@ -866,7 +866,7 @@ var MyComponent = function (_React$Component) {
               null,
               _react2.default.createElement(
                 'td',
-                null,
+                { className: 'call-md-2' },
                 _react2.default.createElement(
                   'table',
                   { className: 'table' },
@@ -895,7 +895,7 @@ var MyComponent = function (_React$Component) {
               ),
               _react2.default.createElement(
                 'td',
-                null,
+                { className: 'call-md-2' },
                 _react2.default.createElement(
                   'table',
                   { className: 'table' },

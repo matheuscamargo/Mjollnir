@@ -62,7 +62,7 @@ export default class MyComponent extends React.Component {
           </thead>
           <tbody>
             <tr>
-              <td>
+              <td className="call-md-2">
                 <table className="table">
                   <thead>
                     <tr>
@@ -83,7 +83,7 @@ export default class MyComponent extends React.Component {
                   </tbody>
                 </table>
               </td>
-              <td>
+              <td className="call-md-2">
                 <table className="table">
                   <thead>
                     <tr>
