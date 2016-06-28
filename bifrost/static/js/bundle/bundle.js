@@ -971,8 +971,8 @@ var MyComponent = function (_React$Component) {
                 return _this2._handleClickTournament(e, selectedUsers);
               } }),
             _react2.default.createElement(
-              'p',
-              { hidden: !(selectedUsers.length < MIN_USERS) },
+              'span',
+              { className: 'alert alert-danger', hidden: !(selectedUsers.length < MIN_USERS) },
               ' Número mínimo de usuários é ',
               MIN_USERS,
               '. '

@@ -128,7 +128,7 @@ export default class MyComponent extends React.Component {
           </div>
           <div>
             <input type="button" className="btn btn-default" value="Start Tournament" disabled={selectedUsers.length < MIN_USERS} onClick={(e) => this._handleClickTournament(e, selectedUsers)}/>
-            <p hidden={!(selectedUsers.length < MIN_USERS)}> Número mínimo de usuários é {MIN_USERS}. </p>
+            <span className="alert alert-danger" hidden={!(selectedUsers.length < MIN_USERS)}> Número mínimo de usuários é {MIN_USERS}. </span>
           </div>
         </div>
       </div>);
