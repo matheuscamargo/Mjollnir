@@ -53,9 +53,11 @@ try:
 
     errors = []
     killed = False
-    if server_process.returncode != 0:
-        killed = True
-        print 'something went wrong on server, probably it was killed before his children'
+    
+    # Hack that must be undone
+    # if server_process.returncode != 0:
+    #     killed = True
+    #     print 'something went wrong on server, probably it was killed before his children'
 
 finally:
     server_kwargs['stdout'].close()
