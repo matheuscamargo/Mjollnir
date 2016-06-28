@@ -306,8 +306,25 @@ std::vector<Command> GameLogic::getValidMoves(Coordinate coord){
         // Go forward 1 square
         command.coordTo.x = command.coordFrom.x-1;
         command.coordTo.y = command.coordFrom.y;
-        if( isInsideTheBoard(command.coordTo) && isEmpty(command.coordTo) )
-          v.push_back(command);
+
+        if( isInsideTheBoard(command.coordTo) && isEmpty(command.coordTo) ){
+          if( command.coordTo.x == 0 ){ // PAWN promotion
+            command.promoteTo = PromoType::PROMOTE_TO_TOWER;
+            v.push_back(command);
+
+            command.promoteTo = PromoType::PROMOTE_TO_BISHOP;
+            v.push_back(command);
+
+            command.promoteTo = PromoType::PROMOTE_TO_HORSE;
+            v.push_back(command);
+
+            command.promoteTo = PromoType::PROMOTE_TO_QUEEN;
+            v.push_back(command);
+          }
+          else{
+            v.push_back(command);
+          }
+        }
 
         // Go forward 2 squares
         command.coordTo.x = command.coordFrom.x-2;
@@ -344,8 +361,24 @@ std::vector<Command> GameLogic::getValidMoves(Coordinate coord){
         // Go forward 1 square
         command.coordTo.x = command.coordFrom.x+1;
         command.coordTo.y = command.coordFrom.y;
-        if( isInsideTheBoard(command.coordTo) && isEmpty(command.coordTo) )
-          v.push_back(command);
+        if( isInsideTheBoard(command.coordTo) && isEmpty(command.coordTo) ){
+          if( command.coordTo.x == 8-1 ){ // PAWN promotion
+            command.promoteTo = PromoType::PROMOTE_TO_TOWER;
+            v.push_back(command);
+
+            command.promoteTo = PromoType::PROMOTE_TO_BISHOP;
+            v.push_back(command);
+
+            command.promoteTo = PromoType::PROMOTE_TO_HORSE;
+            v.push_back(command);
+
+            command.promoteTo = PromoType::PROMOTE_TO_QUEEN;
+            v.push_back(command);
+          }
+          else{
+            v.push_back(command);
+          }
+        }
 
         // Go forward 2 squares
         command.coordTo.x = command.coordFrom.x+2;
