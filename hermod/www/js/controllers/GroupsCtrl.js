@@ -1,29 +1,23 @@
 controllerModule
 
-.controller('GroupPlayCtrl', function ($scope, $stateParams, $rootScope, $http, API, $state) {
-  //console.log($state.current.name)
-  $scope.data = {}; 
+.controller('GroupsCtrl', function($scope, $http, API, $state) {
 
-  if ($state.current.name != 'group.play') {
-     $state.go('group.play', {id: $stateParams.id});
-  }
-  $http.get(API.url + "/api/group/" + $stateParams.id, { })
+  $http.get(API.url + "/api/groups", {})
   .success(function(data){
-    $scope.group = data;
+    $scope.groups = data.groups;   
   });
 
-  $scope.play = function() {
-    $http.post(API.url + "/api/group/" + $stateParams.id, {
-      challenge: $scope.data.challenge,
-      rounds: $scope.data.rounds,
-      opponent: $scope.data.opponent,
-      cid: $scope.data.challenge
-    })
+  $scope.join = function(groupId) {
+    $http.get(API.url + "/api/join/" + groupId, {  })
     .success(function(data){
-      console.log(data);
+      for (var i = 0; i < $scope.groups.length; i++) {
+        if ($scope.groups[i].id == groupId)
+           $scope.groups[i].situation = ($scope.groups[i].situation == 'Join' ? 'Leave' : 'Join');
+         }   
     });
-
-
   };
 
+  $scope.enter = function(groupId) {
+     $state.go('group.description', {id: groupId});
+  };
 });

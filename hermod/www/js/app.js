@@ -11,7 +11,7 @@ angular.module('hermod',
 
 .constant('API', {
   // Url used to reach the server (Bifrost)
-  url: 'http://192.168.0.132:5000'
+  url: 'http://192.168.0.30:5000'
 })
 
 .run(function($ionicPlatform, $http, $localStorage) {
