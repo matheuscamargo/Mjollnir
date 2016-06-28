@@ -967,7 +967,7 @@ var MyComponent = function (_React$Component) {
           _react2.default.createElement(
             'div',
             null,
-            _react2.default.createElement('input', { type: 'button', className: 'btn btn-default', value: 'Start Tournament', disabled: selectedUsers.length < MIN_USERS, onClick: function onClick(e) {
+            _react2.default.createElement('input', { type: 'button', className: 'btn btn-default', value: 'Start Tournament', hidden: selectedUsers.length < MIN_USERS, onClick: function onClick(e) {
                 return _this2._handleClickTournament(e, selectedUsers);
               } }),
             _react2.default.createElement(
