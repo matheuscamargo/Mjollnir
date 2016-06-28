@@ -530,11 +530,8 @@ var MyComponent = function (_React$Component) {
           'div',
           null,
           this.props.id,
-          _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', value: 'Play', onClick: function onClick(e) {
+          _react2.default.createElement('input', { className: 'btn btn-success', type: 'button', value: 'Play', onClick: function onClick(e) {
               _TournamentActions2.default.playAll();
-            } }),
-          _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', value: 'End', onClick: function onClick(e) {
-              _TournamentActions2.default.end();
             } }),
           _react2.default.createElement(
             'table',
@@ -555,7 +552,10 @@ var MyComponent = function (_React$Component) {
                 );
               })
             )
-          )
+          ),
+          _react2.default.createElement('input', { className: 'btn btn-danger', type: 'button', value: 'End', onClick: function onClick(e) {
+              _TournamentActions2.default.end();
+            } })
         )
       );
     }
@@ -849,12 +849,12 @@ var MyComponent = function (_React$Component) {
               _react2.default.createElement(
                 'th',
                 null,
-                'USERS'
+                'Eligible Group Members'
               ),
               _react2.default.createElement(
                 'th',
                 null,
-                'SELECTED'
+                'Tournament Participants'
               )
             )
           ),
@@ -881,13 +881,7 @@ var MyComponent = function (_React$Component) {
                         null,
                         'Name'
                       ),
-                      _react2.default.createElement(
-                        'th',
-                        null,
-                        _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', value: 'Add all', disabled: _underscore2.default.isEqual(selectableUsers, selectedUsers), onClick: function onClick(u) {
-                            _UserActions2.default.selectAll();
-                          } })
-                      )
+                      _react2.default.createElement('th', null)
                     )
                   ),
                   _react2.default.createElement(
@@ -947,7 +941,7 @@ var MyComponent = function (_React$Component) {
                 null,
                 _react2.default.createElement(
                   'div',
-                  { className: 'alert alert-danger', hidden: selectableUsers.lenght > 0 },
+                  { className: 'alert alert-danger', hidden: selectableUsers.length > 0 },
                   'There are no users with submissions for the selected game.'
                 )
               ),

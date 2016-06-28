@@ -53,10 +53,10 @@ export default class MyComponent extends React.Component {
           <thead>
             <tr>
               <th>
-                USERS
+                Eligible Group Members
               </th>
               <th>
-                SELECTED
+                Tournament Participants
               </th>
             </tr>
           </thead>
@@ -70,7 +70,6 @@ export default class MyComponent extends React.Component {
                           Name
                       </th>
                       <th>
-                        <input className="btn btn-default" type="button" value="Add all" disabled={_.isEqual(selectableUsers, selectedUsers)} onClick={(u) => {UserActions.selectAll();}}/>
                       </th>
                     </tr>
                   </thead>
@@ -111,7 +110,7 @@ export default class MyComponent extends React.Component {
           <tfoot>
           <tr>
               <th>
-                <div className="alert alert-danger" hidden={selectableUsers.lenght > 0}>
+                <div className="alert alert-danger" hidden={selectableUsers.length > 0}>
                   There are no users with submissions for the selected game.
                 </div>
               </th>
