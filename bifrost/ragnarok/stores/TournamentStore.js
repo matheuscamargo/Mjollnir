@@ -55,7 +55,7 @@ class TournamentStore{
     console.log(this.tournamentInfo);
     this.tournament = toDesiredSchema(this.tournamentInfo, this.tournamentRaw);
     //Play all games
-    TournamentActions.playAll();
+    handlePlayAll();
   }
 
   handleFetch() {
