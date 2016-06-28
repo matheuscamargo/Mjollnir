@@ -47,7 +47,12 @@ class TournamentApp extends React.Component {
     }
     else {
       return (
-        <div>Loading...</div>
+        <div>
+          <h1> New Tournament </h1> 
+          <div> 
+            Loading... 
+          </div>
+        </div>
       );
     }
   }

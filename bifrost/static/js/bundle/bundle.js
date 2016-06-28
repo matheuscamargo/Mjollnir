@@ -530,9 +530,15 @@ var MyComponent = function (_React$Component) {
           'div',
           null,
           this.props.id,
-          _react2.default.createElement('input', { className: 'btn btn-primary pull-right', type: 'button', value: 'Play Tournament', onClick: function onClick(e) {
-              _TournamentActions2.default.playAll();
-            } }),
+          _react2.default.createElement(
+            'div',
+            null,
+            ' ',
+            _react2.default.createElement('input', { className: 'btn btn-primary pull-right', type: 'button', value: 'Play Tournament', onClick: function onClick(e) {
+                _TournamentActions2.default.playAll();
+              } }),
+            ' '
+          ),
           _react2.default.createElement(
             'table',
             { className: 'table' },
@@ -650,7 +656,16 @@ var TournamentApp = function (_React$Component) {
         return _react2.default.createElement(
           'div',
           null,
-          'Loading...'
+          _react2.default.createElement(
+            'h1',
+            null,
+            ' New Tournament '
+          ),
+          _react2.default.createElement(
+            'div',
+            null,
+            'Loading...'
+          )
         );
       }
     }
