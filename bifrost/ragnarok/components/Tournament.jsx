@@ -1,10 +1,11 @@
 import React from 'react';
+import Results from './Results.jsx';
 import _ from 'underscore';
 
 import Section from './Section.jsx';
 import TournamentActions from '../actions/TournamentActions';
 
-export default class MyComponent extends React.Component {
+export default class Tournament extends React.Component {
 
   render() {
     if(!this.props.id) {
@@ -13,6 +14,12 @@ export default class MyComponent extends React.Component {
           Waiting...
         </div>
       );
+    }
+
+    if(_.isEmpty(this.props.results)) {
+      <Results  players={this.props.players} 
+                results={this.props.players}> 
+      </Results>
     }
 
     return (

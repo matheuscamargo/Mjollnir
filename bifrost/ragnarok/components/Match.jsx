@@ -1,7 +1,7 @@
 import React from 'react';
 import TournamentActions from '../actions/TournamentActions';
 
-export default class MyComponent extends React.Component {
+export default class Match extends React.Component {
   constructor(props) {
         super(props);
         this._handleClick = this._handleClick.bind(this);

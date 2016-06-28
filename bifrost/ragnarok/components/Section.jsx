@@ -2,7 +2,7 @@ import React from 'react';
 import Round from './Round.jsx';
 import _ from 'underscore';
 
-export default class MyComponent extends React.Component {
+export default class Section extends React.Component {
   render() {
     return (
       <div>

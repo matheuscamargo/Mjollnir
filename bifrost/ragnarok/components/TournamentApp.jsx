@@ -35,7 +35,9 @@ class TournamentApp extends React.Component {
     if(!_.isEmpty(this.props.tournament)) {
       return (
         <Tournament id={this.props.tournament.name}
-                    sections={this.props.tournament.sections}>
+                    sections={this.props.tournament.sections}
+                    players={this.props.tournamentInfo.players}
+                    results={this.props.results}>
         </Tournament>
       );
     }

@@ -2,7 +2,7 @@ import React from 'react';
 import Match from './Match.jsx';
 import _ from 'underscore';
 
-export default class MyComponent extends React.Component {
+export default class Round extends React.Component {
   render() {
     return (
       <div>

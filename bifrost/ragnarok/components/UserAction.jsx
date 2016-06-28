@@ -1,7 +1,7 @@
 import React from 'react';
 import UserActions from '../actions/UserActions';
 
-export default class MyComponent extends React.Component {
+export default class UserAction extends React.Component {
   constructor(props) {
       super(props);
       this._handleClick = this._handleClick.bind(this);

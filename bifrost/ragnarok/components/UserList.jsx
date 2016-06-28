@@ -20,7 +20,7 @@ var tournamentOptions = {
   },
 };
 
-export default class MyComponent extends React.Component {
+export default class UserList extends React.Component {
   constructor(props) {
       super(props);
       this._handleClickTournament = this._handleClickTournament.bind(this);
