@@ -347,13 +347,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Results = function (_React$Component) {
   _inherits(Results, _React$Component);
 
-  function Results(props) {
+  function Results() {
     _classCallCheck(this, Results);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Results).call(this, props));
-
-    _this._handleClick = _this._handleClick.bind(_this);
-    return _this;
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Results).apply(this, arguments));
   }
 
   _createClass(Results, [{
