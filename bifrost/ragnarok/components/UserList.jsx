@@ -78,7 +78,7 @@ export default class MyComponent extends React.Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {_.map(this.props.users, function(user) {
+                    {_.map(selectableUsers, function(user) {
                       return (
                         <UserAction key={_.uniqueId('u_')} user={user} text="Add" action={UserActions.selectUser} btnCondition={user.selected}>
                         </UserAction>

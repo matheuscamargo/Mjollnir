@@ -904,7 +904,7 @@ var MyComponent = function (_React$Component) {
                   _react2.default.createElement(
                     'tbody',
                     null,
-                    _underscore2.default.map(this.props.users, function (user) {
+                    _underscore2.default.map(selectableUsers, function (user) {
                       return _react2.default.createElement(_UserAction2.default, { key: _underscore2.default.uniqueId('u_'), user: user, text: 'Add', action: _UserActions2.default.selectUser, btnCondition: user.selected });
                     })
                   )
