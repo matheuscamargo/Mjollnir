@@ -110,6 +110,10 @@ class TournamentStore{
 
     function RunAllMatches(tournament, tournamentInfo){
       if(tournament.isDone()){
+        //Populating results
+        console.log("After run all matches.");
+        this.results = this.tournamentRaw.results();
+        console.log(this.results);
         return;
       }
       var nextStep = Promise.all(GetMatchesPromises(tournament, tournamentInfo));
@@ -119,10 +123,7 @@ class TournamentStore{
     }
 
     RunAllMatches(this.tournamentRaw, this.tournamentInfo);
-    //Populating results
-    console.log("After run all matches.");
-    this.results = this.tournamentRaw.results();
-    console.log(this.results);
+    
   }
 
   handlePlayMatch(matchInfo){

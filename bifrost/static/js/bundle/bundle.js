@@ -25822,6 +25822,10 @@ var TournamentStore = function () {
 
       function RunAllMatches(tournament, tournamentInfo) {
         if (tournament.isDone()) {
+          //Populating results
+          console.log("After run all matches.");
+          this.results = this.tournamentRaw.results();
+          console.log(this.results);
           return;
         }
         var nextStep = Promise.all(GetMatchesPromises(tournament, tournamentInfo));
@@ -25831,10 +25835,6 @@ var TournamentStore = function () {
       }
 
       RunAllMatches(this.tournamentRaw, this.tournamentInfo);
-      //Populating results
-      console.log("After run all matches.");
-      this.results = this.tournamentRaw.results();
-      console.log(this.results);
     }
   }, {
     key: 'handlePlayMatch',
