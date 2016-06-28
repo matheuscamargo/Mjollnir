@@ -861,7 +861,7 @@ def run(params):
         # Create random solution if it does not exist
         if not path.isdir(opponent_solution_folder):
             with _silence():
-                ret = create([game, "cs", "random"], change_directory=False) # It could be any programming language
+                ret = create([game, "py", "random"], change_directory=False) # It could be any programming language
                 if ret != 0:
                     logger.err("Could not create random solution (for virtual opponent)")
                     return 1
