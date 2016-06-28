@@ -848,12 +848,12 @@ var MyComponent = function (_React$Component) {
               null,
               _react2.default.createElement(
                 'th',
-                null,
+                { className: 'call-md-2' },
                 'Eligible Group Members'
               ),
               _react2.default.createElement(
                 'th',
-                null,
+                { className: 'call-md-2' },
                 'Tournament Participants'
               )
             )
@@ -931,15 +931,15 @@ var MyComponent = function (_React$Component) {
               'tr',
               null,
               _react2.default.createElement(
-                'th',
-                null,
+                'td',
+                { className: 'call-md-2' },
                 _react2.default.createElement(
                   'div',
                   { className: 'alert alert-danger', hidden: selectableUsers.length > 0 },
                   'There are no users with submissions for the selected game.'
                 )
               ),
-              _react2.default.createElement('th', null)
+              _react2.default.createElement('td', { className: 'call-md-2' })
             )
           )
         ),

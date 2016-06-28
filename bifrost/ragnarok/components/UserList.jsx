@@ -52,10 +52,10 @@ export default class MyComponent extends React.Component {
         <table className="table">
           <thead>
             <tr>
-              <th>
+              <th className="call-md-2">
                 Eligible Group Members
               </th>
-              <th>
+              <th className="call-md-2">
                 Tournament Participants
               </th>
             </tr>
@@ -108,13 +108,13 @@ export default class MyComponent extends React.Component {
           </tbody>
           <tfoot>
           <tr>
-              <th>
+              <td className="call-md-2">
                 <div className="alert alert-danger" hidden={selectableUsers.length > 0}>
                   There are no users with submissions for the selected game.
                 </div>
-              </th>
-              <th>
-              </th>
+              </td>
+              <td className="call-md-2">
+              </td>
             </tr>
           </tfoot>
         </table>
