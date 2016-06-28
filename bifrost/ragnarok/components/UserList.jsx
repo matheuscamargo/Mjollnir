@@ -108,10 +108,10 @@ export default class MyComponent extends React.Component {
               </td>
             </tr>
           </tbody>
-          <tfoot hidden={selectableUsers.lenght > 0}>
+          <tfoot>
           <tr>
               <th>
-                <div color="red">
+                <div color="red" hidden={selectableUsers.lenght > 0}>
                   There are no users with submissions for the selected game.
                 </div>
               </th>
@@ -139,8 +139,12 @@ export default class MyComponent extends React.Component {
           </div>
           <br></br>
           <div>
-            <input type="button" className="btn btn-default" value="Start Tournament" hidden={selectedUsers.length < MIN_USERS} onClick={(e) => this._handleClickTournament(e, selectedUsers)}/>
-            <span color="red" hidden={!(selectedUsers.length < MIN_USERS)}> The minimum number of participants is {MIN_USERS}. </span>
+            <span hidden={selectedUsers.length < MIN_USERS}> 
+              <input type="button" className="btn btn-default" value="Start Tournament"  onClick={(e) => this._handleClickTournament(e, selectedUsers)}/>
+            </span>
+            <span color="red" hidden={!(selectedUsers.length < MIN_USERS)}> 
+              The minimum number of participants is {MIN_USERS}. 
+            </span>
           </div>
         </div>
       </div>);

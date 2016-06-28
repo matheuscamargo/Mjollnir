@@ -938,7 +938,7 @@ var MyComponent = function (_React$Component) {
           ),
           _react2.default.createElement(
             'tfoot',
-            { hidden: selectableUsers.lenght > 0 },
+            null,
             _react2.default.createElement(
               'tr',
               null,
@@ -947,7 +947,7 @@ var MyComponent = function (_React$Component) {
                 null,
                 _react2.default.createElement(
                   'div',
-                  { color: 'red' },
+                  { color: 'red', hidden: selectableUsers.lenght > 0 },
                   'There are no users with submissions for the selected game.'
                 )
               ),
@@ -986,15 +986,19 @@ var MyComponent = function (_React$Component) {
           _react2.default.createElement(
             'div',
             null,
-            _react2.default.createElement('input', { type: 'button', className: 'btn btn-default', value: 'Start Tournament', hidden: selectedUsers.length < MIN_USERS, onClick: function onClick(e) {
-                return _this2._handleClickTournament(e, selectedUsers);
-              } }),
+            _react2.default.createElement(
+              'span',
+              { hidden: selectedUsers.length < MIN_USERS },
+              _react2.default.createElement('input', { type: 'button', className: 'btn btn-default', value: 'Start Tournament', onClick: function onClick(e) {
+                  return _this2._handleClickTournament(e, selectedUsers);
+                } })
+            ),
             _react2.default.createElement(
               'span',
               { color: 'red', hidden: !(selectedUsers.length < MIN_USERS) },
-              ' The minimum number of participants is ',
+              'The minimum number of participants is ',
               MIN_USERS,
-              '. '
+              '.'
             )
           )
         )
