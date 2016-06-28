@@ -53,7 +53,9 @@ export default class Tournament extends React.Component {
               })}
             </tbody>
           </table>
-          <input className="btn btn-default" type="button" value="Back" onClick={(e) => {TournamentActions.end();}}/>
+          <div>
+            <input className="btn btn-default" type="button" value="Back" onClick={(e) => {TournamentActions.end();}}/>
+          </div>
           <div hidden={_.isEmpty(this.props.results)}>        
             <input className="btn btn-default pull-right" type="button" value="Go to Results!" onClick={this._handleClickResults}/>
           </div>

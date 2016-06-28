@@ -677,9 +677,13 @@ var Tournament = function (_React$Component) {
               })
             )
           ),
-          _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', value: 'Back', onClick: function onClick(e) {
-              _TournamentActions2.default.end();
-            } }),
+          _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', value: 'Back', onClick: function onClick(e) {
+                _TournamentActions2.default.end();
+              } })
+          ),
           _react2.default.createElement(
             'div',
             { hidden: _underscore2.default.isEmpty(this.props.results) },
