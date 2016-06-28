@@ -37,7 +37,7 @@ export default class Tournament extends React.Component {
     return (
       <div>
         <div>
-          <h2> {this.props.id + (_.isEmpty(this.props.results) ? "Ongoing!" : "Over!")} </h2>  
+          <h2> {this.props.id + (_.isEmpty(this.props.results) ? "   Ongoing!" : "   Over!")} </h2>  
           <table className="table">
             <tbody>
               {_.map(this.props.sections, function(section) {
@@ -53,7 +53,7 @@ export default class Tournament extends React.Component {
               })}
             </tbody>
           </table>
-          <div>
+          <div className="col-md-4 col-md-offset-4">
             <div>
               <input className="btn btn-default" type="button" value="Back" onClick={(e) => {TournamentActions.end();}}/>
             </div>

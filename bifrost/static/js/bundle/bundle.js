@@ -654,7 +654,7 @@ var Tournament = function (_React$Component) {
             'h2',
             null,
             ' ',
-            this.props.id + (_underscore2.default.isEmpty(this.props.results) ? "Ongoing!" : "Over!"),
+            this.props.id + (_underscore2.default.isEmpty(this.props.results) ? "   Ongoing!" : "   Over!"),
             ' '
           ),
           _react2.default.createElement(
@@ -679,7 +679,7 @@ var Tournament = function (_React$Component) {
           ),
           _react2.default.createElement(
             'div',
-            null,
+            { className: 'col-md-4 col-md-offset-4' },
             _react2.default.createElement(
               'div',
               null,
