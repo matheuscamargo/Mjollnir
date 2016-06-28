@@ -39,10 +39,15 @@ class TournamentApp extends React.Component {
         </Tournament>
       );
     }
-    else {
+    else if(!_.isEmpty(this.props.users)) {
       return (
         <UserList users={this.props.users} selected={this.props.selectedUsers} hidden={this.props.tournament.name}>
         </UserList>
+      );
+    }
+    else {
+      return (
+        <div>Loading...</div>
       );
     }
   }

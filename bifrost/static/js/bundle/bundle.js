@@ -644,8 +644,14 @@ var TournamentApp = function (_React$Component) {
       if (!_underscore2.default.isEmpty(this.props.tournament)) {
         return _react2.default.createElement(_Tournament2.default, { id: this.props.tournament.name,
           sections: this.props.tournament.sections });
-      } else {
+      } else if (!_underscore2.default.isEmpty(this.props.users)) {
         return _react2.default.createElement(_UserList2.default, { users: this.props.users, selected: this.props.selectedUsers, hidden: this.props.tournament.name });
+      } else {
+        return _react2.default.createElement(
+          'div',
+          null,
+          'Loading...'
+        );
       }
     }
   }], [{
@@ -837,6 +843,11 @@ var MyComponent = function (_React$Component) {
       return _react2.default.createElement(
         'div',
         null,
+        _react2.default.createElement(
+          'h1',
+          null,
+          ' New Tournament '
+        ),
         _react2.default.createElement(
           'table',
           { className: 'table' },

@@ -49,6 +49,7 @@ export default class MyComponent extends React.Component {
         //TODO: Break into better looking components?
     return (
       <div>
+      <h1> New Tournament </h1>
         <table className="table">
           <thead>
             <tr>
