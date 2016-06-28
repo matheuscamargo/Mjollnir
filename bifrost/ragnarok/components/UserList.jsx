@@ -73,7 +73,7 @@ export default class MyComponent extends React.Component {
                           Ranking
                       </th>
                       <th>
-                        <input className="btn btn-default" type="button" value="Add all" disabled={_.isEqual(this.props.users, selectedUsers)} onClick={(u) => {UserActions.selectAll();}}/>
+                        <input className="btn btn-default" type="button" value="Add all" disabled={_.isEqual(selectableUsers, selectedUsers)} onClick={(u) => {UserActions.selectAll();}}/>
                       </th>
                     </tr>
                   </thead>

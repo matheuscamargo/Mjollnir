@@ -895,7 +895,7 @@ var MyComponent = function (_React$Component) {
                       _react2.default.createElement(
                         'th',
                         null,
-                        _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', value: 'Add all', disabled: _underscore2.default.isEqual(this.props.users, selectedUsers), onClick: function onClick(u) {
+                        _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', value: 'Add all', disabled: _underscore2.default.isEqual(selectableUsers, selectedUsers), onClick: function onClick(u) {
                             _UserActions2.default.selectAll();
                           } })
                       )
