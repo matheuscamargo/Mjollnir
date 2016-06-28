@@ -29,6 +29,9 @@ angular.module('hermod',
       StatusBar.styleDefault();
     }
   });
+  $ionicPlatform.registerBackButtonAction(function (event) {
+      $ionicHistory.goBack();
+  }, 100);
 
 })
 

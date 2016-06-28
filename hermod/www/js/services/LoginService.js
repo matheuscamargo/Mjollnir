@@ -16,7 +16,8 @@ servicesModule
                 password: password
               }).
             then(function(res) {
-              //console.log(res);
+              console.log("oioioi");
+              console.log(res);
                 if (res.data.access_token) {
                   // Set token and headers
                   // User.setToken(res.data.access_token);
