@@ -269,6 +269,20 @@ std::vector<Command> GameLogic::getAllValidMovesOfPlayer(PlayerColor color){
       }
     }
   }
+
+  // Adding rock moves
+  Command command;
+
+  command.smallRock = true;
+  command.bigRock = false;
+  if( validRock(command, playerId) )
+    v.push_back(command);
+
+  command.smallRock = false;
+  command.bigRock = true;
+  if( validRock(command, playerId) )
+    v.push_back(command);
+
   return v;
 }
 

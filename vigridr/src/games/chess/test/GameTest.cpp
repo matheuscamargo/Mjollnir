@@ -168,33 +168,51 @@ class GameLogicTest : public ::testing::Test {
   }
 
   void printBoard(const std::vector<std::vector<Piece> >& board) {
-  std::ostringstream oss;
+    std::ostringstream oss;
 
-  oss << "    ╔═══════════════╗" << std::endl;
+    oss << "    ╔═══════════════╗" << std::endl;
 
-  for (int i=0; i<8; i++) {
+    for (int i=0; i<8; i++) {
 
-    if( i == 3 )
-      oss << 'x';
-    else
-      oss << ' ';
-    oss << ' ' << i << " ║";
-
-    for (int j=0; j<8; j++) {
-      oss << toChar(board[i][j]);
-      if( j != 8-1 ){
+      if( i == 3 )
+        oss << 'x';
+      else
         oss << ' ';
+      oss << ' ' << i << " ║";
+
+      for (int j=0; j<8; j++) {
+        oss << toChar(board[i][j]);
+        if( j != 8-1 ){
+          oss << ' ';
+        }
       }
+      oss << "║" << std::endl;
     }
-    oss << "║" << std::endl;
+
+    oss << "    ╚═══════════════╝" << std::endl;
+    oss << "     0 1 2 3 4 5 6 7 " << std::endl;
+    oss << "            y        " << std::endl;
+
+    std::cout << oss.str();
   }
 
-  oss << "    ╚═══════════════╝" << std::endl;
-  oss << "     0 1 2 3 4 5 6 7 " << std::endl;
-  oss << "            y        " << std::endl;
+  bool containSmallRock(std::vector<Command>& moveList){
+    for( unsigned int i = 0; i < moveList.size(); i++ ){
+      if(moveList[i].smallRock == true){
+        return true;
+      }
+    }
+    return false;
+  }
 
-  std::cout << oss.str();
-}
+  bool containBigRock(std::vector<Command>& moveList){
+    for( unsigned int i = 0; i < moveList.size(); i++ ){
+      if(moveList[i].bigRock == true){
+        return true;
+      }
+    }
+    return false;
+  }
 
   GameLogic game1;
 };
@@ -237,6 +255,17 @@ TEST_F(GameLogicTest, TestingWhiteSmallRock) {
   expBoard[2][3].moved = true;
 
   ASSERT_EQ(expBoard, game1.getWorldModel().board);
+}
+
+TEST_F(GameLogicTest, TestingWhiteSmallRockInMoveList) {
+  EXPECT_TRUE(game1.update(createCommand(6, 6, 5, 6), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 0, 2, 0), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 6, 5, 5), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 1, 2, 1), 9091));
+  EXPECT_FALSE(containSmallRock(game1.getMoveList(9090)));
+  EXPECT_TRUE(game1.update(createCommand(7, 5, 5, 7), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 2, 2, 2), 9091));
+  EXPECT_TRUE(containSmallRock(game1.getMoveList(9090)));
 }
 
 TEST_F(GameLogicTest, TestingWhiteSmallRockFailWhenPieceBetweenKingAndTower) {
@@ -343,6 +372,21 @@ TEST_F(GameLogicTest, TestingWhiteBigRock) {
   ASSERT_EQ(expBoard, game1.getWorldModel().board);
 }
 
+TEST_F(GameLogicTest, TestingWhiteBigRockInMoveList) {
+  EXPECT_TRUE(game1.update(createCommand(6, 3, 4, 3), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 0, 2, 0), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 1, 5, 0), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 1, 2, 1), 9091));
+  EXPECT_TRUE(game1.update(createCommand(7, 2, 5, 4), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 2, 2, 2), 9091));
+  EXPECT_FALSE(containBigRock(game1.getMoveList(9090)));
+  EXPECT_TRUE(game1.update(createCommand(7, 3, 5, 3), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 3, 2, 3), 9091));
+  EXPECT_TRUE(containBigRock(game1.getMoveList(9090)));
+  EXPECT_TRUE(game1.update(createBigRockCommand(), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 4, 2, 4), 9091));
+}
+
 TEST_F(GameLogicTest, TestingBlackSmallRock) {
   std::vector<std::vector<Piece> > expBoard = constructInitialBoard();
 
@@ -379,6 +423,20 @@ TEST_F(GameLogicTest, TestingBlackSmallRock) {
   expBoard[5][4].moved = true;
 
   ASSERT_EQ(expBoard, game1.getWorldModel().board);
+}
+
+TEST_F(GameLogicTest, TestingBlackSmallRockInMoveList) {
+  EXPECT_TRUE(game1.update(createCommand(6, 0, 5, 0), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 6, 2, 6), 9091));
+  EXPECT_TRUE(game1.update(createCommand(6, 1, 5, 1), 9090));
+  EXPECT_TRUE(game1.update(createCommand(0, 5, 2, 7), 9091));
+  EXPECT_TRUE(game1.update(createCommand(6, 2, 5, 2), 9090));
+  EXPECT_FALSE(containSmallRock(game1.getMoveList(9091)));
+  EXPECT_TRUE(game1.update(createCommand(0, 6, 2, 5), 9091));
+  EXPECT_TRUE(game1.update(createCommand(6, 3, 5, 3), 9090));
+  EXPECT_TRUE(containSmallRock(game1.getMoveList(9091)));
+  EXPECT_TRUE(game1.update(createSmallRockCommand(), 9091));
+  EXPECT_TRUE(game1.update(createCommand(6, 4, 5, 4), 9090));
 }
 
 TEST_F(GameLogicTest, TestingBlackBigRock) {
@@ -427,6 +485,27 @@ TEST_F(GameLogicTest, TestingBlackBigRock) {
   expBoard[5][5].moved = true;
 
   ASSERT_EQ(expBoard, game1.getWorldModel().board);
+}
+
+TEST_F(GameLogicTest, TestingBlackBigRockInMoveList) {
+  EXPECT_TRUE(game1.update(createCommand(6, 0, 5, 0), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 3, 3, 3), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 1, 5, 1), 9090));
+  EXPECT_TRUE(game1.update(createCommand(0, 2, 2, 4), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 2, 5, 2), 9090));
+  EXPECT_TRUE(game1.update(createCommand(0, 3, 2, 3), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 3, 5, 3), 9090));
+  EXPECT_FALSE(containBigRock(game1.getMoveList(9091)));
+  EXPECT_TRUE(game1.update(createCommand(0, 1, 2, 2), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 4, 5, 4), 9090));
+  EXPECT_TRUE(containBigRock(game1.getMoveList(9091)));
+  EXPECT_TRUE(game1.update(createBigRockCommand(), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 5, 5, 5), 9090));
 }
 
 // The game is between Adolf Anderssen vs Lionel Adalbert Bagration Felix Kieseritzky (1851)
