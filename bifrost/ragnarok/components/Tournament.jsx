@@ -37,7 +37,7 @@ export default class Tournament extends React.Component {
     return (
       <div>
         <div>
-          <h2> {this.props.id} </h2>  
+          <h2> {this.props.id + (_.isEmpty(this.props.results) ? "Ongoing!" : "Over!")} </h2>  
           <table className="table">
             <tbody>
               {_.map(this.props.sections, function(section) {

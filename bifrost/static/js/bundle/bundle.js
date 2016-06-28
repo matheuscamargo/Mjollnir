@@ -654,7 +654,7 @@ var Tournament = function (_React$Component) {
             'h2',
             null,
             ' ',
-            this.props.id,
+            this.props.id + (_underscore2.default.isEmpty(this.props.results) ? "Ongoing!" : "Over!"),
             ' '
           ),
           _react2.default.createElement(
