@@ -269,6 +269,20 @@ std::vector<Command> GameLogic::getAllValidMovesOfPlayer(PlayerColor color){
       }
     }
   }
+
+  // Adding rock moves
+  Command command;
+
+  command.smallRock = true;
+  command.bigRock = false;
+  if( validRock(command, playerId) )
+    v.push_back(command);
+
+  command.smallRock = false;
+  command.bigRock = true;
+  if( validRock(command, playerId) )
+    v.push_back(command);
+
   return v;
 }
 
@@ -277,6 +291,14 @@ std::vector<Command> GameLogic::getValidMoves(Coordinate coord){
   Command command;
   command.coordFrom = coord;
 
+  int32_t playerId;
+  if(worldModel_.board[coord.x][coord.y].owner == PlayerColor::WHITE){
+    playerId = whitePlayerId_;
+  }
+  else{
+    playerId = (whitePlayerId_ == player1_ ? player2_ : player1_ );
+  }
+
   switch(worldModel_.board[coord.x][coord.y].type) {
     // ################################ PAWN ################################
     case Type::PAWN:
@@ -284,8 +306,25 @@ std::vector<Command> GameLogic::getValidMoves(Coordinate coord){
         // Go forward 1 square
         command.coordTo.x = command.coordFrom.x-1;
         command.coordTo.y = command.coordFrom.y;
-        if( isInsideTheBoard(command.coordTo) && isEmpty(command.coordTo) )
-          v.push_back(command);
+
+        if( isInsideTheBoard(command.coordTo) && isEmpty(command.coordTo) ){
+          if( command.coordTo.x == 0 ){ // PAWN promotion
+            command.promoteTo = PromoType::PROMOTE_TO_TOWER;
+            v.push_back(command);
+
+            command.promoteTo = PromoType::PROMOTE_TO_BISHOP;
+            v.push_back(command);
+
+            command.promoteTo = PromoType::PROMOTE_TO_HORSE;
+            v.push_back(command);
+
+            command.promoteTo = PromoType::PROMOTE_TO_QUEEN;
+            v.push_back(command);
+          }
+          else{
+            v.push_back(command);
+          }
+        }
 
         // Go forward 2 squares
         command.coordTo.x = command.coordFrom.x-2;
@@ -308,13 +347,38 @@ std::vector<Command> GameLogic::getValidMoves(Coordinate coord){
           v.push_back(command);
 
         // TODO: En passant
+        command.coordTo.x = command.coordFrom.x-1;
+        command.coordTo.y = command.coordFrom.y+1;
+        if( validEnPassant(command, playerId) )
+          v.push_back(command);
+
+        command.coordTo.x = command.coordFrom.x-1;
+        command.coordTo.y = command.coordFrom.y-1;
+        if( validEnPassant(command, playerId) )
+          v.push_back(command);
       }
       else {
         // Go forward 1 square
         command.coordTo.x = command.coordFrom.x+1;
         command.coordTo.y = command.coordFrom.y;
-        if( isInsideTheBoard(command.coordTo) && isEmpty(command.coordTo) )
-          v.push_back(command);
+        if( isInsideTheBoard(command.coordTo) && isEmpty(command.coordTo) ){
+          if( command.coordTo.x == 8-1 ){ // PAWN promotion
+            command.promoteTo = PromoType::PROMOTE_TO_TOWER;
+            v.push_back(command);
+
+            command.promoteTo = PromoType::PROMOTE_TO_BISHOP;
+            v.push_back(command);
+
+            command.promoteTo = PromoType::PROMOTE_TO_HORSE;
+            v.push_back(command);
+
+            command.promoteTo = PromoType::PROMOTE_TO_QUEEN;
+            v.push_back(command);
+          }
+          else{
+            v.push_back(command);
+          }
+        }
 
         // Go forward 2 squares
         command.coordTo.x = command.coordFrom.x+2;
@@ -337,6 +401,15 @@ std::vector<Command> GameLogic::getValidMoves(Coordinate coord){
           v.push_back(command);
 
         // TODO: En passant
+        command.coordTo.x = command.coordFrom.x+1;
+        command.coordTo.y = command.coordFrom.y+1;
+        if( validEnPassant(command, playerId) )
+          v.push_back(command);
+
+        command.coordTo.x = command.coordFrom.x+1;
+        command.coordTo.y = command.coordFrom.y-1;
+        if( validEnPassant(command, playerId) )
+          v.push_back(command);
       }
       break;
     // ################################ TOWER ################################
