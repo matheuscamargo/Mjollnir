@@ -362,7 +362,7 @@ var Results = function (_React$Component) {
       var resultRender = _underscore2.default.map(orderedResults, function (r) {
         return _react2.default.createElement(
           'tr',
-          { key: r.pos },
+          { key: _underscore2.default.uniqueId("res_") },
           _react2.default.createElement(
             'td',
             null,
