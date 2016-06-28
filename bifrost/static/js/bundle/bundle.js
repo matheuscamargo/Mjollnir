@@ -774,6 +774,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var MIN_USERS = 4;
 // TODO Get a dictonary from server for each of the possible games.
 var tournamentOptions = {
   types: {
@@ -883,11 +884,6 @@ var MyComponent = function (_React$Component) {
                       _react2.default.createElement(
                         'th',
                         null,
-                        'Ranking'
-                      ),
-                      _react2.default.createElement(
-                        'th',
-                        null,
                         _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', value: 'Add all', disabled: _underscore2.default.isEqual(selectableUsers, selectedUsers), onClick: function onClick(u) {
                             _UserActions2.default.selectAll();
                           } })
@@ -919,11 +915,6 @@ var MyComponent = function (_React$Component) {
                         'th',
                         null,
                         'Name'
-                      ),
-                      _react2.default.createElement(
-                        'th',
-                        null,
-                        'Ranking'
                       ),
                       _react2.default.createElement(
                         'th',
@@ -976,9 +967,16 @@ var MyComponent = function (_React$Component) {
           _react2.default.createElement(
             'div',
             null,
-            _react2.default.createElement('input', { type: 'button', className: 'btn btn-default', value: 'Start Tournament', hidden: this.props.scores, onClick: function onClick(e) {
+            _react2.default.createElement('input', { type: 'button', className: 'btn btn-default', value: 'Start Tournament', disabled: selectedUsers.length < MIN_USERS, onClick: function onClick(e) {
                 return _this2._handleClickTournament(e, selectedUsers);
-              } })
+              } }),
+            _react2.default.createElement(
+              'p',
+              { hidden: !(selectedUsers.length < MIN_USERS) },
+              ' Número mínimo de usuários é ',
+              MIN_USERS,
+              '. '
+            )
           )
         )
       );

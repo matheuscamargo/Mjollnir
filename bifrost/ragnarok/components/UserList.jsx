@@ -5,7 +5,7 @@ import TournamentActions from '../actions/TournamentActions';
 import UserActions from '../actions/UserActions';
 import UserAction from './UserAction.jsx';
 
-
+var MIN_USERS = 4;
 // TODO Get a dictonary from server for each of the possible games.
 var tournamentOptions = {
   types: {
@@ -70,9 +70,6 @@ export default class MyComponent extends React.Component {
                           Name
                       </th>
                       <th>
-                          Ranking
-                      </th>
-                      <th>
                         <input className="btn btn-default" type="button" value="Add all" disabled={_.isEqual(selectableUsers, selectedUsers)} onClick={(u) => {UserActions.selectAll();}}/>
                       </th>
                     </tr>
@@ -93,9 +90,6 @@ export default class MyComponent extends React.Component {
                     <tr>
                       <th>
                           Name
-                      </th>
-                      <th>
-                          Ranking
                       </th>
                       <th>
                         <input className="btn btn-default" type="button" value="Remove all" disabled={_.isEmpty(selectedUsers)} onClick={(u) => {UserActions.deselectAll();}}/>
@@ -133,7 +127,8 @@ export default class MyComponent extends React.Component {
             </select>
           </div>
           <div>
-            <input type="button" className="btn btn-default" value="Start Tournament" hidden={this.props.scores} onClick={(e) => this._handleClickTournament(e, selectedUsers)}/>
+            <input type="button" className="btn btn-default" value="Start Tournament" disabled={selectedUsers.length < MIN_USERS} onClick={(e) => this._handleClickTournament(e, selectedUsers)}/>
+            <p hidden={!(selectedUsers.length < MIN_USERS)}> Número mínimo de usuários é {MIN_USERS}. </p>
           </div>
         </div>
       </div>);
