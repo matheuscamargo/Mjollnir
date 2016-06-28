@@ -10,7 +10,7 @@ DEBUG = (DEBUG == '1' or DEBUG == 'true')
 DOWNLOADS = '/sandboxes/downloads/'
 
 mongo_client = MongoClient(environ['MONGOLAB_URI'])
-mongodb = mongo_client['mjollnir-db']
+mongodb = mongo_client['mjollnir']
 
 extensions = {
     'cpp11': 'cpp',
@@ -51,8 +51,8 @@ if DEBUG:
 else:
     import boto
     s3 = boto.connect_s3()
-    solutions_bucket = s3.get_bucket('mjollnir-solutions')
-    matches_bucket = s3.get_bucket('mjollnir-matches')
+    solutions_bucket = s3.get_bucket('mjollnir-solutions2016')
+    matches_bucket = s3.get_bucket('mjollnir-matches2016')
 
     def download(siid):
         key = solutions_bucket.get_key(siid)
