@@ -74,10 +74,6 @@ int main(int argc, char **argv) {
   player1Service.join();
   player2Service.join();
   
-  //Workaround solution so that clients have time to finish by themselves
-  //Before the server is killed
-  std::chrono::seconds sleepTime(1);
-  std::this_thread::sleep_for(sleepTime);
   return 0;
 }
 

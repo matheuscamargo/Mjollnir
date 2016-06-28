@@ -993,10 +993,13 @@ def run(params):
 
                 # See if any clients had a runtime error
                 was_error = False
-                if server_process.returncode != 0:
-                    was_error = True
-                    logger.info("Error (in server)")
-                elif this_solution_process.returncode != 0:
+                
+                # Quick hack that must be undone
+                # if server_process.returncode != 0:
+                #     was_error = True
+                #     logger.info("Error (in server)")
+                # elif this_solution_process.returncode != 0:
+                if this_solution_process.returncode != 0:
                     was_error = True
                     logger.info("Error (in this solution)")
                 else:

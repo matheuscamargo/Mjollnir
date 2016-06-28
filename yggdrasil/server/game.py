@@ -164,9 +164,11 @@ class Game():
 
             errors = []
             killed = False
-            if server_process.returncode != 0:
-                killed = True
-                errors.append('server')
+
+            # Hack that must be undone
+            # if server_process.returncode != 0:
+            #     killed = True
+            #     errors.append('server')
 
         finally:
             server_kwargs['stdout'].close()
