@@ -29,6 +29,7 @@ class TournamentStore{
     this.tournamentRaw = [];
     this.tournamentInfo = [];
     this.tournament = [];
+    this.results = [];
     this.errorMessage = null;
 
     this.bindListeners({
@@ -53,6 +54,8 @@ class TournamentStore{
     this.tournamentInfo = TournamentInfo;
     console.log(this.tournamentInfo);
     this.tournament = toDesiredSchema(this.tournamentInfo, this.tournamentRaw);
+    //Play all games
+    TournamentActions.playAll();
   }
 
   handleFetch() {
@@ -112,6 +115,7 @@ class TournamentStore{
       var nextStep = Promise.all(GetMatchesPromises(tournament, tournamentInfo));
       nextStep.then(function(values) {
         RunAllMatches(tournament, tournamentInfo);
+        console.log("After run all matches.");
       });
     }
 
