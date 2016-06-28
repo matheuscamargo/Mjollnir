@@ -725,11 +725,6 @@ var MyComponent = function (_React$Component) {
         _react2.default.createElement(
           'td',
           null,
-          this.props.user.ranking
-        ),
-        _react2.default.createElement(
-          'td',
-          null,
           _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', value: this.props.text, disabled: this.props.btnCondition, onClick: this._handleClick })
         )
       );
@@ -816,6 +811,8 @@ var MyComponent = function (_React$Component) {
   _createClass(MyComponent, [{
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var self = this;
       var selectableUsers = _underscore2.default.select(this.props.users, function (u) {
         return _underscore2.default.contains(u.subs, self.state.challengeSelected);
@@ -983,18 +980,18 @@ var MyComponent = function (_React$Component) {
           _react2.default.createElement(
             'div',
             null,
-            _react2.default.createElement('input', { type: 'button', className: 'btn btn-default', value: 'Start Tournament', hidden: this.props.scores, onClick: this._handleClickTournament })
+            _react2.default.createElement('input', { type: 'button', className: 'btn btn-default', value: 'Start Tournament', hidden: this.props.scores, onClick: function onClick(e) {
+                return _this2._handleClickTournament(e, selectedUsers);
+              } })
           )
         )
       );
     }
   }, {
     key: '_handleClickTournament',
-    value: function _handleClickTournament(e) {
+    value: function _handleClickTournament(e, selected) {
       //TODO:  Add correct seeding stuff and fix this:
-      _TournamentActions2.default.create({ name: 'TOURNAMENT', type: this.state.typeSelected, challenge: this.state.challengeSelected, players: _underscore2.default.map(_underscore2.default.filter(this.props.users, function (u) {
-          return u.selected;
-        }), function (p) {
+      _TournamentActions2.default.create({ name: 'TOURNAMENT', type: this.state.typeSelected, challenge: this.state.challengeSelected, players: _underscore2.default.map(selected, function (p) {
           return p.name;
         })
       });

@@ -133,15 +133,15 @@ export default class MyComponent extends React.Component {
             </select>
           </div>
           <div>
-            <input type="button" className="btn btn-default" value="Start Tournament" hidden={this.props.scores} onClick={this._handleClickTournament}/>
+            <input type="button" className="btn btn-default" value="Start Tournament" hidden={this.props.scores} onClick={(e) => this._handleClickTournament(e, selectedUsers)}/>
           </div>
         </div>
       </div>);
   }
 
-  _handleClickTournament(e) {
+  _handleClickTournament(e, selected) {
     //TODO:  Add correct seeding stuff and fix this:
-    TournamentActions.create({name: 'TOURNAMENT', type: this.state.typeSelected, challenge:this.state.challengeSelected, players: _.map(_.filter(this.props.users, function(u) {return u.selected;}), function(p) {
+    TournamentActions.create({name: 'TOURNAMENT', type: this.state.typeSelected, challenge:this.state.challengeSelected, players: _.map(selected, function(p) {
         return p.name;
       })
     });

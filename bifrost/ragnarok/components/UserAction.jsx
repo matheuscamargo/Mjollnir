@@ -14,9 +14,6 @@ export default class MyComponent extends React.Component {
           {this.props.user.name}
         </td>
         <td>
-          {this.props.user.ranking}
-        </td>
-        <td>
           <input className="btn btn-default" type="button" value={this.props.text} disabled={this.props.btnCondition} onClick={this._handleClick}/>
         </td>
       </tr>
