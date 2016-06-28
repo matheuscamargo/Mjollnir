@@ -237,7 +237,8 @@ stormpath_manager.login_view = '.login'
 
 # Mongodb
 mongo_client = MongoClient(app.config['MONGOLAB_URI'])
-mongodb = mongo_client['mjollnir-db']
+mongodb = mongo_client['mjollnir']
+
 
 # Amazon S3
 if DEBUG:
@@ -259,7 +260,7 @@ if DEBUG:
         return file_content
 else:
     s3 = boto.connect_s3()
-    solutions_bucket = s3.get_bucket('mjollnir-solutions')
+    solutions_bucket = s3.get_bucket('mjollnir-solutions2016')
 
     def upload_solution(siid, language, file):
         key = solutions_bucket.new_key(siid)
