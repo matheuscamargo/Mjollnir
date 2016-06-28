@@ -958,7 +958,7 @@ var MyComponent = function (_React$Component) {
             _react2.default.createElement(
               'select',
               { className: 'form-control',
-                value: tournamentOptions.types[this.state.typeSelected],
+                value: this.state.typeSelected,
                 onChange: this._handleTypeChange },
               typeOptions
             )
@@ -970,7 +970,7 @@ var MyComponent = function (_React$Component) {
             _react2.default.createElement(
               'select',
               { className: 'form-control',
-                value: tournamentOptions.challenges[this.state.challengeSelected],
+                value: this.state.challengeSelected,
                 onChange: this._handleChallengeChange },
               challengeOptions
             )

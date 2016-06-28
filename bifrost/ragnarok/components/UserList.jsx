@@ -116,7 +116,7 @@ export default class MyComponent extends React.Component {
           <div>
             Tournament Type:
             <select className='form-control'
-                    value={tournamentOptions.types[this.state.typeSelected]}
+                    value={this.state.typeSelected}
                     onChange={this._handleTypeChange}>
                 {typeOptions}
             </select>
@@ -124,7 +124,7 @@ export default class MyComponent extends React.Component {
           <div>
             Tournament Game:
             <select className='form-control'
-                    value={tournamentOptions.challenges[this.state.challengeSelected]}
+                    value={this.state.challengeSelected}
                     onChange={this._handleChallengeChange}>
                 {challengeOptions}
             </select>
