@@ -19,7 +19,7 @@ export default class Tournament extends React.Component {
     if(!_.isEmpty(this.props.results)) {
       return (
         <Results  players={this.props.players} 
-                  results={this.props.players}> 
+                  results={this.props.results}> 
         </Results>
       );
     }

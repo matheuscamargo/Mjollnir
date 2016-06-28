@@ -625,7 +625,7 @@ var Tournament = function (_React$Component) {
 
       if (!_underscore2.default.isEmpty(this.props.results)) {
         return _react2.default.createElement(_Results2.default, { players: this.props.players,
-          results: this.props.players });
+          results: this.props.results });
       }
 
       return _react2.default.createElement(
