@@ -31,8 +31,10 @@ export default class MyComponent extends React.Component {
   }
 
   render() {
-    var selectableUsers = _.select(this.props.users, function(u) {return _.contains(u.subs, this.state.challengeSelected)});
+    var self = this;
+    var selectableUsers = _.select(this.props.users, function(u) {return _.contains(u.subs, self.state.challengeSelected)});
     var selectedUsers = _.filter(selectableUsers, function(u) {return u.selected;});
+
     var typeOptions = _.values(_.mapObject(tournamentOptions.types, function(value, key) {
               return (
                   <option key={key} value={key}>{value}</option>
