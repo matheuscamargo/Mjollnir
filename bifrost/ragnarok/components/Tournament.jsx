@@ -37,8 +37,10 @@ export default class Tournament extends React.Component {
     return (
       <div>
         <div>
-          <h2> {this.props.id} </h2>          
-          <input className="btn btn-default" type="button" hidden={_.isEmpty(this.props.results)} value="Go to Results!" onClick={this._handleClickResults}/>
+          <h2> {this.props.id} </h2>  
+          <div hidden={_.isEmpty(this.props.results)}>        
+            <input className="btn btn-default" type="button" value="Go to Results!" onClick={this._handleClickResults}/>
+          </div>
           <table className="table">
             <tbody>
               {_.map(this.props.sections, function(section) {

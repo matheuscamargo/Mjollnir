@@ -657,7 +657,11 @@ var Tournament = function (_React$Component) {
             this.props.id,
             ' '
           ),
-          _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', hidden: _underscore2.default.isEmpty(this.props.results), value: 'Go to Results!', onClick: this._handleClickResults }),
+          _react2.default.createElement(
+            'div',
+            { hidden: _underscore2.default.isEmpty(this.props.results) },
+            _react2.default.createElement('input', { className: 'btn btn-default', type: 'button', value: 'Go to Results!', onClick: this._handleClickResults })
+          ),
           _react2.default.createElement(
             'table',
             { className: 'table' },
