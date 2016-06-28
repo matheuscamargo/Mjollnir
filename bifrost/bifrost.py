@@ -724,6 +724,8 @@ def tournamentgetmatch(tid, mid):
     match['visualizer'] = challenge['visualizer']
     match['usernames'] = [users_dict[user['uid']]['username'] for user in match['users']]
 
+    #If draw => First user wins (higher seed)
+
     if match['challenge_name'] == 'Wumpus':
         match['winner'] = 'Score: ' + str(match['users'][0]['rank'])
     else:
@@ -733,6 +735,7 @@ def tournamentgetmatch(tid, mid):
             match['winner'] = match['usernames'][1]
         else: 
             match['users'][0]['uid']
+            match['winner'] = match['usernames'][0]
 
     match['users'] = users
 
