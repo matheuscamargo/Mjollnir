@@ -269,11 +269,7 @@ var MyComponent = function (_React$Component) {
                 'Match ',
                 this.props.id.m
               ),
-              _react2.default.createElement(
-                'td',
-                null,
-                _react2.default.createElement('input', { type: 'button', className: 'btn btn-default', value: 'Play', disabled: this.props.scores || !this.props.players[0] || !this.props.players[1], onClick: this._handleClick })
-              )
+              _react2.default.createElement('td', null)
             )
           ),
           _react2.default.createElement(
