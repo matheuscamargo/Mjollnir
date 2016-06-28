@@ -1,0 +1,24 @@
+<!--
+Create tabs with an icon and label, using the tabs-positive style.
+Each tab's child <ion-nav-view> directive will have its own
+navigation history that also transitions its views in and out.
+-->
+<ion-tabs class="tabs-icon-top tabs-color-active-positive">
+
+  <!-- Description Tab -->
+  <ion-tab title="Description" icon-off="ion-android-list" icon-on="ion-android-list" href="#/group/{{groupId}}/description">
+    <ion-nav-view name="group-description"></ion-nav-view>
+  </ion-tab>
+
+  <!-- Play Tab -->
+  <ion-tab title="Play" icon-off="ion-play" icon-on="ion-play" href="#/group/{{groupId}}/play">
+    <ion-nav-view name="group-play"></ion-nav-view>
+  </ion-tab>
+
+  <!-- Tournaments Tab -->
+  <ion-tab title="Tournaments" icon-off="ion-trophy" icon-on="ion-trophy" href="#/group/{{groupId}}/tournaments">
+    <ion-nav-view name="group-tournaments"></ion-nav-view>
+  </ion-tab>
+
+
+</ion-tabs>

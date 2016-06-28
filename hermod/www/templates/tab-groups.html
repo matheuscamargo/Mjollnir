@@ -1,0 +1,12 @@
+<ion-view view-title="Challenges">
+  <ion-content>
+    <ion-list>
+      <ion-item class="item item-button-right" ng-repeat="group in groups" type="item-text-wrap" ng-click="enter('{{group.id}}');">
+        {{group.name}}
+        <button class="button button-positive" ng-click="join('{{group.id}}');$event.stopPropagation();">
+          {{group.situation}}
+        </button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

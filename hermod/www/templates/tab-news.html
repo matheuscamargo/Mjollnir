@@ -1,0 +1,20 @@
+<ion-view view-title="News">
+  <ion-content class="padding">
+    <ion-list class="list card">
+      <ion-item ng-repeat="new in news">
+          <div class="item ">
+            <h2>{{new.title}}</h2>
+            <p>{{new.datetime}}</p>
+          </div>
+
+          <div class="item item-body">
+            <p ng-bind-html="new.content"></p>
+            <p>
+              <a href="#" class="subdued">posted by {{new.author}}</a>
+            </p>
+          </div>
+
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

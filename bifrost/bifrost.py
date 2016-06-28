@@ -31,6 +31,7 @@ from flask import (
     request,
     url_for,
     Markup,
+    jsonify,
 )
 from flask.ext.stormpath import (
     StormpathManager,
@@ -44,6 +45,7 @@ from flask.ext.stormpath import (
 from flask.ext.pagedown import PageDown
 from flask.ext.pagedown.fields import PageDownField
 from flask.ext.wtf import Form
+from flask.ext.cors import CORS
 
 from extensions.flask_stormpath import groups_allowed
 from extensions.flask_stormpath import is_active_user_in
@@ -67,6 +69,8 @@ from wtforms.fields import TextField
 from wtforms.validators import DataRequired
 from wtforms.validators import NumberRange
 from wtforms.validators import Optional
+
+from flask_jwt import JWT, jwt_required, current_identity
 
 ##### Classes
 ## TODO: extract to another file
@@ -186,6 +190,7 @@ DEBUG = str(environ.get('MJOLLNIR_DEBUG')).lower()
 DEBUG = (DEBUG == '1' or DEBUG == 'true')
 
 app = Flask(__name__)
+CORS(app)
 
 logger = logging.getLogger('werkzeug')
 logger.setLevel(logging.INFO)
@@ -234,6 +239,28 @@ app.jinja_env.globals.update(MJOLLNIR_DEBUG = DEBUG)
 # Stormpath
 stormpath_manager = StormpathManager(app)
 stormpath_manager.login_view = '.login'
+
+def authenticate(username, password):
+    _user = User.from_login(
+            username,
+            password
+        )
+
+    return _user
+
+def identity(payload):
+    username = payload['identity']
+    _user = mongodb.users.find_one({ 'username': username })
+    return _user
+
+jwt = JWT(app, authenticate, identity)
+
+@jwt.jwt_payload_handler
+def make_payload(identity):
+    iat = datetime.datetime.utcnow()
+    exp = iat + datetime.timedelta(days = 100) 
+    nbf = iat + app.config.get('JWT_NOT_BEFORE_DELTA')
+    return {'exp': exp, 'iat': iat, 'nbf': nbf, 'identity': identity.username}
 
 # Mongodb
 mongo_client = MongoClient(app.config['MONGOLAB_URI'])
@@ -1210,9 +1237,7 @@ def matches():
     matches = latest_matches(limit = 10)
     return render_template('matches.html', matches = matches)
 
-
-
-
+    
 def allPlay(cid, rounds, group, challenge_name):
     """
     Make all players play
@@ -1292,6 +1317,295 @@ def play(cid, uids, rounds, tid = None):
 
 
 
+# REST API
+
+@app.route('/api/tournament/<tid>')
+@jwt_required()
+def apiTournament(tid):
+    """
+    Page to visualize a tournament.
+    """
+    tournament = mongodb.tournaments.find_one({ 'tid': tid })
+    tournament_dict = {'matches': [], 'ranking': []}
+    if not tournament:
+        return jsonify(**tournament_dict)
+
+    group = mongodb.groups.find_one({'gid': tournament['gid']})
+    if not group:
+        return jsonify(**tournament_dict)
+
+    matches = list( mongodb.matches.find({ 'tid': tid }) )
+
+    names_dict = dict()
+    for match in matches:
+
+        for idx in range(len(match['users'])):
+            
+            uid = match['users'][idx]['uid']
+            
+            if uid not in names_dict:
+                
+                user = mongodb.users.find_one({'uid': uid})
+                names_dict[uid] = dict()
+                if 'given_name' in user and 'surname' in user:
+                    names_dict[uid]['full_name'] = user['given_name'] + ' ' + user['surname']
+                else: 
+                    names_dict[uid]['full_name'] = user['username']
+                names_dict[uid]['username'] = user['username']
+
+            match['users'][idx]['username'] = names_dict[uid]['username']
+            match['users'][idx]['full_name'] = names_dict[uid]['full_name']
+
+        if 'errors' in match:
+            match['error_message'] = ''
+            for counter, error in enumerate(match['errors']):
+                if error == 'server':
+                    match['error_message'] += '%d) There was a problem in the server. ' % (counter + 1)
+                else:
+                    match['error_message'] += '%d) There was a problem with %s\'s submission. ' % (counter + 1, names_dict[error]['username'])
+        else:
+            if len(match['users']) == 1:
+                winner = match['users'][0]['rank']
+            else:
+                winner = dict()
+                if match['users'][0]['rank'] == 1 and match['users'][1]['rank'] == 2:
+                    winner['username'] = match['users'][0]['username']
+                    winner['full_name'] = match['users'][0]['username']
+
+                elif match['users'][1]['rank'] == 1 and match['users'][0]['rank'] == 2:
+                    winner['username'] = match['users'][1]['username']
+                    winner['full_name'] = match['users'][1]['username']
+                else:
+                    winner['username'] = 'Tie!'
+                    winner['full_name'] = 'Tie!'
+
+            match['winner'] = winner
+
+        match['_id'] = str(match['_id'])
+
+    if len(matches) < tournament['total_matches']:
+    
+        return render_template('tournament.html', tournament = tournament, matches = matches, names_type = group['users_name_type'])
+    
+    if 'ranking' not in tournament:
+        ranking = make_ranking(matches, tournament, group, names_dict)
+        mongodb.tournaments.update({'tid': tid}, {'$set': {'ranking': ranking}})  
+        tournament['ranking'] = ranking      
+    else:
+        ranking = tournament['ranking']
+        
+    tournament_dict = {'matches': matches, 'ranking': ranking}
+    return jsonify(**tournament_dict)
+
+@app.route('/api/join/<gid>', methods=['GET'])
+@jwt_required()
+def apiJoinGroup(gid):
+    """
+    Allows a user to join/leave a group
+    """
+    response = {'success': False}
+    username = current_identity['username']
+
+    group = mongodb.groups.find_one({ 'gid': gid })
+    if not group:
+        return jsonify(**response)
+
+    if username not in group['users']:
+        mongodb.groups.update(
+            { 'gid': gid },
+            { '$push':
+                {
+                    'users': username
+                }
+            }
+        )
+    else:
+        mongodb.groups.update(
+            { 'gid': gid },
+            { '$pull':
+                {
+                    'users': username
+                }
+            }
+        )
+    response = {'success': True}
+    return jsonify(**response)
+
+@app.route('/api/group/<gid>', methods=['GET', 'POST'])
+@jwt_required()
+def apiGroup(gid):
+    """
+    getting info from a group
+    """
+    _user = current_identity 
+    username = _user['username']
+
+    response = {}
+    if not _user:
+        return jsonify(**response)
+
+    group = mongodb.groups.find_one({'gid': gid})
+    
+    if not group or ( username not in group['admins'] and group['admin_only'] ):
+        return jsonify(**response)
+    
+    user_id = _user['uid']
+
+    group_users = list()
+    for player in group['users']:
+        user_in_db = mongodb.users.find_one({ 'username': player})
+        uid = user_in_db['uid']
+        name = player
+
+        if group['users_name_type'] == 'full_name':
+            # In case the user don't have a full name (old users)
+            if 'given_name' in user_in_db and 'surname' in user_in_db:
+                name = user_in_db['given_name'] + ' ' + user_in_db['surname']
+
+        # We are considering that players can't play against themselves
+        if uid != user_id:
+            group_users.append((uid, name))
+
+    limit = 5
+    tournaments = list( mongodb.tournaments.find({ 'gid': group['gid']}).sort('datetime_started', pymongo.DESCENDING).limit(limit) )
+
+    challenges = list( mongodb.challenges.find({}) )
+    #challenges_choices = [(challenge['cid'], challenge['name']) for challenge in challenges]
+
+    for tournament in tournaments:
+        time_delta = datetime.datetime.utcnow() - tournament['datetime_started']
+        tournament['time_since'] = time_since_from_seconds( time_delta.total_seconds() )
+
+    if request.method == 'GET':
+        response = {}
+        response['description'] = group['description']
+        play = {}
+        play['challenges'] = []
+        for challenge in challenges:
+            play['challenges'].append({'id':challenge['cid'], 'name':challenge['name']})
+        play['opponents'] = []
+        for opponent in group_users:
+            play['opponents'].append({'id':opponent[0], 'name':opponent[1]})
+        response['play'] = play
+        response['tournaments'] = []
+        for tournament in tournaments:
+            response['tournaments'].append({'id':tournament['tid'], 'name':tournament['challenge_name'], 'date':tournament['time_since']})
+        return jsonify(**response)
+
+
+    data = json.loads(request.data)
+    rounds = data['rounds']
+    cid = data['cid']
+    opponent = data['opponent']
+    challenge = data['challenge']
+    global play
+    err = play(cid = cid, uids = [user_id], rounds = rounds)
+    error = {'error': err}
+    return jsonify(**error)
+
+@app.route('/api/news')
+@jwt_required()
+def apiNews():
+    """
+    returns a JSON object that represents the list of news
+    """
+    news_objects = list(mongodb.news.find().sort([('datetime', -1)]).limit(5))
+    news = []
+    for new in news_objects:
+        current_news = {}
+        current_news['title'] = new['title']
+        current_news['author'] = new['author']
+        current_news['datetime'] = new['datetime']
+        current_news['content'] = new['content']
+        news.append(current_news)
+    news_dict = {'news': news}
+    return jsonify(**news_dict)
+
+
+@app.route('/api/groups')
+@jwt_required()
+def apiGroups():
+    """
+    Renders a list of groups the user can see
+    """
+    groups_dict = {'groups': []}
+
+    user_in_db = current_identity
+    username = user_in_db['username']
+
+    if not user_in_db:
+        return jsonify(**groups_dict)
+
+    groups = filter(lambda group: not group['admin_only'] or username in group['admins'] or is_active_user_in('Dev'), mongodb.groups.find())
+    groups_objs = []
+    for group in groups:
+        current_group = {}
+        current_group['id'] = group['gid']
+        current_group['name'] = group['name']
+        if username in group['users']:
+            current_group['situation'] = "Leave"
+        else:
+            current_group['situation'] = "Join"
+        groups_objs.append(current_group)
+    groups_dict = {'groups': groups_objs}
+    return jsonify(**groups_dict)
+
+@app.route('/api/challenge/<challenge_name>')
+@jwt_required()
+def apiChallengesRanking(challenge_name):
+    """
+    returns a JSON object that represents the list of ratings for that challenge
+    """
+    challenge = mongodb.challenges.find_one({'name': challenge_name})
+    rank = {}
+    if not challenge or ( not is_active_user_in('Dev') and challenge['dev_only'] ):
+        return jsonify(**rank)
+    submissions = mongodb.submissions.find({ 'cid': challenge['cid'] }).sort([ ('rating', -1) ]).limit(40)
+    challenge_solutions = []
+
+    i = 0
+    for submission in submissions:
+        i += 1
+
+        user_from_submission = mongodb.users.find_one({ 'uid': submission['uid'] })
+
+        if not user_from_submission:
+            raise Exception("Could not find user " + submission['uid'] + " in the database")
+
+        sub = {}
+        sub['sequence'] = str(i)
+        sub['username'] = str(user_from_submission['username'])
+        sub['rating'] = str(int(round(submission['RD'])))
+        challenge_solutions.append(sub)
+
+    rank["rank"] = challenge_solutions
+    return jsonify(**rank)
+
+@app.route('/api/register', methods=['POST'])
+def apiRegister():
+    """
+    register a new user
+    """
+    try:
+        # Create a new Stormpath User.
+        data = json.loads(request.data)
+        _user = stormpath_manager.application.accounts.create({
+            'email': data['email'],
+            'username': data['username'],
+            'password': data['password'],
+            'given_name': data['given_name'],
+            'surname': data['surname'],
+        })
+        _user.__class__ = User
+        success = True
+        error = None
+    except StormpathError, err:
+        logger.warn(err);
+        success = False
+        error = err.message
+
+    response_dict = {'success' : success, 'error': error}
+    return jsonify(**response_dict)
 
 @app.route('/pleaseMakeCoffee', methods=['BREW', 'POST', 'GET'])
 def teapot():

@@ -16,3 +16,4 @@ pymongo==3.0.3
 requests==2.2.1
 six==1.6.1
 stormpath==1.0.1
+Flask-JWT==0.3.2
