@@ -116,11 +116,19 @@ class TournamentStore{
       nextStep.then(function(values) {
         RunAllMatches(tournament, tournamentInfo);
         console.log("After run all matches.");
+
       });
     }
 
     RunAllMatches(this.tournamentRaw, this.tournamentInfo);
+    handleFetchResult();
   }
+
+  handleFetchResult(){
+    this.results = this.tournament.results();
+    console.log(this.results);
+  }
+
 
   handlePlayMatch(matchInfo){
     //console.log(matchInfo);
@@ -140,6 +148,7 @@ class TournamentStore{
     this.tournamentRaw = [];
     this.tournamentInfo = [];
     this.tournament = {};
+    this.results = [];
   }
 }
 

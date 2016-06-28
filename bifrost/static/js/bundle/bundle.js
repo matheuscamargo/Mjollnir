@@ -537,15 +537,6 @@ var MyComponent = function (_React$Component) {
             ' '
           ),
           _react2.default.createElement(
-            'div',
-            null,
-            ' ',
-            _react2.default.createElement('input', { className: 'btn btn-primary pull-right', type: 'button', value: 'Play Tournament', onClick: function onClick(e) {
-                _TournamentActions2.default.playAll();
-              } }),
-            ' '
-          ),
-          _react2.default.createElement(
             'table',
             { className: 'table' },
             _react2.default.createElement(
@@ -25841,6 +25832,13 @@ var TournamentStore = function () {
       }
 
       RunAllMatches(this.tournamentRaw, this.tournamentInfo);
+      handleFetchResult();
+    }
+  }, {
+    key: 'handleFetchResult',
+    value: function handleFetchResult() {
+      this.results = this.tournament.results();
+      console.log(this.results);
     }
   }, {
     key: 'handlePlayMatch',
@@ -25865,6 +25863,7 @@ var TournamentStore = function () {
       this.tournamentRaw = [];
       this.tournamentInfo = [];
       this.tournament = {};
+      this.results = [];
     }
   }]);
 
