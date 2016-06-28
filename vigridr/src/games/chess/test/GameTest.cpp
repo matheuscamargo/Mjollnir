@@ -214,6 +214,15 @@ class GameLogicTest : public ::testing::Test {
     return false;
   }
 
+  bool containCommand(std::vector<Command>& moveList, Command command){
+    for( unsigned int i = 0; i < moveList.size(); i++ ){
+      if(moveList[i] == command){
+        return true;
+      }
+    }
+    return false;
+  }
+
   GameLogic game1;
 };
 
@@ -671,6 +680,17 @@ TEST_F(GameLogicTest, TestingWhiteMakingEnPassant) {
   ASSERT_EQ(expBoard, game1.getWorldModel().board);
 }
 
+TEST_F(GameLogicTest, TestingWhiteEnPassantInMoveList) {
+  EXPECT_TRUE(game1.update(createCommand(6, 3, 4, 3), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 7, 2, 7), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(4, 3, 3, 3), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 4, 3, 4), 9091));
+  EXPECT_TRUE(containCommand(game1.getMoveList(9090), createCommand(3,3,2,4)));
+
+  EXPECT_TRUE(game1.update(createCommand(3, 3, 2, 4), 9090));
+}
+
 TEST_F(GameLogicTest, TestingWhiteFailingEnPassant) {
   EXPECT_TRUE(game1.update(createCommand(6, 3, 4, 3), 9090));
   EXPECT_TRUE(game1.update(createCommand(1, 7, 2, 7), 9091));
@@ -710,6 +730,18 @@ TEST_F(GameLogicTest, TestingBlackMakingEnPassant) {
   // printBoard(game1.getWorldModel().board);
 
   ASSERT_EQ(expBoard, game1.getWorldModel().board);
+}
+
+TEST_F(GameLogicTest, TestingBlackEnPassantInMoveList) {
+  EXPECT_TRUE(game1.update(createCommand(6, 0, 5, 0), 9090));
+  EXPECT_TRUE(game1.update(createCommand(1, 3, 3, 3), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 1, 5, 1), 9090));
+  EXPECT_TRUE(game1.update(createCommand(3, 3, 4, 3), 9091));
+
+  EXPECT_TRUE(game1.update(createCommand(6, 2, 4, 2), 9090));
+  EXPECT_TRUE(containCommand(game1.getMoveList(9091), createCommand(4, 3, 5, 2)));
+  EXPECT_TRUE(game1.update(createCommand(4, 3, 5, 2), 9091));
 }
 
 TEST_F(GameLogicTest, TestingBlackFailingEnPassant) {
