@@ -10,3 +10,4 @@ This platform is composed principally by these systems:
  * Games logic
   * Server
   * Clients
+ * Mobile App
