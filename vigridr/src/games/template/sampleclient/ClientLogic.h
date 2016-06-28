@@ -5,9 +5,8 @@
 
 void init(const mjollnir::vigridr::GameInit& gameInit);
 
-mjollnir::vigridr::Command playTurn(
-  const mjollnir::vigridr::WorldModel& wm,
-  int32_t cycle);
+mjollnir::vigridr::Command playTurn(const mjollnir::vigridr::WorldModel& wm,
+  const std::vector<mjollnir::vigridr::Command>& moveList, int32_t turn);
 
 void endOfGame(const mjollnir::vigridr::GameResult& result);
 

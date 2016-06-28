@@ -24,7 +24,8 @@ void init(const GameInit& gameInit) {
  * Returns:
  *     A Command instance - depends on the game. It's your command for this turn.
  */
-Command playTurn(const WorldModel& wm, int32_t turn) {
+Command playTurn(const WorldModel& wm,
+  const std::vector<Command>& moveList, int32_t turn) {
   return Command();
 }
 
