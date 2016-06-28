@@ -1,6 +1,7 @@
 import sys
 import glob
 import argparse
+import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--port", \
@@ -53,6 +54,7 @@ def run_client():
         client = Game.Client(protocol)
         transport.open()
         play_game(client)
+        time.sleep(2)
         transport.close()
     except Thrift.TException, tx:
         print 'ERROR: %s' % (tx.message)

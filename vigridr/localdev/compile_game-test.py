@@ -6,8 +6,8 @@ from subprocess import check_call
 VIGRIDR_SRC = '/Mjollnir/vigridr/src'
 TEST_SRC = '/Mjollnir/vigridr/localdev'
 ### To compile, just change the next 4 values ###
-CURRENT_GAME = 'tron'
-CLIENT_EXTENSION = 'cpp'
+CURRENT_GAME = 'tictactoe'
+CLIENT_EXTENSION = 'py'
 SERVER_EXTENSION = 'cpp'
 
 sys.path.append(VIGRIDR_SRC)
