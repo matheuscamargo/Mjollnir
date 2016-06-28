@@ -626,8 +626,8 @@ var Tournament = function (_React$Component) {
         );
       }
 
-      if (_underscore2.default.isEmpty(this.props.results)) {
-        _react2.default.createElement(_Results2.default, { players: this.props.players,
+      if (!_underscore2.default.isEmpty(this.props.results)) {
+        return _react2.default.createElement(_Results2.default, { players: this.props.players,
           results: this.props.players });
       }
 
@@ -25930,7 +25930,6 @@ var TournamentStore = function () {
         });
       }
 
-      var self = this;
       function RunAllMatches(tournament, tournamentInfo) {
         if (tournament.isDone()) {
           //Populating results

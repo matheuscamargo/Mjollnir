@@ -108,7 +108,6 @@ class TournamentStore{
       });
     }
 
-    var self = this;
     function RunAllMatches(tournament, tournamentInfo){
       if(tournament.isDone()){
         //Populating results
