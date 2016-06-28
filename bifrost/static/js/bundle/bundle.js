@@ -816,7 +816,10 @@ var MyComponent = function (_React$Component) {
   _createClass(MyComponent, [{
     key: 'render',
     value: function render() {
-      var selectedUsers = _underscore2.default.filter(this.props.users, function (u) {
+      var selectableUsers = _underscore2.default.select(this.props.users, function (u) {
+        return _underscore2.default.contains(u.subs, this.state.challengeSelected);
+      });
+      var selectedUsers = _underscore2.default.filter(selectableUsers, function (u) {
         return u.selected;
       });
       var typeOptions = _underscore2.default.values(_underscore2.default.mapObject(tournamentOptions.types, function (value, key) {
