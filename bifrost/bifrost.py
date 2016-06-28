@@ -186,7 +186,8 @@ ALL_PLAYERS = 'all-players-play'
 
 
 ##### Initialization
-DEBUG = str(environ.get('MJOLLNIR_DEBUG')).lower()
+#DEBUG = str(environ.get('MJOLLNIR_DEBUG')).lower()
+DEBUG = '0'
 DEBUG = (DEBUG == '1' or DEBUG == 'true')
 
 app = Flask(__name__)
@@ -264,7 +265,7 @@ def make_payload(identity):
 
 # Mongodb
 mongo_client = MongoClient(app.config['MONGOLAB_URI'])
-mongodb = mongo_client['mjollnir']
+mongodb = mongo_client['mjollnir-db']
 
 # Amazon S3
 if DEBUG:
