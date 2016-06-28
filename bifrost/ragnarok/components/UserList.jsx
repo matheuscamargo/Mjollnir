@@ -108,6 +108,17 @@ export default class MyComponent extends React.Component {
               </td>
             </tr>
           </tbody>
+          <tfoot hidden={selectableUsers.lenght > 0}>
+          <tr>
+              <th>
+                <div color="red">
+                  There are no users with submissions for the selected game.
+                </div>
+              </th>
+              <th>
+              </th>
+            </tr>
+          </tfoot>
         </table>
         <div className="col-md-6 col-md-offset-3">
           <div>
@@ -126,10 +137,10 @@ export default class MyComponent extends React.Component {
                 {challengeOptions}
             </select>
           </div>
-          <br>
+          <br></br>
           <div>
-            <input type="button" className="btn btn-default" value="Start Tournament" disabled={selectedUsers.length < MIN_USERS} onClick={(e) => this._handleClickTournament(e, selectedUsers)}/>
-            <span color="red" hidden={!(selectedUsers.length < MIN_USERS)}> Número mínimo de participantes no campeonato é {MIN_USERS}. </span>
+            <input type="button" className="btn btn-default" value="Start Tournament" hidden={selectedUsers.length < MIN_USERS} onClick={(e) => this._handleClickTournament(e, selectedUsers)}/>
+            <span color="red" hidden={!(selectedUsers.length < MIN_USERS)}> The minimum number of participants is {MIN_USERS}. </span>
           </div>
         </div>
       </div>);

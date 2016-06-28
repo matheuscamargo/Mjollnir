@@ -935,6 +935,24 @@ var MyComponent = function (_React$Component) {
                 )
               )
             )
+          ),
+          _react2.default.createElement(
+            'tfoot',
+            { hidden: selectableUsers.lenght > 0 },
+            _react2.default.createElement(
+              'tr',
+              null,
+              _react2.default.createElement(
+                'th',
+                null,
+                _react2.default.createElement(
+                  'div',
+                  { color: 'red' },
+                  'There are no users with submissions for the selected game.'
+                )
+              ),
+              _react2.default.createElement('th', null)
+            )
           )
         ),
         _react2.default.createElement(
@@ -964,6 +982,7 @@ var MyComponent = function (_React$Component) {
               challengeOptions
             )
           ),
+          _react2.default.createElement('br', null),
           _react2.default.createElement(
             'div',
             null,
@@ -972,8 +991,8 @@ var MyComponent = function (_React$Component) {
               } }),
             _react2.default.createElement(
               'span',
-              { className: 'alert alert-danger', hidden: !(selectedUsers.length < MIN_USERS) },
-              ' Número mínimo de usuários é ',
+              { color: 'red', hidden: !(selectedUsers.length < MIN_USERS) },
+              ' The minimum number of participants is ',
               MIN_USERS,
               '. '
             )
