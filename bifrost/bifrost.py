@@ -1498,6 +1498,7 @@ def apiGroup(gid):
     cid = data['cid']
     opponent = data['opponent']
     challenge = data['challenge']
+    global play
     err = play(cid = cid, uids = [user_id], rounds = rounds)
     error = {'error': err}
     return jsonify(**error)
